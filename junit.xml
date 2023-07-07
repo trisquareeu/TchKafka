@@ -1,7 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="1" failures="0" errors="0" time="0.411">
-  <testsuite name="Dummy Test" errors="0" failures="0" skipped="0" timestamp="2023-06-30T17:20:57" time="0.369" tests="1">
-    <testcase classname="Dummy Test should be ok" name="Dummy Test should be ok" time="0.001">
+<testsuites name="jest tests" tests="63" failures="0" errors="0" time="0.441">
+  <testsuite name="VarInt" errors="0" failures="0" skipped="0" timestamp="2023-07-07T09:09:46" time="0.396" tests="63">
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0.001">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0.001">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0.001">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0.001">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt value stored in the varint should be correctly serialized" name="VarInt value stored in the varint should be correctly serialized" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0.001">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0.003">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0.001">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt bytes should be correctly deserialized to varint" name="VarInt bytes should be correctly deserialized to varint" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
+    </testcase>
+    <testcase classname="VarInt should serialize and deserialize into the same value" name="VarInt should serialize and deserialize into the same value" time="0">
     </testcase>
   </testsuite>
 </testsuites>
