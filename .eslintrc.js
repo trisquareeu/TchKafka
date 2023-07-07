@@ -71,7 +71,8 @@ module.exports = {
           String: false
         }
       }
-    ]
+    ],
+    'newline-before-return': 'error'
   },
   overrides: [
     {
