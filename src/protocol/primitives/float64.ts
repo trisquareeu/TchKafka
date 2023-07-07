@@ -1,0 +1,19 @@
+import type { ReadBuffer, Serializable, WriteBuffer } from '../serialization';
+
+/**
+ * Represents a double-precision 64-bit format IEEE 754 value.
+ * The values are encoded using eight bytes in network byte order (big-endian).
+ *
+ * @see https://kafka.apache.org/protocol.html#protocol_types
+ */
+export class Float64 implements Serializable {
+  constructor(public readonly value: number) {}
+
+  public static deserialize(buffer: ReadBuffer): Float64 {
+    return new Float64(buffer.readDouble());
+  }
+
+  public serialize(buffer: WriteBuffer): void {
+    buffer.writeDouble(this.value);
+  }
+}
