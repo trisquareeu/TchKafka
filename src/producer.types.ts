@@ -1,4 +1,4 @@
-import { ConsumerGroupMetadata, OffsetAndMetadata, PartitionInfo, TopicPartition } from './consumer.types';
+import type { ConsumerGroupMetadata, OffsetAndMetadata, PartitionInfo, TopicPartition } from './consumer.types';
 
 export type ProducerRecord<K extends keyof any, V> = {
   topic: string;
@@ -10,7 +10,7 @@ export type ProducerRecord<K extends keyof any, V> = {
 };
 
 export type RecordMetadata = {
-  offset: BigInt;
+  offset: bigint;
   timestamp: number;
   serializedKeySize: number;
   serializedValueSize: number;

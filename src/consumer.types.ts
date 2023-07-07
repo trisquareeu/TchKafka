@@ -14,7 +14,7 @@ export type ConsumerRebalanceListener = {
 export type ConsumerRecords<K extends keyof any, V> = Record<K, V>;
 
 export type OffsetAndMetadata = {
-  offset: BigInt;
+  offset: bigint;
   metadata: string;
   leaderEpoch: number;
 };
@@ -37,8 +37,8 @@ export type PartitionInfo = {
 };
 
 export type OffsetAndTimestamp = {
-  timestamp: BigInt;
-  offset: BigInt;
+  timestamp: bigint;
+  offset: bigint;
   leaderEpoch?: number;
 };
 
@@ -93,9 +93,9 @@ export interface Consumer<K extends keyof any, V> {
     timeout?: Duration
   ): Promise<Map<TopicPartition, OffsetAndTimestamp>>;
 
-  beginningOffsets(partitions: TopicPartition[], timeout?: Duration): Promise<Map<TopicPartition, BigInt>>;
+  beginningOffsets(partitions: TopicPartition[], timeout?: Duration): Promise<Map<TopicPartition, bigint>>;
 
-  endOffsets(partitions: TopicPartition[], timeout: Duration): Promise<Map<TopicPartition, BigInt>>;
+  endOffsets(partitions: TopicPartition[], timeout: Duration): Promise<Map<TopicPartition, bigint>>;
 
   currentLag(topicPartition: TopicPartition): Promise<number>;
 
