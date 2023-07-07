@@ -1,0 +1,34 @@
+import type { ReadBuffer, Serializable, WriteBuffer } from '../serialization';
+import { checkValueIsInRange, toUnsigned } from './utils';
+import { UVarInt } from './uvarint';
+
+/**
+ * Represents an integer between -2^31 and 2^31-1 inclusive.
+ * Encoding follows the variable-length zig-zag encoding from Google Protocol Buffers.
+ *
+ * @see https://kafka.apache.org/protocol.html#protocol_types
+ */
+export class VarInt implements Serializable {
+  public static readonly MAX_VALUE = 2_147_483_647;
+  public static readonly MIN_VALUE = -2_147_483_648;
+
+  constructor(public readonly value: number) {
+    checkValueIsInRange(value, VarInt.MIN_VALUE, VarInt.MAX_VALUE);
+  }
+
+  public static encodeZigZag(value: number): number {
+    return toUnsigned((value << 1) ^ (value >> 31));
+  }
+
+  public static decodeZigZag(value: number): number {
+    return (value >>> 1) ^ -(value & 1);
+  }
+
+  public static deserialize(buffer: ReadBuffer): VarInt {
+    return new VarInt(VarInt.decodeZigZag(UVarInt.deserialize(buffer).value));
+  }
+
+  public serialize(buffer: WriteBuffer): void {
+    new UVarInt(VarInt.encodeZigZag(this.value)).serialize(buffer);
+  }
+}

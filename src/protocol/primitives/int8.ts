@@ -1,0 +1,24 @@
+import type { ReadBuffer, Serializable, WriteBuffer } from '../serialization';
+import { checkValueIsInRange } from './utils';
+
+/**
+ * Represents an integer between -2^7 and 2^7-1 inclusive.
+ *
+ * @see https://kafka.apache.org/protocol.html#protocol_types
+ */
+export class Int8 implements Serializable {
+  public static readonly MAX_VALUE = 127;
+  public static readonly MIN_VALUE = -128;
+
+  constructor(public readonly value: number) {
+    checkValueIsInRange(value, Int8.MIN_VALUE, Int8.MAX_VALUE);
+  }
+
+  public static deserialize(buffer: ReadBuffer): Int8 {
+    return new Int8(buffer.readInt8());
+  }
+
+  public serialize(buffer: WriteBuffer): void {
+    buffer.writeInt8(this.value);
+  }
+}
