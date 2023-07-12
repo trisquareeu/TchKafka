@@ -25,7 +25,7 @@ export class UVarInt implements Serializable {
       const currentByte = buffer.readUInt8();
       decodedValue |= (currentByte & 0b01111111) << (currentByteNumber * 7);
       //the first bit is a continuation bit, when it is not set, it was the last byte to process
-      if ((currentByte & 0b10000000) == 0) {
+      if ((currentByte & 0b10000000) === 0) {
         //Performing bitwise operations converted the number to signed integer.
         //Unsigned bitshift converts it back to the unsigned one.
         return new UVarInt(toUnsigned(decodedValue));
