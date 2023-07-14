@@ -77,7 +77,15 @@ export class ReadBuffer {
     return value;
   }
 
-  public toBuffer(): Buffer {
+  public getOffset(): number {
+    return this.offset;
+  }
+
+  public toBuffer(start?: number, end?: number): Buffer {
+    if (start !== undefined) {
+      return this.buffer.subarray(start, end);
+    }
+
     return this.buffer;
   }
 
@@ -98,6 +106,9 @@ export class ReadBuffer {
   }
 
   private expectByteLength(byteLength: number): void {
+    if (byteLength < 0) {
+      throw new Error('Attempted to read negative amount of bytes.');
+    }
     const lastByteToRead = this.offset + byteLength;
     if (lastByteToRead > this.buffer.length) {
       throw new BufferUnderflowError(
