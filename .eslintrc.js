@@ -73,7 +73,8 @@ module.exports = {
         }
       }
     ],
-    'newline-before-return': 'error'
+    'newline-before-return': 'error',
+    'no-throw-literal': 'error'
   },
   overrides: [
     {

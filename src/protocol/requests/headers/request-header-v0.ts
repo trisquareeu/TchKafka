@@ -1,5 +1,5 @@
 import type { Int16, Int32 } from '../../primitives';
-import type { Serializable, WriteBuffer } from '../../serialization';
+import type { WriteBuffer } from '../../serialization';
 import type { RequestHeader } from './request-header';
 
 /**
@@ -10,7 +10,7 @@ import type { RequestHeader } from './request-header';
  *
  * @see https://kafka.apache.org/24/protocol.html#protocol_messages
  */
-export class RequestHeaderV0 implements Serializable, RequestHeader {
+export class RequestHeaderV0 implements RequestHeader {
   constructor(
     public readonly requestApiKey: Int16,
     public readonly requestApiVersion: Int16,
