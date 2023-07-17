@@ -1,4 +1,5 @@
 import type { Int32 } from '../../primitives';
+import { type Serializable } from '../../serialization';
 
 /**
  * A common part of all request headers that is exposed for the response matching.
@@ -8,6 +9,6 @@ import type { Int32 } from '../../primitives';
  *
  * @see https://cwiki.apache.org/confluence/display/KAFKA/A+Guide+To+The+Kafka+Protocol#AGuideToTheKafkaProtocol-Requests
  */
-export interface RequestHeader {
+export interface RequestHeader extends Serializable {
   correlationId: Int32;
 }

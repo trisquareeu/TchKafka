@@ -1,5 +1,6 @@
 import type { ResponseHeader } from '../responses';
 import type { ReadBuffer, Serializable } from '../serialization';
+import { type RequestHeader } from './headers';
 
 type Deserializable<T> = {
   deserialize: (buffer: ReadBuffer) => T;
@@ -15,7 +16,7 @@ type Deserializable<T> = {
  * @see https://cwiki.apache.org/confluence/display/KAFKA/A+Guide+To+The+Kafka+Protocol#AGuideToTheKafkaProtocol-TheProtocol
  * @see https://kafka.apache.org/24/protocol.html#protocol_compatibility
  */
-export interface Request extends Serializable {
+export interface Request<T> extends Serializable {
   /**
    * Subtype of the ResponseHeader that is expected as a response to this request.
    */
@@ -24,5 +25,8 @@ export interface Request extends Serializable {
   /**
    * Subtype of the ResponseData that is expected as a response to this request.
    */
-  ExpectedResponseDataClass: Deserializable<any>;
+  ExpectedResponseDataClass: Deserializable<T>;
+
+  buildHeader(correlationId: number): RequestHeader;
+  buildHeader(correlationId: number, clientId: string | null): RequestHeader;
 }
