@@ -32,3 +32,17 @@ export class BufferUnderflowError extends Error {
     this.name = 'BufferUnderflowError';
   }
 }
+
+export class CorrelationIdMismatchError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'CorrelationIdMismatchError';
+  }
+}
+
+export class InvalidOrOutOfOrderTagError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidOrOutOfOrderTagError';
+  }
+}
