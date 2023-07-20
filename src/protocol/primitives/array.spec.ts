@@ -16,23 +16,23 @@ describe('Array', () => {
   const cases: { value: Serializable[]; deserializer: ArrayDeserializer<any> }[] = [
     {
       value: [],
-      deserializer: (buffer: ReadBuffer) => Int32.deserialize(buffer)
+      deserializer: Int32.deserialize
     },
     {
       value: [new Int32(1), new Int32(-3123122), new Int32(0), new Int32(Int32.MAX_VALUE), new Int32(Int32.MIN_VALUE)],
-      deserializer: (buffer: ReadBuffer) => Int32.deserialize(buffer)
+      deserializer: Int32.deserialize
     },
     {
       value: [new Int8(1), new Int8(-128), new Int8(0), new Int8(Int8.MAX_VALUE), new Int8(Int8.MIN_VALUE)],
-      deserializer: (buffer: ReadBuffer) => Int8.deserialize(buffer)
+      deserializer: Int8.deserialize
     },
     {
       value: [new Int16(1), new Int16(-526), new Int16(0), new Int16(Int16.MAX_VALUE), new Int16(Int16.MIN_VALUE)],
-      deserializer: (buffer: ReadBuffer) => Int16.deserialize(buffer)
+      deserializer: Int16.deserialize
     },
     {
       value: [new String('abc'), new String('abc'.repeat(100)), new String('abc'.repeat(1000))],
-      deserializer: (buffer: ReadBuffer) => String.deserialize(buffer)
+      deserializer: String.deserialize
     },
     {
       value: [
@@ -41,7 +41,7 @@ describe('Array', () => {
         new NullableString('abc'.repeat(100)),
         new NullableString('abc'.repeat(1000))
       ],
-      deserializer: (buffer: ReadBuffer) => NullableString.deserialize(buffer)
+      deserializer: NullableString.deserialize
     },
     {
       value: [
@@ -50,7 +50,7 @@ describe('Array', () => {
         new CompactString('abc'.repeat(100)),
         new CompactString('abc'.repeat(1000))
       ],
-      deserializer: (buffer: ReadBuffer) => CompactString.deserialize(buffer)
+      deserializer: CompactString.deserialize
     },
     {
       value: [
@@ -59,15 +59,15 @@ describe('Array', () => {
         new CompactNullableString('abc'.repeat(100)),
         new CompactNullableString('abc'.repeat(1000))
       ],
-      deserializer: (buffer: ReadBuffer) => CompactNullableString.deserialize(buffer)
+      deserializer: CompactNullableString.deserialize
     },
     {
       value: [new UInt32(0), new UInt32(1), new UInt32(2), new UInt32(UInt32.MAX_VALUE)],
-      deserializer: (buffer: ReadBuffer) => UInt32.deserialize(buffer)
+      deserializer: UInt32.deserialize
     },
     {
       value: [new Bytes(Buffer.from([])), new Bytes(Buffer.from([0])), new Bytes(Buffer.from([1, 2, 3]))],
-      deserializer: (buffer: ReadBuffer) => Bytes.deserialize(buffer)
+      deserializer: Bytes.deserialize
     },
     {
       value: [
@@ -75,7 +75,7 @@ describe('Array', () => {
         new CompactBytes(Buffer.from([0])),
         new CompactBytes(Buffer.from([1, 2, 3]))
       ],
-      deserializer: (buffer: ReadBuffer) => CompactBytes.deserialize(buffer)
+      deserializer: CompactBytes.deserialize
     },
     {
       value: [
@@ -83,7 +83,7 @@ describe('Array', () => {
         new CompactNullableBytes(Buffer.from([1])),
         new CompactNullableBytes(Buffer.from([1, 2, 3]))
       ],
-      deserializer: (buffer: ReadBuffer) => CompactNullableBytes.deserialize(buffer)
+      deserializer: CompactNullableBytes.deserialize
     }
   ];
 
