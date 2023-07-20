@@ -17,19 +17,19 @@
     "type": "git",
     "url": "git+ssh://git@github.com/Kalin8900/node-kafka.git"
   },
-  "author": "Michał Kalinowski",
+  "author": "Michał Kalinowski, Kordian Grabowski",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Kalin8900/node-kafka/issues"
+    "url": "https://github.com/trisquareeu/kafkit/issues"
   },
-  "homepage": "https://github.com/Kalin8900/node-kafka#readme",
+  "homepage": "https://github.com/trisquareeu/kafkit#readme",
   "devDependencies": {
     "@commitlint/cli": "17.6.6",
     "@commitlint/config-conventional": "17.6.6",
     "@types/jest": "29.5.3",
     "@types/node": "20.4.1",
     "@typescript-eslint/eslint-plugin": "6.1.0",
-    "@typescript-eslint/parser": "5.62.0",
+    "@typescript-eslint/parser": "6.1.0",
     "eslint": "8.45.0",
     "eslint-config-prettier": "8.8.0",
     "eslint-plugin-prettier": "5.0.0",
