@@ -1,3 +1,3 @@
 export * from './attributes';
-export * from './record';
+export { Record, RecordHeader } from './record';
 export * from './record-batch';
