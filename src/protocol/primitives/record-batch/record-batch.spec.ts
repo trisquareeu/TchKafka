@@ -1,6 +1,6 @@
 import { ReadBuffer, WriteBuffer } from '../../serialization';
-import { Array, CompactNullableBytes, CompactString, Int16, Int32, Int64, VarInt, VarLong } from '../';
-import { Record, RecordHeader } from './record';
+import { Array, CompactArray, CompactNullableBytes, Int16, Int32, Int64, VarInt, VarLong } from '../';
+import { Record, RecordHeader, RecordHeaderKey, VarIntBytes } from './record';
 import { RecordBatch } from './record-batch';
 import { CompressionType, HasDeleteHorizon, IsControlBatch, IsTransactional, TimestampType } from './attributes';
 
@@ -52,13 +52,25 @@ describe('RecordBatch', () => {
         new Record({
           timestampDelta: new VarLong(BigInt(VarInt.MAX_VALUE)),
           offsetDelta: new VarInt(VarInt.MAX_VALUE),
-          key: new CompactNullableBytes(Buffer.from('🇵🇱🥸🎓')),
-          value: new CompactNullableBytes(Buffer.from('🇵🇱🥸🎓')),
-          headers: new Array([
-            new RecordHeader(new CompactString('🇵🇱🥸🎓'), new CompactNullableBytes(Buffer.from('🇵🇱🥸🎓'))),
-            new RecordHeader(new CompactString('🇵🇱🥸🎓'), new CompactNullableBytes(Buffer.from('🇵🇱🥸🎓'))),
-            new RecordHeader(new CompactString('🇵🇱🥸🎓'), new CompactNullableBytes(Buffer.from('🇵🇱🥸🎓'))),
-            new RecordHeader(new CompactString('🇵🇱🥸🎓'), new CompactNullableBytes(Buffer.from('🇵🇱🥸🎓')))
+          key: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
+          value: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
+          headers: new CompactArray([
+            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓')))
+          ])
+        }),
+        new Record({
+          timestampDelta: new VarLong(BigInt(VarInt.MAX_VALUE)),
+          offsetDelta: new VarInt(VarInt.MAX_VALUE),
+          key: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
+          value: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
+          headers: new CompactArray([
+            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓')))
           ])
         })
       ])
@@ -83,9 +95,23 @@ describe('RecordBatch', () => {
         new Record({
           timestampDelta: new VarLong(BigInt(VarInt.MIN_VALUE)),
           offsetDelta: new VarInt(VarInt.MIN_VALUE),
-          key: new CompactNullableBytes(Buffer.from([])),
-          value: new CompactNullableBytes(Buffer.from([])),
-          headers: new Array([new RecordHeader(new CompactString(''), new CompactNullableBytes(Buffer.from([])))])
+          key: new VarIntBytes(Buffer.from([])),
+          value: new VarIntBytes(Buffer.from([])),
+          headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from([])))])
+        }),
+        new Record({
+          timestampDelta: new VarLong(BigInt(VarInt.MIN_VALUE)),
+          offsetDelta: new VarInt(VarInt.MIN_VALUE),
+          key: new VarIntBytes(Buffer.from([])),
+          value: new VarIntBytes(Buffer.from([])),
+          headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from([])))])
+        }),
+        new Record({
+          timestampDelta: new VarLong(BigInt(VarInt.MIN_VALUE)),
+          offsetDelta: new VarInt(VarInt.MIN_VALUE),
+          key: new VarIntBytes(Buffer.from([])),
+          value: new VarIntBytes(Buffer.from([])),
+          headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from([])))])
         })
       ])
     }),
@@ -127,9 +153,9 @@ describe('RecordBatch', () => {
         new Record({
           timestampDelta: new VarLong(0n),
           offsetDelta: new VarInt(0),
-          key: new CompactNullableBytes(null),
-          value: new CompactNullableBytes(null),
-          headers: new Array([new RecordHeader(new CompactString(''), new CompactNullableBytes(null))])
+          key: new VarIntBytes(null),
+          value: new VarIntBytes(null),
+          headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(null))])
         })
       ])
     })
