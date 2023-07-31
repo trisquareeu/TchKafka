@@ -1,18 +1,22 @@
 import { BufferUnderflowError } from '../../exceptions';
 import { ReadBuffer, WriteBuffer } from '../../serialization';
-import { Array, CompactNullableBytes, CompactString, Int8, VarInt, VarLong } from '../';
-import { Record, RecordHeader } from './record';
+import { CompactArray } from '../compact-array';
+import { CompactString } from '../compact-string';
+import { Int8 } from '../int8';
+import { VarInt } from '../varint';
+import { VarLong } from '../varlong';
+import { Record, RecordHeader, VarIntBytes, RecordHeaderKey } from './record';
 
 describe('Record', () => {
   const attributes = new Int8(0);
   const timestampDelta = new VarLong(353n);
   const offsetDelta = new VarInt(1);
 
-  const headers = new Array([
-    new RecordHeader(new CompactString('foo'), new CompactNullableBytes(Buffer.from('value'))),
-    new RecordHeader(new CompactString('🥸🇵🇱🫶🏻'), new CompactNullableBytes(Buffer.from('value'))),
-    new RecordHeader(new CompactString('bar'), new CompactNullableBytes(null)),
-    new RecordHeader(new CompactString(''), new CompactNullableBytes(Buffer.from('')))
+  const headers = new CompactArray([
+    new RecordHeader(new RecordHeaderKey('foo'), new VarIntBytes(Buffer.from('value'))),
+    new RecordHeader(new RecordHeaderKey('🥸🇵🇱🫶🏻'), new VarIntBytes(Buffer.from('value'))),
+    new RecordHeader(new RecordHeaderKey('bar'), new VarIntBytes(null)),
+    new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from('')))
   ]);
 
   const records = [
@@ -20,65 +24,65 @@ describe('Record', () => {
       attributes,
       timestampDelta,
       offsetDelta,
-      key: new CompactNullableBytes(Buffer.from('key')),
-      value: new CompactNullableBytes(Buffer.from('value')),
+      key: new VarIntBytes(Buffer.from('key')),
+      value: new VarIntBytes(Buffer.from('value')),
       headers: headers
     }),
     new Record({
       attributes,
       timestampDelta,
       offsetDelta,
-      key: new CompactNullableBytes(Buffer.from('key')),
-      value: new CompactNullableBytes(Buffer.from('value')),
-      headers: new Array([])
+      key: new VarIntBytes(Buffer.from('key')),
+      value: new VarIntBytes(Buffer.from('value')),
+      headers: new CompactArray([])
     }),
     new Record({
       attributes,
       timestampDelta,
       offsetDelta,
-      key: new CompactNullableBytes(Buffer.from('key')),
-      value: new CompactNullableBytes(Buffer.from('value')),
-      headers: new Array(null)
+      key: new VarIntBytes(Buffer.from('key')),
+      value: new VarIntBytes(Buffer.from('value')),
+      headers: new CompactArray(null)
     }),
     new Record({
       attributes,
       timestampDelta,
       offsetDelta,
-      key: new CompactNullableBytes(Buffer.from('')),
-      value: new CompactNullableBytes(Buffer.from('')),
-      headers: new Array([])
+      key: new VarIntBytes(Buffer.from('')),
+      value: new VarIntBytes(Buffer.from('')),
+      headers: new CompactArray([])
     }),
     new Record({
       attributes,
       timestampDelta,
       offsetDelta,
-      key: new CompactNullableBytes(null),
-      value: new CompactNullableBytes(null),
-      headers: new Array([])
+      key: new VarIntBytes(null),
+      value: new VarIntBytes(null),
+      headers: new CompactArray([])
     }),
     new Record({
       attributes,
       timestampDelta,
       offsetDelta,
-      key: new CompactNullableBytes(Buffer.from('key')),
-      value: new CompactNullableBytes(null),
-      headers: new Array([])
+      key: new VarIntBytes(Buffer.from('key')),
+      value: new VarIntBytes(null),
+      headers: new CompactArray([])
     }),
     new Record({
       attributes,
       timestampDelta,
       offsetDelta,
-      key: new CompactNullableBytes(null),
-      value: new CompactNullableBytes(Buffer.from('value')),
-      headers: new Array([])
+      key: new VarIntBytes(null),
+      value: new VarIntBytes(Buffer.from('value')),
+      headers: new CompactArray([])
     }),
     new Record({
       attributes,
       timestampDelta: new VarLong(0n),
       offsetDelta: new VarInt(0),
-      key: new CompactNullableBytes(Buffer.from('key')),
-      value: new CompactNullableBytes(Buffer.from('value')),
-      headers: new Array([])
+      key: new VarIntBytes(Buffer.from('key')),
+      value: new VarIntBytes(Buffer.from('value')),
+      headers: new CompactArray([])
     })
   ];
 
@@ -97,14 +101,14 @@ describe('Record', () => {
   });
 
   it('should throw if there is no enough headers', () => {
-    const header = new RecordHeader(new CompactString('foo'), new CompactNullableBytes(Buffer.from('bar')));
+    const header = new RecordHeader(new CompactString('foo'), new VarIntBytes(Buffer.from('bar')));
     const record = new Record({
       attributes,
       timestampDelta: new VarLong(0n),
       offsetDelta: new VarInt(0),
-      key: new CompactNullableBytes(null),
-      value: new CompactNullableBytes(null),
-      headers: new Array([header])
+      key: new VarIntBytes(null),
+      value: new VarIntBytes(null),
+      headers: new CompactArray([header])
     });
 
     const writeBuffer = new WriteBuffer();
