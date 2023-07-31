@@ -24,8 +24,16 @@ export class Array<T extends Serializable> implements Serializable {
       return new Array(null);
     }
 
+    return this.deserializeEntries(buffer, length.value, deserializer);
+  }
+
+  public static deserializeEntries<T extends Serializable>(
+    buffer: ReadBuffer,
+    length: number,
+    deserializer: ArrayDeserializer<T>
+  ): Array<T> {
     const value: T[] = [];
-    for (let i = 0; i < length.value; i++) {
+    for (let i = 0; i < length; i++) {
       value.push(deserializer(buffer));
     }
 

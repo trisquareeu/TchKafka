@@ -1,6 +1,5 @@
 import { buf as crc32c } from 'crc-32/crc32c';
 import { ReadBuffer, type Serializable, WriteBuffer } from '../../serialization';
-import { Array, Int16, Int32, Int64, Int8 } from '../';
 import { Record } from './record';
 import {
   CompressionType,
@@ -14,6 +13,14 @@ import {
   TimestampType,
   type TimestampTypeValue
 } from './attributes';
+import { CompressedArray } from '../compressed-array';
+import { Int64 } from '../int64';
+import { Int32 } from '../int32';
+import { Int16 } from '../int16';
+import { Int8 } from '../int8';
+import { type Array } from '../array';
+import { CompressorDeterminer } from './attributes/compressor-determiner';
+import { InvalidRecordError } from '../../exceptions';
 
 type RecordBatchParams = {
   baseOffset: Int64;
@@ -29,7 +36,7 @@ type RecordBatchParams = {
 };
 
 type RecordBatchAttributes = {
-  compression: CompressionTypeValue;
+  compressionType: CompressionTypeValue;
   timestampType: TimestampTypeValue;
   isTransactional: IsTransactionalValue;
   isControlBatch: IsControlBatchValue;
@@ -41,20 +48,46 @@ type RecordBatchAttributes = {
  * The technical term for a batch of messages is a record batch, and a record batch contains one or more records.
  * In the degenerate case, we could have a record batch containing a single record.
  *
+ *  baseOffset: int64
+ *  batchLength: int32
+ *  partitionLeaderEpoch: int32
+ *  magic: int8 (current magic value is 2)
+ *  crc: int32
+ *  attributes: int16
+ *      bit 0~2:
+ *          0: no compression
+ *          1: gzip
+ *          2: snappy
+ *          3: lz4
+ *          4: zstd
+ *      bit 3: timestampType
+ *      bit 4: isTransactional (0 means not transactional)
+ *      bit 5: isControlBatch (0 means not a control batch)
+ *      bit 6: hasDeleteHorizonMs (0 means baseTimestamp is not set as the delete horizon for compaction)
+ *      bit 7~15: unused
+ *  lastOffsetDelta: int32
+ *  baseTimestamp: int64
+ *  maxTimestamp: int64
+ *  producerId: int64
+ *  producerEpoch: int16
+ *  baseSequence: int32
+ *  records: [Record]
+ *
  * @see https://kafka.apache.org/documentation/#messageformat
+ * @see https://kafka.apache.org/documentation/#recordbatch
  */
 export class RecordBatch implements Serializable {
-  private readonly baseOffset: Int64;
-  private readonly partitionLeaderEpoch: Int32;
-  private readonly magic: Int8;
-  private readonly attributes: RecordBatchAttributes;
-  private readonly lastOffsetDelta: Int32;
-  private readonly baseTimestamp: Int64;
-  private readonly maxTimestamp: Int64;
-  private readonly producerId: Int64;
-  private readonly producerEpoch: Int16;
-  private readonly baseSequence: Int32;
-  private readonly records: Array<Record>;
+  public readonly baseOffset: Int64;
+  public readonly partitionLeaderEpoch: Int32;
+  public readonly magic: Int8;
+  public readonly attributes: RecordBatchAttributes;
+  public readonly lastOffsetDelta: Int32;
+  public readonly baseTimestamp: Int64;
+  public readonly maxTimestamp: Int64;
+  public readonly producerId: Int64;
+  public readonly producerEpoch: Int16;
+  public readonly baseSequence: Int32;
+  public readonly records: Array<Record>;
 
   constructor(params: RecordBatchParams) {
     this.baseOffset = params.baseOffset;
@@ -70,7 +103,7 @@ export class RecordBatch implements Serializable {
     this.records = params.records;
   }
 
-  public static deserialize(buffer: ReadBuffer): RecordBatch {
+  public static async deserialize(buffer: ReadBuffer): Promise<RecordBatch> {
     const baseOffset = Int64.deserialize(buffer);
     const length = Int32.deserialize(buffer).value;
     const temporary = new ReadBuffer(buffer.readBuffer(length));
@@ -81,7 +114,9 @@ export class RecordBatch implements Serializable {
     const expectedCrc32 = Int32.deserialize(temporary);
     const calculatedCrc32c = crc32c(temporary.toBuffer(temporary.getOffset()));
     if (calculatedCrc32c !== expectedCrc32.value) {
-      throw new Error(`Invalid CRC32 checksum. Expected ${expectedCrc32.value}, got ${calculatedCrc32c}`);
+      throw new InvalidRecordError(
+        `Record is corrupt (stored crc = ${expectedCrc32.value}, computed crc = ${calculatedCrc32c})`
+      );
     }
 
     const attributes = Int16.deserialize(temporary);
@@ -91,13 +126,17 @@ export class RecordBatch implements Serializable {
     const producerId = Int64.deserialize(temporary);
     const producerEpoch = Int16.deserialize(temporary);
     const baseSequence = Int32.deserialize(temporary);
-    const records = Array.deserialize(temporary, Record.deserialize);
+
+    const compressionType = CompressionType.fromInt16(attributes);
+    const compressor = CompressorDeterminer.fromValue(compressionType);
+
+    const records = await CompressedArray.deserialize(temporary, Record.deserialize, compressor);
 
     return new RecordBatch({
       baseOffset,
       partitionLeaderEpoch,
       attributes: {
-        compression: CompressionType.fromInt16(attributes),
+        compressionType,
         timestampType: TimestampType.fromInt16(attributes),
         isTransactional: IsTransactional.fromInt16(attributes),
         isControlBatch: IsControlBatch.fromInt16(attributes),
@@ -109,13 +148,13 @@ export class RecordBatch implements Serializable {
       producerId,
       producerEpoch,
       baseSequence,
-      records
+      records: records.value
     });
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     const attributes = new Int16(
-      this.attributes.compression |
+      this.attributes.compressionType |
         this.attributes.timestampType |
         this.attributes.isTransactional |
         this.attributes.isControlBatch |
@@ -131,7 +170,9 @@ export class RecordBatch implements Serializable {
     this.producerId.serialize(body);
     this.producerEpoch.serialize(body);
     this.baseSequence.serialize(body);
-    this.records.serialize(body);
+
+    const compressor = CompressorDeterminer.fromValue(this.attributes.compressionType);
+    await new CompressedArray(this.records, compressor).serialize(body);
 
     const batch = new WriteBuffer();
     this.partitionLeaderEpoch.serialize(batch);

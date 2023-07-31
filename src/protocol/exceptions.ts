@@ -46,3 +46,17 @@ export class InvalidOrOutOfOrderTagError extends Error {
     this.name = 'InvalidOrOutOfOrderTagError';
   }
 }
+
+export class NotImplementedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'NotImplementedError';
+  }
+}
+
+export class InvalidRecordError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'InvalidRecordError';
+  }
+}
