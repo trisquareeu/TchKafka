@@ -1,4 +1,4 @@
-import { Int16, Int32 } from '../../primitives';
+import type { Int16, Int32 } from '../../primitives';
 import type { Serializable, WriteBuffer } from '../../serialization';
 import type { RequestHeader } from './request-header';
 
