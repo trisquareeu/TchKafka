@@ -1,7 +1,7 @@
-import { Int16, Int32, NullableString } from '../../primitives';
+import type { Int16, Int32, NullableString } from '../../primitives';
 import type { Serializable, WriteBuffer } from '../../serialization';
 import type { RequestHeader } from './request-header';
-import { TagSection } from '../../commons';
+import type { TagSection } from '../../commons';
 
 /**
  * Request Header v2 => request_api_key request_api_version correlation_id client_id TAG_BUFFER
