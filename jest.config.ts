@@ -8,7 +8,7 @@ const config: JestConfigWithTsJest = {
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: ['./node_modules/', './dist/'],
   testPathIgnorePatterns: ['/dist', '/node_modules'],
-  coverageReporters: ['lcov'],
+  coverageReporters: ['text-lcov'],
   moduleDirectories: ['node_modules']
 };
 
