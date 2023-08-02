@@ -16,7 +16,7 @@ export type ArrayDeserializer<T extends Serializable> = (buffer: ReadBuffer) => 
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
 export class Array<T extends Serializable> implements Serializable {
-  constructor(private readonly _value: T[] | null) {}
+  constructor(private readonly _value: readonly T[] | null) {}
 
   public get value(): readonly T[] | null {
     return this._value;

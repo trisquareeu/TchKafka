@@ -54,7 +54,7 @@ export class NotImplementedError extends Error {
   }
 }
 
-export class InvalidRecordError extends Error {
+export class InvalidRecordBatchError extends Error {
   constructor(message: string) {
     super(message);
     this.name = 'InvalidRecordError';
