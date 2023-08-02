@@ -3,3 +3,4 @@ dist
 junit*.xml
 junit*
 .idea
+coverage

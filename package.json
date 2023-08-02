@@ -5,6 +5,7 @@
   "main": "main.js",
   "scripts": {
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "prebuild": "npm run clean",
     "build": "tsc",
     "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
