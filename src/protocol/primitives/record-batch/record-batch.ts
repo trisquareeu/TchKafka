@@ -13,7 +13,7 @@ import {
   TimestampType,
   type TimestampTypeValue
 } from './attributes';
-import { CompressedArray } from '../compressed-array';
+import { CompressedRecords } from './compressed-records';
 import { Int64 } from '../int64';
 import { Int32 } from '../int32';
 import { Int16 } from '../int16';
@@ -130,7 +130,7 @@ export class RecordBatch implements Serializable {
     const compressionType = CompressionType.fromInt16(attributes);
     const compressor = CompressorDeterminer.fromValue(compressionType);
 
-    const records = await CompressedArray.deserialize(temporary, Record.deserialize, compressor);
+    const records = await CompressedRecords.deserialize(temporary, Record.deserialize, compressor);
 
     return new RecordBatch({
       baseOffset,
@@ -172,7 +172,7 @@ export class RecordBatch implements Serializable {
     this.baseSequence.serialize(body);
 
     const compressor = CompressorDeterminer.fromValue(this.attributes.compressionType);
-    await new CompressedArray(this.records, compressor).serialize(body);
+    await new CompressedRecords(this.records, compressor).serialize(body);
 
     const batch = new WriteBuffer();
     this.partitionLeaderEpoch.serialize(batch);

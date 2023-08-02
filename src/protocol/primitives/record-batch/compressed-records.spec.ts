@@ -5,13 +5,13 @@ import {
   NoopCompressor,
   SnappyCompressor,
   ZstdCompressor
-} from '../compression';
-import { ReadBuffer, WriteBuffer } from '../serialization';
-import { Array } from './array';
-import { CompactNullableString } from './compact-nullable-string';
-import { CompressedArray } from './compressed-array';
+} from '../../compression';
+import { ReadBuffer, WriteBuffer } from '../../serialization';
+import { Array } from '../array';
+import { CompactNullableString } from '../compact-nullable-string';
+import { CompressedRecords } from './compressed-records';
 
-describe('CompressedArray', () => {
+describe('CompressedRecords', () => {
   const compressors: Compressor[] = [
     new NoopCompressor(),
     new Lz4Compressor(),
@@ -27,12 +27,12 @@ describe('CompressedArray', () => {
       new CompactNullableString(null)
     ]);
 
-    const compressed = new CompressedArray(array, compressor);
+    const compressed = new CompressedRecords(array, compressor);
 
     const buffer = new WriteBuffer();
     await compressed.serialize(buffer);
 
-    const decompressed = await CompressedArray.deserialize(
+    const decompressed = await CompressedRecords.deserialize(
       new ReadBuffer(buffer.toBuffer()),
       CompactNullableString.deserialize,
       compressor
