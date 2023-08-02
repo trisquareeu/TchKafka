@@ -1,41 +1,38 @@
 import { type Compressor } from '../../compression';
-import { ReadBuffer, WriteBuffer, type Serializable } from '../../serialization';
-import { Array, type ArrayDeserializer } from '../array';
+import { InvalidRecordBatchError } from '../../exceptions';
+import { ReadBuffer, WriteBuffer } from '../../serialization';
+import { Array } from '../array';
 import { Int32 } from '../int32';
+import { Record } from './record';
 
-export class CompressedRecords<T extends Serializable> {
+export class CompressedRecords {
   constructor(
-    private readonly _value: Array<T>,
+    public readonly _value: readonly Record[],
     private readonly compressor: Compressor
   ) {}
 
-  public get value(): Array<T> {
+  public get value(): readonly Record[] {
     return this._value;
   }
 
-  public static async deserialize<T extends Serializable>(
-    buffer: ReadBuffer,
-    deserializer: ArrayDeserializer<T>,
-    compressor: Compressor
-  ): Promise<CompressedRecords<T>> {
-    const { value: length } = Int32.deserialize(buffer);
-    if (length < 0) {
-      return new CompressedRecords(new Array(null), compressor);
+  public static async deserialize(buffer: ReadBuffer, compressor: Compressor): Promise<CompressedRecords> {
+    const { value: numberOfRecords } = Int32.deserialize(buffer);
+    if (numberOfRecords < 0) {
+      throw new InvalidRecordBatchError('Length of records cannot be negative');
     }
 
     const compressed = buffer.toBuffer(buffer.getOffset());
-    const decompressed = await compressor.decompress(compressed);
+    const decompressed = new ReadBuffer(await compressor.decompress(compressed));
 
-    const temporary = new ReadBuffer(decompressed);
-    const array = Array.deserializeEntries(temporary, length, deserializer);
+    const array = Array.deserializeEntries(decompressed, numberOfRecords, Record.deserialize);
 
-    return new CompressedRecords(array, compressor);
+    return new CompressedRecords(array.value as Record[], compressor);
   }
 
   public async serialize(buffer: WriteBuffer): Promise<void> {
     const temporary = new WriteBuffer();
 
-    this.value.serialize(temporary);
+    new Array(this._value).serialize(temporary);
 
     const temporaryBuffer = temporary.toBuffer();
 

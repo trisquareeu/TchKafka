@@ -1,6 +1,6 @@
 import { buf as crc32c } from 'crc-32/crc32c';
 import { ReadBuffer, type Serializable, WriteBuffer } from '../../serialization';
-import { Record } from './record';
+import { type Record } from './record';
 import {
   CompressionType,
   type CompressionTypeValue,
@@ -18,9 +18,8 @@ import { Int64 } from '../int64';
 import { Int32 } from '../int32';
 import { Int16 } from '../int16';
 import { Int8 } from '../int8';
-import { type Array } from '../array';
 import { CompressorDeterminer } from './attributes/compressor-determiner';
-import { InvalidRecordError } from '../../exceptions';
+import { InvalidRecordBatchError } from '../../exceptions';
 
 type RecordBatchParams = {
   baseOffset: Int64;
@@ -32,7 +31,7 @@ type RecordBatchParams = {
   producerId: Int64;
   producerEpoch: Int16;
   baseSequence: Int32;
-  records: Array<Record>;
+  records: readonly Record[];
 };
 
 type RecordBatchAttributes = {
@@ -87,9 +86,9 @@ export class RecordBatch implements Serializable {
   public readonly producerId: Int64;
   public readonly producerEpoch: Int16;
   public readonly baseSequence: Int32;
-  public readonly records: Array<Record>;
+  public readonly records: readonly Record[];
 
-  constructor(params: RecordBatchParams) {
+  private constructor(params: RecordBatchParams) {
     this.baseOffset = params.baseOffset;
     this.partitionLeaderEpoch = params.partitionLeaderEpoch;
     this.magic = new Int8(2);
@@ -103,6 +102,14 @@ export class RecordBatch implements Serializable {
     this.records = params.records;
   }
 
+  public static from(params: RecordBatchParams): RecordBatch {
+    if (params.records.length === 0) {
+      throw new InvalidRecordBatchError('RecordBatch must contain at least one record');
+    }
+
+    return new RecordBatch(params);
+  }
+
   public static async deserialize(buffer: ReadBuffer): Promise<RecordBatch> {
     const baseOffset = Int64.deserialize(buffer);
     const length = Int32.deserialize(buffer).value;
@@ -114,7 +121,7 @@ export class RecordBatch implements Serializable {
     const expectedCrc32 = Int32.deserialize(temporary);
     const calculatedCrc32c = crc32c(temporary.toBuffer(temporary.getOffset()));
     if (calculatedCrc32c !== expectedCrc32.value) {
-      throw new InvalidRecordError(
+      throw new InvalidRecordBatchError(
         `Record is corrupt (stored crc = ${expectedCrc32.value}, computed crc = ${calculatedCrc32c})`
       );
     }
@@ -130,7 +137,7 @@ export class RecordBatch implements Serializable {
     const compressionType = CompressionType.fromInt16(attributes);
     const compressor = CompressorDeterminer.fromValue(compressionType);
 
-    const records = await CompressedRecords.deserialize(temporary, Record.deserialize, compressor);
+    const records = await CompressedRecords.deserialize(temporary, compressor);
 
     return new RecordBatch({
       baseOffset,
@@ -148,7 +155,7 @@ export class RecordBatch implements Serializable {
       producerId,
       producerEpoch,
       baseSequence,
-      records: records.value
+      records: records._value
     });
   }
 

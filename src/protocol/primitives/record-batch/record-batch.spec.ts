@@ -1,18 +1,18 @@
+import { InvalidRecordBatchError } from '../../exceptions';
 import { ReadBuffer, WriteBuffer } from '../../serialization';
+import { CompactArray } from '../compact-array';
+import { Int16 } from '../int16';
+import { Int32 } from '../int32';
+import { Int64 } from '../int64';
+import { VarInt } from '../varint';
+import { VarLong } from '../varlong';
+import { CompressionType, HasDeleteHorizon, IsControlBatch, IsTransactional, TimestampType } from './attributes';
 import { Record, RecordHeader, RecordHeaderKey, VarIntBytes } from './record';
 import { RecordBatch } from './record-batch';
-import { CompressionType, HasDeleteHorizon, IsControlBatch, IsTransactional, TimestampType } from './attributes';
-import { Int64 } from '../int64';
-import { Int32 } from '../int32';
-import { Int16 } from '../int16';
-import { Array } from '../array';
-import { VarLong } from '../varlong';
-import { VarInt } from '../varint';
-import { CompactArray } from '../compact-array';
 
 describe('RecordBatch', () => {
   const cases = [
-    new RecordBatch({
+    RecordBatch.from({
       baseOffset: new Int64(0n),
       partitionLeaderEpoch: new Int32(0),
       attributes: {
@@ -28,7 +28,7 @@ describe('RecordBatch', () => {
       producerId: new Int64(0n),
       producerEpoch: new Int16(0),
       baseSequence: new Int32(0),
-      records: new Array([
+      records: [
         new Record({
           timestampDelta: new VarLong(0n),
           offsetDelta: new VarInt(0),
@@ -36,9 +36,9 @@ describe('RecordBatch', () => {
           value: new VarIntBytes(null),
           headers: new CompactArray([])
         })
-      ])
+      ]
     }),
-    new RecordBatch({
+    RecordBatch.from({
       baseOffset: new Int64(Int64.MAX_VALUE),
       partitionLeaderEpoch: new Int32(Int32.MAX_VALUE),
       attributes: {
@@ -54,7 +54,7 @@ describe('RecordBatch', () => {
       producerId: new Int64(Int64.MAX_VALUE),
       producerEpoch: new Int16(Int16.MAX_VALUE),
       baseSequence: new Int32(Int32.MAX_VALUE),
-      records: new Array([
+      records: [
         new Record({
           timestampDelta: new VarLong(BigInt(VarInt.MAX_VALUE)),
           offsetDelta: new VarInt(VarInt.MAX_VALUE),
@@ -79,9 +79,9 @@ describe('RecordBatch', () => {
             new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓')))
           ])
         })
-      ])
+      ]
     }),
-    new RecordBatch({
+    RecordBatch.from({
       baseOffset: new Int64(Int64.MIN_VALUE),
       partitionLeaderEpoch: new Int32(Int32.MIN_VALUE),
       attributes: {
@@ -97,7 +97,7 @@ describe('RecordBatch', () => {
       producerId: new Int64(Int64.MIN_VALUE),
       producerEpoch: new Int16(Int16.MIN_VALUE),
       baseSequence: new Int32(Int32.MIN_VALUE),
-      records: new Array([
+      records: [
         new Record({
           timestampDelta: new VarLong(BigInt(VarInt.MIN_VALUE)),
           offsetDelta: new VarInt(VarInt.MIN_VALUE),
@@ -119,9 +119,9 @@ describe('RecordBatch', () => {
           value: new VarIntBytes(Buffer.from([])),
           headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from([])))])
         })
-      ])
+      ]
     }),
-    new RecordBatch({
+    RecordBatch.from({
       baseOffset: new Int64(Int64.MIN_VALUE),
       partitionLeaderEpoch: new Int32(Int32.MIN_VALUE),
       attributes: {
@@ -137,25 +137,7 @@ describe('RecordBatch', () => {
       producerId: new Int64(Int64.MIN_VALUE),
       producerEpoch: new Int16(Int16.MIN_VALUE),
       baseSequence: new Int32(Int32.MIN_VALUE),
-      records: new Array(null)
-    }),
-    new RecordBatch({
-      baseOffset: new Int64(Int64.MIN_VALUE),
-      partitionLeaderEpoch: new Int32(Int32.MIN_VALUE),
-      attributes: {
-        compressionType: CompressionType.ZSTD,
-        timestampType: TimestampType.CreateTime,
-        isTransactional: IsTransactional.Yes,
-        isControlBatch: IsControlBatch.No,
-        hasDeleteHorizon: HasDeleteHorizon.Yes
-      },
-      lastOffsetDelta: new Int32(Int32.MIN_VALUE),
-      baseTimestamp: new Int64(Int64.MIN_VALUE),
-      maxTimestamp: new Int64(Int64.MIN_VALUE),
-      producerId: new Int64(Int64.MIN_VALUE),
-      producerEpoch: new Int16(Int16.MIN_VALUE),
-      baseSequence: new Int32(Int32.MIN_VALUE),
-      records: new Array([
+      records: [
         new Record({
           timestampDelta: new VarLong(0n),
           offsetDelta: new VarInt(0),
@@ -163,7 +145,33 @@ describe('RecordBatch', () => {
           value: new VarIntBytes(null),
           headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(null))])
         })
-      ])
+      ]
+    }),
+    RecordBatch.from({
+      baseOffset: new Int64(Int64.MIN_VALUE),
+      partitionLeaderEpoch: new Int32(Int32.MIN_VALUE),
+      attributes: {
+        compressionType: CompressionType.ZSTD,
+        timestampType: TimestampType.CreateTime,
+        isTransactional: IsTransactional.Yes,
+        isControlBatch: IsControlBatch.No,
+        hasDeleteHorizon: HasDeleteHorizon.Yes
+      },
+      lastOffsetDelta: new Int32(Int32.MIN_VALUE),
+      baseTimestamp: new Int64(Int64.MIN_VALUE),
+      maxTimestamp: new Int64(Int64.MIN_VALUE),
+      producerId: new Int64(Int64.MIN_VALUE),
+      producerEpoch: new Int16(Int16.MIN_VALUE),
+      baseSequence: new Int32(Int32.MIN_VALUE),
+      records: [
+        new Record({
+          timestampDelta: new VarLong(0n),
+          offsetDelta: new VarInt(0),
+          key: new VarIntBytes(null),
+          value: new VarIntBytes(null),
+          headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(null))])
+        })
+      ]
     })
   ];
 
@@ -239,9 +247,59 @@ describe('RecordBatch', () => {
     const deserialized = await RecordBatch.deserialize(new ReadBuffer(buffer));
 
     expect(deserialized).toBeDefined();
-    expect(deserialized.records.value).toHaveLength(1);
-    expect(deserialized.records.value![0]!.key.value).toEqual(Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05, 0x06]));
-    expect(deserialized.records.value![0]!.value.value).toEqual(Buffer.from([0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c]));
+    expect(deserialized.records).toHaveLength(1);
+    expect(deserialized.records[0]!.key.value).toEqual(Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05, 0x06]));
+    expect(deserialized.records[0]!.value.value).toEqual(Buffer.from([0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c]));
     expect(deserialized.attributes.compressionType).toEqual(compressionType);
+  });
+
+  it('should throw an error if records array is empty', () => {
+    expect(() =>
+      RecordBatch.from({
+        baseOffset: new Int64(Int64.MIN_VALUE),
+        partitionLeaderEpoch: new Int32(Int32.MIN_VALUE),
+        attributes: {
+          compressionType: CompressionType.ZSTD,
+          timestampType: TimestampType.CreateTime,
+          isTransactional: IsTransactional.Yes,
+          isControlBatch: IsControlBatch.No,
+          hasDeleteHorizon: HasDeleteHorizon.Yes
+        },
+        lastOffsetDelta: new Int32(Int32.MIN_VALUE),
+        baseTimestamp: new Int64(Int64.MIN_VALUE),
+        maxTimestamp: new Int64(Int64.MIN_VALUE),
+        producerId: new Int64(Int64.MIN_VALUE),
+        producerEpoch: new Int16(Int16.MIN_VALUE),
+        baseSequence: new Int32(Int32.MIN_VALUE),
+        records: []
+      })
+    ).toThrow();
+  });
+
+  it('should throw if deserialized length of records is smaller than 0', async () => {
+    const buffer = Buffer.from([
+      0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x80, 0x00, 0x00, 0x00, 0x02, 0xce, 0x38,
+      0x00, 0x5a, 0x00, 0x54, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x80, 0x00, 0x00, 0x00,
+      0xff, 0xff, 0xff, 0xff, 0x28, 0xb5, 0x2f, 0xfd, 0x20, 0x00, 0x01, 0x00, 0x00
+    ]);
+
+    await expect(RecordBatch.deserialize(new ReadBuffer(buffer))).rejects.toThrow(
+      new InvalidRecordBatchError('Length of records cannot be negative')
+    );
+  });
+
+  it('should deserialize record batch with 0 records', async () => {
+    const buffer = Buffer.from([
+      0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x80, 0x00, 0x00, 0x00, 0x02, 0x8d, 0x9c,
+      0x5a, 0x41, 0x00, 0x54, 0x80, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x80, 0x00, 0x00, 0x00,
+      0x00, 0x00, 0x00, 0x00, 0x28, 0xb5, 0x2f, 0xfd, 0x20, 0x00, 0x01, 0x00, 0x00
+    ]);
+
+    const deserialized = await RecordBatch.deserialize(new ReadBuffer(buffer));
+
+    expect(deserialized).toBeDefined();
+    expect(deserialized.records).toHaveLength(0);
   });
 });
