@@ -1,9 +1,9 @@
-import { type Compressor } from '../compression';
-import { ReadBuffer, WriteBuffer, type Serializable } from '../serialization';
-import { Array, type ArrayDeserializer } from './array';
-import { Int32 } from './int32';
+import { type Compressor } from '../../compression';
+import { ReadBuffer, WriteBuffer, type Serializable } from '../../serialization';
+import { Array, type ArrayDeserializer } from '../array';
+import { Int32 } from '../int32';
 
-export class CompressedArray<T extends Serializable> {
+export class CompressedRecords<T extends Serializable> {
   constructor(
     private readonly _value: Array<T>,
     private readonly compressor: Compressor
@@ -17,10 +17,10 @@ export class CompressedArray<T extends Serializable> {
     buffer: ReadBuffer,
     deserializer: ArrayDeserializer<T>,
     compressor: Compressor
-  ): Promise<CompressedArray<T>> {
+  ): Promise<CompressedRecords<T>> {
     const { value: length } = Int32.deserialize(buffer);
     if (length < 0) {
-      return new CompressedArray(new Array(null), compressor);
+      return new CompressedRecords(new Array(null), compressor);
     }
 
     const compressed = buffer.toBuffer(buffer.getOffset());
@@ -29,7 +29,7 @@ export class CompressedArray<T extends Serializable> {
     const temporary = new ReadBuffer(decompressed);
     const array = Array.deserializeEntries(temporary, length, deserializer);
 
-    return new CompressedArray(array, compressor);
+    return new CompressedRecords(array, compressor);
   }
 
   public async serialize(buffer: WriteBuffer): Promise<void> {
