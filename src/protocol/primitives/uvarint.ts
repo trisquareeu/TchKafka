@@ -15,8 +15,12 @@ export class UVarInt implements Serializable {
   public static readonly MIN_VALUE = 0;
   private static readonly MAX_BYTES_TO_DECODE = 5;
 
-  constructor(public readonly value: number) {
-    checkValueIsInRange(value, UVarInt.MIN_VALUE, UVarInt.MAX_VALUE);
+  constructor(private readonly _value: number) {
+    checkValueIsInRange(_value, UVarInt.MIN_VALUE, UVarInt.MAX_VALUE);
+  }
+
+  public get value(): number {
+    return this._value;
   }
 
   public static deserialize(buffer: ReadBuffer): UVarInt {

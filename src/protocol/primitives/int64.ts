@@ -11,8 +11,12 @@ export class Int64 implements Serializable {
   public static readonly MAX_VALUE = BigInt('9223372036854775807');
   public static readonly MIN_VALUE = BigInt('-9223372036854775808');
 
-  constructor(public readonly value: bigint) {
-    checkValueIsInRange(value, Int64.MIN_VALUE, Int64.MAX_VALUE);
+  constructor(private readonly _value: bigint) {
+    checkValueIsInRange(_value, Int64.MIN_VALUE, Int64.MAX_VALUE);
+  }
+
+  public get value(): bigint {
+    return this._value;
   }
 
   public static deserialize(buffer: ReadBuffer): Int64 {

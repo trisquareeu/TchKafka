@@ -7,7 +7,11 @@ import type { ReadBuffer, Serializable, WriteBuffer } from '../serialization';
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
 export class Float64 implements Serializable {
-  constructor(public readonly value: number) {}
+  constructor(private readonly _value: number) {}
+
+  public get value(): number {
+    return this._value;
+  }
 
   public static deserialize(buffer: ReadBuffer): Float64 {
     return new Float64(buffer.readDouble());

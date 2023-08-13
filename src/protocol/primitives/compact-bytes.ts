@@ -9,8 +9,12 @@ import { CompactNullableBytes } from './compact-nullable-bytes';
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
 export class CompactBytes extends CompactNullableBytes implements Serializable {
-  constructor(public readonly value: Buffer) {
+  constructor(value: Buffer) {
     super(value);
+  }
+
+  public get value(): Buffer {
+    return super.value as Buffer;
   }
 
   public static deserialize(buffer: ReadBuffer): CompactBytes {

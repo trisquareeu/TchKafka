@@ -13,8 +13,12 @@ export class VarLong implements Serializable {
   public static readonly MAX_VALUE = BigInt('9223372036854775807');
   private static readonly MAX_BYTES_TO_DECODE = 10;
 
-  constructor(public readonly value: bigint) {
-    checkValueIsInRange(value, VarLong.MIN_VALUE, VarLong.MAX_VALUE);
+  constructor(private readonly _value: bigint) {
+    checkValueIsInRange(_value, VarLong.MIN_VALUE, VarLong.MAX_VALUE);
+  }
+
+  public get value(): bigint {
+    return this._value;
   }
 
   public static encodeZigZag(value: bigint): bigint {

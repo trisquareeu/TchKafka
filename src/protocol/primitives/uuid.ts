@@ -10,10 +10,14 @@ import { IllegalArgumentError } from '../exceptions';
 export class Uuid implements Serializable {
   private static readonly NUMBER_OF_BYTES = 16;
 
-  constructor(public readonly value: Buffer) {
-    if (value.length !== Uuid.NUMBER_OF_BYTES) {
+  constructor(private readonly _value: Buffer) {
+    if (_value.length !== Uuid.NUMBER_OF_BYTES) {
       throw new IllegalArgumentError('UUID must have exactly 16 bytes.');
     }
+  }
+
+  public get value(): Buffer {
+    return this._value;
   }
 
   public static deserialize(buffer: ReadBuffer): Uuid {

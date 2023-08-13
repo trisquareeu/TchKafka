@@ -11,8 +11,12 @@ export class Int32 implements Serializable {
   public static readonly MAX_VALUE = 2147483647;
   public static readonly MIN_VALUE = -2147483648;
 
-  constructor(public readonly value: number) {
-    checkValueIsInRange(value, Int32.MIN_VALUE, Int32.MAX_VALUE);
+  constructor(private readonly _value: number) {
+    checkValueIsInRange(_value, Int32.MIN_VALUE, Int32.MAX_VALUE);
+  }
+
+  public get value(): number {
+    return this._value;
   }
 
   public static deserialize(buffer: ReadBuffer): Int32 {

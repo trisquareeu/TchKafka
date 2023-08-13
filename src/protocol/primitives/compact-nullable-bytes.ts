@@ -9,7 +9,11 @@ import { UVarInt } from './uvarint';
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
 export class CompactNullableBytes implements Serializable {
-  constructor(public readonly value: Buffer | null) {}
+  constructor(private readonly _value: Buffer | null) {}
+
+  public get value(): Buffer | null {
+    return this._value;
+  }
 
   public static deserialize(buffer: ReadBuffer): CompactNullableBytes {
     const length = UVarInt.deserialize(buffer);
