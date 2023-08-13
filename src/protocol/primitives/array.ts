@@ -16,7 +16,11 @@ export type ArrayDeserializer<T extends Serializable> = (buffer: ReadBuffer) => 
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
 export class Array<T extends Serializable> implements Serializable {
-  constructor(public readonly value: T[] | null) {}
+  constructor(private readonly _value: T[] | null) {}
+
+  public get value(): readonly T[] | null {
+    return this._value;
+  }
 
   public static deserialize<T extends Serializable>(buffer: ReadBuffer, deserializer: ArrayDeserializer<T>): Array<T> {
     const length = Int32.deserialize(buffer);

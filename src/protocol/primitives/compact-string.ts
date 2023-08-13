@@ -10,8 +10,12 @@ import { CompactNullableString } from './compact-nullable-string';
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
 export class CompactString extends CompactNullableString implements Serializable {
-  constructor(public readonly value: string) {
+  constructor(value: string) {
     super(value);
+  }
+
+  public get value(): string {
+    return super.value as string;
   }
 
   public static deserialize(buffer: ReadBuffer): CompactString {

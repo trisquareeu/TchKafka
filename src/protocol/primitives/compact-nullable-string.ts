@@ -9,7 +9,11 @@ import { CompactNullableBytes } from './compact-nullable-bytes';
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
 export class CompactNullableString implements Serializable {
-  constructor(public readonly value: string | null) {}
+  constructor(private readonly _value: string | null) {}
+
+  public get value(): string | null {
+    return this._value;
+  }
 
   public static deserialize(buffer: ReadBuffer): CompactNullableString {
     const compactNullableBytes = CompactNullableBytes.deserialize(buffer);

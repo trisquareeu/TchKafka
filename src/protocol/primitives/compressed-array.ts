@@ -5,9 +5,13 @@ import { Int32 } from './int32';
 
 export class CompressedArray<T extends Serializable> {
   constructor(
-    public readonly value: Array<T>,
+    private readonly _value: Array<T>,
     private readonly compressor: Compressor
   ) {}
+
+  public get value(): Array<T> {
+    return this._value;
+  }
 
   public static async deserialize<T extends Serializable>(
     buffer: ReadBuffer,

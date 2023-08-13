@@ -12,8 +12,12 @@ export class VarInt implements Serializable {
   public static readonly MAX_VALUE = 2_147_483_647;
   public static readonly MIN_VALUE = -2_147_483_648;
 
-  constructor(public readonly value: number) {
-    checkValueIsInRange(value, VarInt.MIN_VALUE, VarInt.MAX_VALUE);
+  constructor(private readonly _value: number) {
+    checkValueIsInRange(_value, VarInt.MIN_VALUE, VarInt.MAX_VALUE);
+  }
+
+  public get value(): number {
+    return this._value;
   }
 
   public static encodeZigZag(value: number): number {

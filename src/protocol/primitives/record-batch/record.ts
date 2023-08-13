@@ -113,7 +113,11 @@ export class Record implements Serializable {
 }
 
 export class VarIntBytes implements Serializable {
-  constructor(public readonly value: Buffer | null) {}
+  constructor(private readonly _value: Buffer | null) {}
+
+  public get value(): Buffer | null {
+    return this._value;
+  }
 
   public static deserialize(buffer: ReadBuffer): VarIntBytes {
     const length = VarInt.deserialize(buffer);
@@ -137,7 +141,11 @@ export class VarIntBytes implements Serializable {
 }
 
 export class RecordHeaderKey implements Serializable {
-  constructor(public readonly value: string) {}
+  constructor(private readonly _value: string) {}
+
+  public get value(): string {
+    return this._value;
+  }
 
   public static deserialize(buffer: ReadBuffer): RecordHeaderKey {
     const varIntBytes = VarIntBytes.deserialize(buffer);

@@ -7,7 +7,11 @@ import type { ReadBuffer, Serializable, WriteBuffer } from '../serialization';
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
 export class Boolean implements Serializable {
-  constructor(public readonly value: boolean) {}
+  constructor(private readonly _value: boolean) {}
+
+  public get value(): boolean {
+    return this._value;
+  }
 
   public static deserialize(buffer: ReadBuffer): Boolean {
     return new Boolean(buffer.readUInt8() !== 0);

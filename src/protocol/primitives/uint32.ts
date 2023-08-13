@@ -11,8 +11,12 @@ export class UInt32 implements Serializable {
   public static readonly MAX_VALUE = 4294967295;
   public static readonly MIN_VALUE = 0;
 
-  constructor(public readonly value: number) {
-    checkValueIsInRange(value, UInt32.MIN_VALUE, UInt32.MAX_VALUE);
+  constructor(private readonly _value: number) {
+    checkValueIsInRange(_value, UInt32.MIN_VALUE, UInt32.MAX_VALUE);
+  }
+
+  public get value(): number {
+    return this._value;
   }
 
   public static deserialize(buffer: ReadBuffer): UInt32 {

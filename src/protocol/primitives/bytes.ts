@@ -12,8 +12,12 @@ import { NullableBytes } from './nullable-bytes';
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
 export class Bytes extends NullableBytes implements Serializable {
-  constructor(public readonly value: Buffer) {
+  constructor(value: Buffer) {
     super(value);
+  }
+
+  public get value(): Buffer {
+    return super.value as Buffer;
   }
 
   public static deserialize(buffer: ReadBuffer): Bytes {

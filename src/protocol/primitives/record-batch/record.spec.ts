@@ -1,7 +1,6 @@
 import { BufferUnderflowError } from '../../exceptions';
 import { ReadBuffer, WriteBuffer } from '../../serialization';
 import { CompactArray } from '../compact-array';
-import { CompactString } from '../compact-string';
 import { Int8 } from '../int8';
 import { VarInt } from '../varint';
 import { VarLong } from '../varlong';
@@ -101,7 +100,7 @@ describe('Record', () => {
   });
 
   it('should throw if there is no enough headers', () => {
-    const header = new RecordHeader(new CompactString('foo'), new VarIntBytes(Buffer.from('bar')));
+    const header = new RecordHeader(new RecordHeaderKey('foo'), new VarIntBytes(Buffer.from('bar')));
     const record = new Record({
       attributes,
       timestampDelta: new VarLong(0n),
