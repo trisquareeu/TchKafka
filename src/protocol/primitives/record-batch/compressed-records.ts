@@ -7,11 +7,11 @@ import { Record } from './record';
 
 export class CompressedRecords {
   constructor(
-    public readonly _value: readonly Record[],
+    private readonly _value: Array<Record>,
     private readonly compressor: Compressor
   ) {}
 
-  public get value(): readonly Record[] {
+  public get value(): Array<Record> {
     return this._value;
   }
 
@@ -24,15 +24,16 @@ export class CompressedRecords {
     const compressed = buffer.toBuffer(buffer.getOffset());
     const decompressed = new ReadBuffer(await compressor.decompress(compressed));
 
-    const array = Array.deserializeEntries(decompressed, numberOfRecords, Record.deserialize);
-
-    return new CompressedRecords(array.value as Record[], compressor);
+    return new CompressedRecords(
+      Array.deserializeEntries(decompressed, numberOfRecords, Record.deserialize),
+      compressor
+    );
   }
 
   public async serialize(buffer: WriteBuffer): Promise<void> {
     const temporary = new WriteBuffer();
 
-    new Array(this._value).serialize(temporary);
+    this._value.serialize(temporary);
 
     const temporaryBuffer = temporary.toBuffer();
 

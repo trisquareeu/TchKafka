@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-array-constructor */
 import { InvalidRecordBatchError } from '../../exceptions';
 import { ReadBuffer, WriteBuffer } from '../../serialization';
+import { Array } from '../array';
 import { CompactArray } from '../compact-array';
 import { Int16 } from '../int16';
 import { Int32 } from '../int32';
@@ -28,15 +30,18 @@ describe('RecordBatch', () => {
       producerId: new Int64(0n),
       producerEpoch: new Int16(0),
       baseSequence: new Int32(0),
-      records: [
-        new Record({
-          timestampDelta: new VarLong(0n),
-          offsetDelta: new VarInt(0),
-          key: new VarIntBytes(null),
-          value: new VarIntBytes(null),
-          headers: new CompactArray([])
-        })
-      ]
+      records: new Array(
+        [
+          new Record({
+            timestampDelta: new VarLong(0n),
+            offsetDelta: new VarInt(0),
+            key: new VarIntBytes(null),
+            value: new VarIntBytes(null),
+            headers: new CompactArray<RecordHeader>([], (record, buffer) => record.serialize(buffer))
+          })
+        ],
+        (record, buffer) => record.serialize(buffer)
+      )
     }),
     RecordBatch.from({
       baseOffset: new Int64(Int64.MAX_VALUE),
@@ -54,32 +59,41 @@ describe('RecordBatch', () => {
       producerId: new Int64(Int64.MAX_VALUE),
       producerEpoch: new Int16(Int16.MAX_VALUE),
       baseSequence: new Int32(Int32.MAX_VALUE),
-      records: [
-        new Record({
-          timestampDelta: new VarLong(BigInt(VarInt.MAX_VALUE)),
-          offsetDelta: new VarInt(VarInt.MAX_VALUE),
-          key: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
-          value: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
-          headers: new CompactArray([
-            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
-            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
-            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
-            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓')))
-          ])
-        }),
-        new Record({
-          timestampDelta: new VarLong(BigInt(VarInt.MAX_VALUE)),
-          offsetDelta: new VarInt(VarInt.MAX_VALUE),
-          key: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
-          value: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
-          headers: new CompactArray([
-            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
-            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
-            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
-            new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓')))
-          ])
-        })
-      ]
+      records: new Array(
+        [
+          new Record({
+            timestampDelta: new VarLong(BigInt(VarInt.MAX_VALUE)),
+            offsetDelta: new VarInt(VarInt.MAX_VALUE),
+            key: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
+            value: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
+            headers: new CompactArray(
+              [
+                new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+                new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+                new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+                new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓')))
+              ],
+              (header, buffer) => header.serialize(buffer)
+            )
+          }),
+          new Record({
+            timestampDelta: new VarLong(BigInt(VarInt.MAX_VALUE)),
+            offsetDelta: new VarInt(VarInt.MAX_VALUE),
+            key: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
+            value: new VarIntBytes(Buffer.from('🇵🇱🥸🎓')),
+            headers: new CompactArray(
+              [
+                new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+                new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+                new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓'))),
+                new RecordHeader(new RecordHeaderKey('🇵🇱🥸🎓'), new VarIntBytes(Buffer.from('🇵🇱🥸🎓')))
+              ],
+              (header, buffer) => header.serialize(buffer)
+            )
+          })
+        ],
+        (record, buffer) => record.serialize(buffer)
+      )
     }),
     RecordBatch.from({
       baseOffset: new Int64(Int64.MIN_VALUE),
@@ -97,29 +111,41 @@ describe('RecordBatch', () => {
       producerId: new Int64(Int64.MIN_VALUE),
       producerEpoch: new Int16(Int16.MIN_VALUE),
       baseSequence: new Int32(Int32.MIN_VALUE),
-      records: [
-        new Record({
-          timestampDelta: new VarLong(BigInt(VarInt.MIN_VALUE)),
-          offsetDelta: new VarInt(VarInt.MIN_VALUE),
-          key: new VarIntBytes(Buffer.from([])),
-          value: new VarIntBytes(Buffer.from([])),
-          headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from([])))])
-        }),
-        new Record({
-          timestampDelta: new VarLong(BigInt(VarInt.MIN_VALUE)),
-          offsetDelta: new VarInt(VarInt.MIN_VALUE),
-          key: new VarIntBytes(Buffer.from([])),
-          value: new VarIntBytes(Buffer.from([])),
-          headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from([])))])
-        }),
-        new Record({
-          timestampDelta: new VarLong(BigInt(VarInt.MIN_VALUE)),
-          offsetDelta: new VarInt(VarInt.MIN_VALUE),
-          key: new VarIntBytes(Buffer.from([])),
-          value: new VarIntBytes(Buffer.from([])),
-          headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from([])))])
-        })
-      ]
+      records: new Array(
+        [
+          new Record({
+            timestampDelta: new VarLong(BigInt(VarInt.MIN_VALUE)),
+            offsetDelta: new VarInt(VarInt.MIN_VALUE),
+            key: new VarIntBytes(Buffer.from([])),
+            value: new VarIntBytes(Buffer.from([])),
+            headers: new CompactArray(
+              [new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from([])))],
+              (header, buffer) => header.serialize(buffer)
+            )
+          }),
+          new Record({
+            timestampDelta: new VarLong(BigInt(VarInt.MIN_VALUE)),
+            offsetDelta: new VarInt(VarInt.MIN_VALUE),
+            key: new VarIntBytes(Buffer.from([])),
+            value: new VarIntBytes(Buffer.from([])),
+            headers: new CompactArray(
+              [new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from([])))],
+              (header, buffer) => header.serialize(buffer)
+            )
+          }),
+          new Record({
+            timestampDelta: new VarLong(BigInt(VarInt.MIN_VALUE)),
+            offsetDelta: new VarInt(VarInt.MIN_VALUE),
+            key: new VarIntBytes(Buffer.from([])),
+            value: new VarIntBytes(Buffer.from([])),
+            headers: new CompactArray(
+              [new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from([])))],
+              (header, buffer) => header.serialize(buffer)
+            )
+          })
+        ],
+        (record, buffer) => record.serialize(buffer)
+      )
     }),
     RecordBatch.from({
       baseOffset: new Int64(Int64.MIN_VALUE),
@@ -137,15 +163,21 @@ describe('RecordBatch', () => {
       producerId: new Int64(Int64.MIN_VALUE),
       producerEpoch: new Int16(Int16.MIN_VALUE),
       baseSequence: new Int32(Int32.MIN_VALUE),
-      records: [
-        new Record({
-          timestampDelta: new VarLong(0n),
-          offsetDelta: new VarInt(0),
-          key: new VarIntBytes(null),
-          value: new VarIntBytes(null),
-          headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(null))])
-        })
-      ]
+      records: new Array(
+        [
+          new Record({
+            timestampDelta: new VarLong(0n),
+            offsetDelta: new VarInt(0),
+            key: new VarIntBytes(null),
+            value: new VarIntBytes(null),
+            headers: new CompactArray(
+              [new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(null))],
+              (header, buffer) => header.serialize(buffer)
+            )
+          })
+        ],
+        (record, buffer) => record.serialize(buffer)
+      )
     }),
     RecordBatch.from({
       baseOffset: new Int64(Int64.MIN_VALUE),
@@ -163,15 +195,21 @@ describe('RecordBatch', () => {
       producerId: new Int64(Int64.MIN_VALUE),
       producerEpoch: new Int16(Int16.MIN_VALUE),
       baseSequence: new Int32(Int32.MIN_VALUE),
-      records: [
-        new Record({
-          timestampDelta: new VarLong(0n),
-          offsetDelta: new VarInt(0),
-          key: new VarIntBytes(null),
-          value: new VarIntBytes(null),
-          headers: new CompactArray([new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(null))])
-        })
-      ]
+      records: new Array(
+        [
+          new Record({
+            timestampDelta: new VarLong(0n),
+            offsetDelta: new VarInt(0),
+            key: new VarIntBytes(null),
+            value: new VarIntBytes(null),
+            headers: new CompactArray(
+              [new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(null))],
+              (header, buffer) => header.serialize(buffer)
+            )
+          })
+        ],
+        (record, buffer) => record.serialize(buffer)
+      )
     })
   ];
 
@@ -183,7 +221,22 @@ describe('RecordBatch', () => {
     const buffer = writeBuffer.toBuffer();
 
     const deserialized = await RecordBatch.deserialize(new ReadBuffer(buffer));
-    expect(deserialized).toEqual(recordBatch);
+
+    expect(deserialized.attributes).toEqual(recordBatch.attributes);
+    expect(deserialized.baseOffset).toEqual(recordBatch.baseOffset);
+    expect(deserialized.baseSequence).toEqual(recordBatch.baseSequence);
+    expect(deserialized.baseTimestamp).toEqual(recordBatch.baseTimestamp);
+    expect(deserialized.lastOffsetDelta).toEqual(recordBatch.lastOffsetDelta);
+    expect(deserialized.maxTimestamp).toEqual(recordBatch.maxTimestamp);
+    expect(deserialized.partitionLeaderEpoch).toEqual(recordBatch.partitionLeaderEpoch);
+    expect(deserialized.producerEpoch).toEqual(recordBatch.producerEpoch);
+    expect(deserialized.producerId).toEqual(recordBatch.producerId);
+    deserialized.records.value!.forEach((record, index) => {
+      record.headers.value!.forEach((header, headerIndex) => {
+        expect(header.key.value).toEqual(recordBatch.records.value![index]!.headers.value![headerIndex]!.key.value);
+        expect(header.value.value).toEqual(recordBatch.records.value![index]!.headers.value![headerIndex]!.value.value);
+      });
+    });
   });
 
   const buffers = [
@@ -247,9 +300,9 @@ describe('RecordBatch', () => {
     const deserialized = await RecordBatch.deserialize(new ReadBuffer(buffer));
 
     expect(deserialized).toBeDefined();
-    expect(deserialized.records).toHaveLength(1);
-    expect(deserialized.records[0]!.key.value).toEqual(Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05, 0x06]));
-    expect(deserialized.records[0]!.value.value).toEqual(Buffer.from([0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c]));
+    expect(deserialized.records.value).toHaveLength(1);
+    expect(deserialized.records.value![0]!.key.value).toEqual(Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05, 0x06]));
+    expect(deserialized.records.value![0]!.value.value).toEqual(Buffer.from([0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c]));
     expect(deserialized.attributes.compressionType).toEqual(compressionType);
   });
 
@@ -271,7 +324,7 @@ describe('RecordBatch', () => {
         producerId: new Int64(Int64.MIN_VALUE),
         producerEpoch: new Int16(Int16.MIN_VALUE),
         baseSequence: new Int32(Int32.MIN_VALUE),
-        records: []
+        records: new Array<Record>([])
       })
     ).toThrow();
   });
@@ -300,6 +353,6 @@ describe('RecordBatch', () => {
     const deserialized = await RecordBatch.deserialize(new ReadBuffer(buffer));
 
     expect(deserialized).toBeDefined();
-    expect(deserialized.records).toHaveLength(0);
+    expect(deserialized.records.value).toHaveLength(0);
   });
 });

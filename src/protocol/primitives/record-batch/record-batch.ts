@@ -1,25 +1,26 @@
 import { buf as crc32c } from 'crc-32/crc32c';
-import { ReadBuffer, type Serializable, WriteBuffer } from '../../serialization';
-import { type Record } from './record';
+import { InvalidRecordBatchError } from '../../exceptions';
+import { ReadBuffer, WriteBuffer, type Serializable } from '../../serialization';
+import { type Array } from '../array';
+import { Int16 } from '../int16';
+import { Int32 } from '../int32';
+import { Int64 } from '../int64';
+import { Int8 } from '../int8';
 import {
   CompressionType,
-  type CompressionTypeValue,
   HasDeleteHorizon,
-  type HasDeleteHorizonValue,
   IsControlBatch,
-  type IsControlBatchValue,
   IsTransactional,
-  type IsTransactionalValue,
   TimestampType,
+  type CompressionTypeValue,
+  type HasDeleteHorizonValue,
+  type IsControlBatchValue,
+  type IsTransactionalValue,
   type TimestampTypeValue
 } from './attributes';
-import { CompressedRecords } from './compressed-records';
-import { Int64 } from '../int64';
-import { Int32 } from '../int32';
-import { Int16 } from '../int16';
-import { Int8 } from '../int8';
 import { CompressorDeterminer } from './attributes/compressor-determiner';
-import { InvalidRecordBatchError } from '../../exceptions';
+import { CompressedRecords } from './compressed-records';
+import { type Record } from './record';
 
 type RecordBatchParams = {
   baseOffset: Int64;
@@ -31,7 +32,7 @@ type RecordBatchParams = {
   producerId: Int64;
   producerEpoch: Int16;
   baseSequence: Int32;
-  records: readonly Record[];
+  records: Array<Record>;
 };
 
 type RecordBatchAttributes = {
@@ -86,7 +87,7 @@ export class RecordBatch implements Serializable {
   public readonly producerId: Int64;
   public readonly producerEpoch: Int16;
   public readonly baseSequence: Int32;
-  public readonly records: readonly Record[];
+  public readonly records: Array<Record>;
 
   private constructor(params: RecordBatchParams) {
     this.baseOffset = params.baseOffset;
@@ -103,7 +104,7 @@ export class RecordBatch implements Serializable {
   }
 
   public static from(params: RecordBatchParams): RecordBatch {
-    if (params.records.length === 0) {
+    if (params.records.value === null || params.records.value.length < 1) {
       throw new InvalidRecordBatchError('RecordBatch must contain at least one record');
     }
 
@@ -155,7 +156,7 @@ export class RecordBatch implements Serializable {
       producerId,
       producerEpoch,
       baseSequence,
-      records: records._value
+      records: records.value
     });
   }
 
