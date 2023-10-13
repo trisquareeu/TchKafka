@@ -1,8 +1,8 @@
-import type { ReadBuffer, Serializable, WriteBuffer } from '../serialization';
+import { type ReadBuffer, type Serializable, type WriteBuffer } from '../serialization';
 import { Int32 } from './int32';
 
-export type ArrayDeserializer<T extends Serializable> = (buffer: ReadBuffer) => T;
-
+export type ArrayDeserializer<T> = (buffer: ReadBuffer) => T;
+export type ArraySerializer<T> = (item: T, buffer: WriteBuffer) => void;
 /**
  * Represents a sequence of objects of a given type T. Type T can be either a primitive type (e.g. STRING) or a structure.
  * First, the length N is given as an INT32. Then N instances of type T follow.
@@ -15,14 +15,17 @@ export type ArrayDeserializer<T extends Serializable> = (buffer: ReadBuffer) => 
  *
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
-export class Array<T extends Serializable> implements Serializable {
-  constructor(private readonly _value: readonly T[] | null) {}
+export class Array<T> implements Serializable {
+  constructor(
+    private readonly _value: readonly T[] | null,
+    private serializer: ArraySerializer<T> | null = null
+  ) {}
 
   public get value(): readonly T[] | null {
     return this._value;
   }
 
-  public static deserialize<T extends Serializable>(buffer: ReadBuffer, deserializer: ArrayDeserializer<T>): Array<T> {
+  public static deserialize<T>(buffer: ReadBuffer, deserializer: ArrayDeserializer<T>): Array<T> {
     const length = Int32.deserialize(buffer);
     if (length.value < 0) {
       return new Array(null);
@@ -31,7 +34,7 @@ export class Array<T extends Serializable> implements Serializable {
     return this.deserializeEntries(buffer, length.value, deserializer);
   }
 
-  public static deserializeEntries<T extends Serializable>(
+  public static deserializeEntries<T>(
     buffer: ReadBuffer,
     length: number,
     deserializer: ArrayDeserializer<T>
@@ -44,13 +47,21 @@ export class Array<T extends Serializable> implements Serializable {
     return new Array(value);
   }
 
+  public setSerializer(serializer: ArraySerializer<T>): void {
+    this.serializer = serializer;
+  }
+
   public serialize(buffer: WriteBuffer): void {
+    if (!this.serializer) {
+      throw new Error('Serializer needed');
+    }
+
     if (this.value === null) {
       new Int32(-1).serialize(buffer);
     } else {
       new Int32(this.value.length).serialize(buffer);
       for (const item of this.value) {
-        item.serialize(buffer);
+        this.serializer(item, buffer);
       }
     }
   }

@@ -11,12 +11,15 @@ describe('Record', () => {
   const timestampDelta = new VarLong(353n);
   const offsetDelta = new VarInt(1);
 
-  const headers = new CompactArray([
-    new RecordHeader(new RecordHeaderKey('foo'), new VarIntBytes(Buffer.from('value'))),
-    new RecordHeader(new RecordHeaderKey('🥸🇵🇱🫶🏻'), new VarIntBytes(Buffer.from('value'))),
-    new RecordHeader(new RecordHeaderKey('bar'), new VarIntBytes(null)),
-    new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from('')))
-  ]);
+  const headers = new CompactArray(
+    [
+      new RecordHeader(new RecordHeaderKey('foo'), new VarIntBytes(Buffer.from('value'))),
+      new RecordHeader(new RecordHeaderKey('🥸🇵🇱🫶🏻'), new VarIntBytes(Buffer.from('value'))),
+      new RecordHeader(new RecordHeaderKey('bar'), new VarIntBytes(null)),
+      new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from('')))
+    ],
+    (header, buffer) => header.serialize(buffer)
+  );
 
   const records = [
     new Record({
@@ -33,7 +36,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(Buffer.from('key')),
       value: new VarIntBytes(Buffer.from('value')),
-      headers: new CompactArray([])
+      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
     }),
     new Record({
       attributes,
@@ -41,7 +44,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(Buffer.from('key')),
       value: new VarIntBytes(Buffer.from('value')),
-      headers: new CompactArray(null)
+      headers: new CompactArray<RecordHeader>(null, (header, buffer) => header.serialize(buffer))
     }),
     new Record({
       attributes,
@@ -49,7 +52,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(Buffer.from('')),
       value: new VarIntBytes(Buffer.from('')),
-      headers: new CompactArray([])
+      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
     }),
     new Record({
       attributes,
@@ -57,7 +60,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(null),
       value: new VarIntBytes(null),
-      headers: new CompactArray([])
+      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
     }),
     new Record({
       attributes,
@@ -65,7 +68,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(Buffer.from('key')),
       value: new VarIntBytes(null),
-      headers: new CompactArray([])
+      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
     }),
     new Record({
       attributes,
@@ -73,7 +76,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(null),
       value: new VarIntBytes(Buffer.from('value')),
-      headers: new CompactArray([])
+      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
     }),
     new Record({
       attributes,
@@ -81,7 +84,7 @@ describe('Record', () => {
       offsetDelta: new VarInt(0),
       key: new VarIntBytes(Buffer.from('key')),
       value: new VarIntBytes(Buffer.from('value')),
-      headers: new CompactArray([])
+      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
     })
   ];
 
@@ -90,7 +93,13 @@ describe('Record', () => {
     record.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-    expect(Record.deserialize(readBuffer)).toEqual(record);
+    const deserialized = Record.deserialize(readBuffer);
+    expect(deserialized.attributes.value).toEqual(record.attributes.value);
+    expect(deserialized.timestampDelta.value).toEqual(record.timestampDelta.value);
+    expect(deserialized.offsetDelta.value).toEqual(record.offsetDelta.value);
+    expect(deserialized.key.value).toEqual(record.key.value);
+    expect(deserialized.value.value).toEqual(record.value.value);
+    expect(deserialized.headers.value).toEqual(record.headers.value);
   });
 
   it('should throw if message size is too small', () => {
@@ -107,7 +116,7 @@ describe('Record', () => {
       offsetDelta: new VarInt(0),
       key: new VarIntBytes(null),
       value: new VarIntBytes(null),
-      headers: new CompactArray([header])
+      headers: new CompactArray([header], (header, buffer) => header.serialize(buffer))
     });
 
     const writeBuffer = new WriteBuffer();

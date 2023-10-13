@@ -1,5 +1,5 @@
 import type { ReadBuffer, Serializable, WriteBuffer } from '../serialization';
-import { type ArrayDeserializer } from './array';
+import { type ArraySerializer, type ArrayDeserializer } from './array';
 import { UVarInt } from './uvarint';
 
 /**
@@ -9,17 +9,17 @@ import { UVarInt } from './uvarint';
  *
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
-export class CompactArray<T extends Serializable> implements Serializable {
-  constructor(private readonly _value: T[] | null) {}
+export class CompactArray<T> implements Serializable {
+  constructor(
+    private readonly _value: T[] | null,
+    private serializer: ArraySerializer<T> | null = null
+  ) {}
 
   public get value(): readonly T[] | null {
     return this._value;
   }
 
-  public static deserialize<T extends Serializable>(
-    buffer: ReadBuffer,
-    deserialize: ArrayDeserializer<T>
-  ): CompactArray<T> {
+  public static deserialize<T>(buffer: ReadBuffer, deserialize: ArrayDeserializer<T>): CompactArray<T> {
     const length = UVarInt.deserialize(buffer);
     if (length.value === 0) {
       return new CompactArray(null);
@@ -33,13 +33,21 @@ export class CompactArray<T extends Serializable> implements Serializable {
     return new CompactArray(value);
   }
 
+  public setSerializer(serializer: ArraySerializer<T>): void {
+    this.serializer = serializer;
+  }
+
   public serialize(buffer: WriteBuffer): void {
+    if (!this.serializer) {
+      throw new Error('Serializer needed');
+    }
+
     if (this.value === null) {
       new UVarInt(0).serialize(buffer);
     } else {
       new UVarInt(this.value.length + 1).serialize(buffer);
       for (const item of this.value) {
-        item.serialize(buffer);
+        this.serializer(item, buffer);
       }
     }
   }
