@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-array-constructor */
 import { InvalidRecordBatchError } from '../../exceptions';
 import { ReadBuffer, WriteBuffer } from '../../serialization';
-import { Array } from '../array';
 import { CompactArray } from '../compact-array';
 import { Int16 } from '../int16';
 import { Int32 } from '../int32';
 import { Int64 } from '../int64';
+import { NonNullableArray } from '../non-nullable-array';
 import { VarInt } from '../varint';
 import { VarLong } from '../varlong';
 import { CompressionType, HasDeleteHorizon, IsControlBatch, IsTransactional, TimestampType } from './attributes';
@@ -30,7 +30,7 @@ describe('RecordBatch', () => {
       producerId: new Int64(0n),
       producerEpoch: new Int16(0),
       baseSequence: new Int32(0),
-      records: new Array(
+      records: new NonNullableArray(
         [
           new Record({
             timestampDelta: new VarLong(0n),
@@ -59,7 +59,7 @@ describe('RecordBatch', () => {
       producerId: new Int64(Int64.MAX_VALUE),
       producerEpoch: new Int16(Int16.MAX_VALUE),
       baseSequence: new Int32(Int32.MAX_VALUE),
-      records: new Array(
+      records: new NonNullableArray(
         [
           new Record({
             timestampDelta: new VarLong(BigInt(VarInt.MAX_VALUE)),
@@ -111,7 +111,7 @@ describe('RecordBatch', () => {
       producerId: new Int64(Int64.MIN_VALUE),
       producerEpoch: new Int16(Int16.MIN_VALUE),
       baseSequence: new Int32(Int32.MIN_VALUE),
-      records: new Array(
+      records: new NonNullableArray(
         [
           new Record({
             timestampDelta: new VarLong(BigInt(VarInt.MIN_VALUE)),
@@ -163,7 +163,7 @@ describe('RecordBatch', () => {
       producerId: new Int64(Int64.MIN_VALUE),
       producerEpoch: new Int16(Int16.MIN_VALUE),
       baseSequence: new Int32(Int32.MIN_VALUE),
-      records: new Array(
+      records: new NonNullableArray(
         [
           new Record({
             timestampDelta: new VarLong(0n),
@@ -195,7 +195,7 @@ describe('RecordBatch', () => {
       producerId: new Int64(Int64.MIN_VALUE),
       producerEpoch: new Int16(Int16.MIN_VALUE),
       baseSequence: new Int32(Int32.MIN_VALUE),
-      records: new Array(
+      records: new NonNullableArray(
         [
           new Record({
             timestampDelta: new VarLong(0n),
@@ -324,7 +324,7 @@ describe('RecordBatch', () => {
         producerId: new Int64(Int64.MIN_VALUE),
         producerEpoch: new Int16(Int16.MIN_VALUE),
         baseSequence: new Int32(Int32.MIN_VALUE),
-        records: new Array<Record>([])
+        records: new NonNullableArray<Record>([])
       })
     ).toThrow();
   });

@@ -7,9 +7,9 @@ import {
   type Compressor
 } from '../../compression';
 import { ReadBuffer, WriteBuffer } from '../../serialization';
-import { Array } from '../array';
 import { CompactArray } from '../compact-array';
 import { Int8 } from '../int8';
+import { NonNullableArray } from '../non-nullable-array';
 import { VarInt } from '../varint';
 import { VarLong } from '../varlong';
 import { CompressedRecords } from './compressed-records';
@@ -25,7 +25,7 @@ describe('CompressedRecords', () => {
   ];
 
   it.each(compressors)('should compress and decompress into the same value', async (compressor) => {
-    const array = new Array<Record>(
+    const array = new NonNullableArray<Record>(
       [
         new Record({
           attributes: new Int8(0),
