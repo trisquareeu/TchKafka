@@ -1,17 +1,17 @@
 import { type Compressor } from '../../compression';
 import { InvalidRecordBatchError } from '../../exceptions';
 import { ReadBuffer, WriteBuffer } from '../../serialization';
-import { Array } from '../array';
 import { Int32 } from '../int32';
+import { NonNullableArray } from '../non-nullable-array';
 import { Record } from './record';
 
 export class CompressedRecords {
   constructor(
-    private readonly _value: Array<Record>,
+    private readonly _value: NonNullableArray<Record>,
     private readonly compressor: Compressor
   ) {}
 
-  public get value(): Array<Record> {
+  public get value(): NonNullableArray<Record> {
     return this._value;
   }
 
@@ -25,7 +25,7 @@ export class CompressedRecords {
     const decompressed = new ReadBuffer(await compressor.decompress(compressed));
 
     return new CompressedRecords(
-      Array.deserializeEntries(decompressed, numberOfRecords, Record.deserialize),
+      NonNullableArray.deserializeEntries(decompressed, numberOfRecords, Record.deserialize),
       compressor
     );
   }

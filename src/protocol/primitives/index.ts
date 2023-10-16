@@ -20,3 +20,4 @@ export * from './compact-string';
 export * from './compact-nullable-string';
 export * from './varlong';
 export * from './record-batch';
+export * from './non-nullable-array';
