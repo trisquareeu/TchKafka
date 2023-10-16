@@ -93,8 +93,8 @@ class TestResponseData {
 }
 
 class TestRequestV1337 implements Request<TestResponseData> {
-  private static readonly API_KEY = 99;
-  private static readonly VERSION = 1337;
+  public readonly apiKey = 99;
+  public readonly apiVersion = 1337;
   public readonly ExpectedResponseDataClass = TestResponseData;
   public readonly ExpectedResponseHeaderClass = ResponseHeaderV0;
 
@@ -106,8 +106,8 @@ class TestRequestV1337 implements Request<TestResponseData> {
 
   public buildHeader(correlationId: number, clientId: string | null = null): RequestHeader {
     return new RequestHeaderV2(
-      new Int16(TestRequestV1337.API_KEY),
-      new Int16(TestRequestV1337.VERSION),
+      new Int16(this.apiKey),
+      new Int16(this.apiVersion),
       new Int32(correlationId),
       new NullableString(clientId),
       new TagSection()
