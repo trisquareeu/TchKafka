@@ -46,8 +46,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test and Coverage
-        run: npm run test:coverage
+      - name: Unit Tests
+        run: npm run test:unit
+
+      - name: Integration Tests
+        run: npm run test:integration
 
       - name: SonarCloud Scan
         if: github.actor != 'dependabot[bot]' && matrix.node-version == '20.x'
