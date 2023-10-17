@@ -4,8 +4,9 @@
   "description": "TBA",
   "main": "main.js",
   "scripts": {
-    "test": "jest",
-    "test:coverage": "jest --coverage",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "jest --coverage --testMatch \"**/src/**/*.spec.ts\"",
+    "test:integration": "jest --testMatch \"**/test/**/*.integration.spec.ts\" --runInBand",
     "prebuild": "npm run clean",
     "build": "tsc",
     "start:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
