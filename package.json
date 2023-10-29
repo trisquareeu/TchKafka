@@ -30,7 +30,7 @@
     "@commitlint/config-conventional": "17.7.0",
     "@testcontainers/kafka": "10.2.1",
     "@types/jest": "29.5.5",
-    "@types/lz4": "0.6.2",
+    "@types/lz4": "0.6.3",
     "@types/mitm": "1.3.6",
     "@types/node": "20.8.6",
     "@typescript-eslint/eslint-plugin": "6.8.0",
