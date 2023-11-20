@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/trisquareeu/kafkit#readme",
   "devDependencies": {
-    "@commitlint/cli": "18.4.1",
+    "@commitlint/cli": "18.4.2",
     "@commitlint/config-conventional": "18.1.0",
     "@testcontainers/kafka": "10.2.2",
     "@types/jest": "29.5.8",
