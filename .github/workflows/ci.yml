@@ -76,7 +76,6 @@ jobs:
         if: ${{ steps.metadata.outputs.update-type != 'version-update:major' }}
         run: |
           gh pr merge --auto --rebase "$PR_URL"
-          gh pr review --comment -b "I just wanted to express my appreciation for your excellent work with Dependabot. It's been a game-changer for our development process, keeping our code secure and up to date effortlessly. Your contribution is truly invaluable, and our team is incredibly grateful for it. Keep up the fantastic work! 🚀🙌" "$PR_URL"
           gh pr review --approve "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
