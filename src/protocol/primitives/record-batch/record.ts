@@ -26,9 +26,9 @@ export class RecordHeader implements Serializable {
     return new RecordHeader(key, value);
   }
 
-  public serialize(buffer: WriteBuffer): void {
-    this.key.serialize(buffer);
-    this.value.serialize(buffer);
+  public async serialize(buffer: WriteBuffer): Promise<void> {
+    await this.key.serialize(buffer);
+    await this.value.serialize(buffer);
   }
 }
 
@@ -95,18 +95,18 @@ export class Record implements Serializable {
     });
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     const temporary = new WriteBuffer();
 
-    this.attributes.serialize(temporary);
-    this.timestampDelta.serialize(temporary);
-    this.offsetDelta.serialize(temporary);
-    this.key.serialize(temporary);
-    this.value.serialize(temporary);
-    this.headers.serialize(temporary);
+    await this.attributes.serialize(temporary);
+    await this.timestampDelta.serialize(temporary);
+    await this.offsetDelta.serialize(temporary);
+    await this.key.serialize(temporary);
+    await this.value.serialize(temporary);
+    await this.headers.serialize(temporary);
 
     const tempBuf = temporary.toBuffer();
-    new VarInt(tempBuf.length).serialize(buffer);
+    await new VarInt(tempBuf.length).serialize(buffer);
 
     buffer.writeBuffer(tempBuf);
   }
@@ -130,11 +130,11 @@ export class VarIntBytes implements Serializable {
     return new VarIntBytes(bytes);
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     if (this.value === null) {
-      new VarInt(-1).serialize(buffer);
+      await new VarInt(-1).serialize(buffer);
     } else {
-      new VarInt(this.value.length).serialize(buffer);
+      await new VarInt(this.value.length).serialize(buffer);
       buffer.writeBuffer(this.value);
     }
   }
@@ -156,7 +156,7 @@ export class RecordHeaderKey implements Serializable {
     return new RecordHeaderKey(varIntBytes.value.toString('utf-8'));
   }
 
-  public serialize(buffer: WriteBuffer): void {
-    new VarIntBytes(Buffer.from(this.value, 'utf-8')).serialize(buffer);
+  public async serialize(buffer: WriteBuffer): Promise<void> {
+    await new VarIntBytes(Buffer.from(this.value, 'utf-8')).serialize(buffer);
   }
 }

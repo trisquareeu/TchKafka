@@ -2,7 +2,7 @@ import { type ReadBuffer, type Serializable, type WriteBuffer } from '../seriali
 import { Int32 } from './int32';
 
 export type ArrayDeserializer<T> = (buffer: ReadBuffer) => T;
-export type ArraySerializer<T> = (item: T, buffer: WriteBuffer) => void;
+export type ArraySerializer<T> = (item: T, buffer: WriteBuffer) => Promise<void>;
 /**
  * Represents a sequence of objects of a given type T. Type T can be either a primitive type (e.g. STRING) or a structure.
  * First, the length N is given as an INT32. Then N instances of type T follow.
@@ -51,17 +51,17 @@ export class Array<T> implements Serializable {
     this.serializer = serializer;
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     if (!this.serializer) {
       throw new Error('Serializer needed');
     }
 
     if (this.value === null) {
-      new Int32(-1).serialize(buffer);
+      await new Int32(-1).serialize(buffer);
     } else {
-      new Int32(this.value.length).serialize(buffer);
+      await new Int32(this.value.length).serialize(buffer);
       for (const item of this.value) {
-        this.serializer(item, buffer);
+        await this.serializer(item, buffer);
       }
     }
   }

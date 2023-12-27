@@ -28,11 +28,11 @@ export class NullableBytes implements Serializable {
     return new NullableBytes(buffer.readBuffer(length.value));
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     if (this.value === null) {
-      new Int32(-1).serialize(buffer);
+      await new Int32(-1).serialize(buffer);
     } else {
-      new Int32(this.value.length).serialize(buffer);
+      await new Int32(this.value.length).serialize(buffer);
       buffer.writeBuffer(this.value);
     }
   }

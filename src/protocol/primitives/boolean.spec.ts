@@ -20,9 +20,9 @@ describe('Boolean', () => {
     expect(Boolean.deserialize(data).value).toBe(value);
   });
 
-  it.each(serializationCases)('should correctly serialize boolean values to bytes', ({ value, buffer }) => {
+  it.each(serializationCases)('should correctly serialize boolean values to bytes', async ({ value, buffer }) => {
     const writeBuffer = new WriteBuffer();
-    new Boolean(value).serialize(writeBuffer);
+    await new Boolean(value).serialize(writeBuffer);
 
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });

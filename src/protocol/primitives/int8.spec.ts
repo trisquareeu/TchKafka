@@ -10,10 +10,10 @@ describe('Int8', () => {
     { value: -128, buffer: Buffer.from([0x80]) }
   ];
 
-  it.each(cases)('Value stored in the Int8 should be correctly serialized', ({ value, buffer }) => {
+  it.each(cases)('Value stored in the Int8 should be correctly serialized', async ({ value, buffer }) => {
     const int8 = new Int8(value);
     const writeBuffer = new WriteBuffer();
-    int8.serialize(writeBuffer);
+    await int8.serialize(writeBuffer);
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
@@ -25,10 +25,10 @@ describe('Int8', () => {
 
   const serializeAndDeserializeCases = [-128, -1, 0, 1, 127];
 
-  it.each(serializeAndDeserializeCases)('Int8 should serialize and deserialize into the same value', (value) => {
+  it.each(serializeAndDeserializeCases)('Int8 should serialize and deserialize into the same value', async (value) => {
     const int8 = new Int8(value);
     const writeBuffer = new WriteBuffer();
-    int8.serialize(writeBuffer);
+    await int8.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
     const deserializedInt8 = Int8.deserialize(readBuffer);

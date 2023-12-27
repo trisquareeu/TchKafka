@@ -26,10 +26,10 @@ describe('VarInt', () => {
     { value: VarInt.MIN_VALUE, buffer: Buffer.from([0xff, 0xff, 0xff, 0xff, 0x0f]) }
   ];
 
-  it.each(cases)('value stored in the varint should be correctly serialized', ({ value, buffer }) => {
+  it.each(cases)('value stored in the varint should be correctly serialized', async ({ value, buffer }) => {
     const varint = new VarInt(value);
     const writeBuffer = new WriteBuffer();
-    varint.serialize(writeBuffer);
+    await varint.serialize(writeBuffer);
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
@@ -39,11 +39,11 @@ describe('VarInt', () => {
     expect(varint.value).toEqual(value);
   });
 
-  it.each(cases)('should serialize and deserialize into the same value', ({ value, buffer }) => {
+  it.each(cases)('should serialize and deserialize into the same value', async ({ value, buffer }) => {
     const varint = new VarInt(value);
 
     const writeBuffer = new WriteBuffer();
-    varint.serialize(writeBuffer);
+    await varint.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(buffer);
     const deserialized = VarInt.deserialize(readBuffer);

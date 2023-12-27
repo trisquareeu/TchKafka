@@ -16,10 +16,10 @@ export class ApiVersionsRequestV3 implements Request<ApiVersionsResponseV3Data> 
     public readonly tagSection: TagSection = new TagSection([])
   ) {}
 
-  public serialize(buffer: WriteBuffer): void {
-    this.header.serialize(buffer);
-    this.clientSoftwareName.serialize(buffer);
-    this.clientSoftwareVersion.serialize(buffer);
-    this.tagSection.serialize(buffer);
+  public async serialize(buffer: WriteBuffer): Promise<void> {
+    await this.header.serialize(buffer);
+    await this.clientSoftwareName.serialize(buffer);
+    await this.clientSoftwareVersion.serialize(buffer);
+    await this.tagSection.serialize(buffer);
   }
 }

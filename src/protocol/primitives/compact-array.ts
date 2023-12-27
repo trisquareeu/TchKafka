@@ -37,17 +37,17 @@ export class CompactArray<T> implements Serializable {
     this.serializer = serializer;
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     if (!this.serializer) {
       throw new Error('Serializer needed');
     }
 
     if (this.value === null) {
-      new UVarInt(0).serialize(buffer);
+      await new UVarInt(0).serialize(buffer);
     } else {
-      new UVarInt(this.value.length + 1).serialize(buffer);
+      await new UVarInt(this.value.length + 1).serialize(buffer);
       for (const item of this.value) {
-        this.serializer(item, buffer);
+        await this.serializer(item, buffer);
       }
     }
   }

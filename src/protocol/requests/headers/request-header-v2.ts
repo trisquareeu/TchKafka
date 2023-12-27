@@ -21,11 +21,11 @@ export class RequestHeaderV2 implements RequestHeader {
     public readonly tagBuffer: TagSection
   ) {}
 
-  public serialize(buffer: WriteBuffer): void {
-    this.requestApiKey.serialize(buffer);
-    this.requestApiVersion.serialize(buffer);
-    this.correlationId.serialize(buffer);
-    this.clientId.serialize(buffer);
-    this.tagBuffer.serialize(buffer);
+  public async serialize(buffer: WriteBuffer): Promise<void> {
+    await this.requestApiKey.serialize(buffer);
+    await this.requestApiVersion.serialize(buffer);
+    await this.correlationId.serialize(buffer);
+    await this.clientId.serialize(buffer);
+    await this.tagBuffer.serialize(buffer);
   }
 }

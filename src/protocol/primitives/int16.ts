@@ -23,7 +23,7 @@ export class Int16 implements Serializable {
     return new Int16(buffer.readInt16());
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     buffer.writeInt16(this.value);
   }
 }

@@ -23,7 +23,7 @@ export class Connection {
 
   public async send<T extends Request<any>>(request: T): Promise<RequestResponseType<T>> {
     const serializedRequest = new WriteBuffer();
-    request.serialize(serializedRequest);
+    await request.serialize(serializedRequest);
 
     const header = Buffer.alloc(4);
     header.writeInt32BE(serializedRequest.toBuffer().length);

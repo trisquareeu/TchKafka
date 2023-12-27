@@ -43,8 +43,10 @@ export class TagSection implements Serializable {
     return new TagSection(taggedFields);
   }
 
-  public serialize(buffer: WriteBuffer): void {
-    new UVarInt(this.fields.length).serialize(buffer);
-    this.fields.forEach((value) => value.serialize(buffer));
+  public async serialize(buffer: WriteBuffer): Promise<void> {
+    await new UVarInt(this.fields.length).serialize(buffer);
+    for (const value of this.fields) {
+      await value.serialize(buffer);
+    }
   }
 }

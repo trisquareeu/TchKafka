@@ -24,7 +24,7 @@ export class Uuid implements Serializable {
     return new Uuid(buffer.readBuffer(Uuid.NUMBER_OF_BYTES));
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     buffer.writeBuffer(this.value);
   }
 }

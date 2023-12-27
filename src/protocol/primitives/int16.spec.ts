@@ -12,10 +12,10 @@ describe('Int16', () => {
     { value: -32768, buffer: Buffer.from([0x80, 0x00]) }
   ];
 
-  it.each(cases)('value stored in the Int16 should be correctly serialized', ({ value, buffer }) => {
+  it.each(cases)('value stored in the Int16 should be correctly serialized', async ({ value, buffer }) => {
     const int16 = new Int16(value);
     const writeBuffer = new WriteBuffer();
-    int16.serialize(writeBuffer);
+    await int16.serialize(writeBuffer);
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
@@ -27,10 +27,10 @@ describe('Int16', () => {
 
   const serializeAndDeserializeCases = [-32768, -1, 0, 1, 32767];
 
-  it.each(serializeAndDeserializeCases)('int16 should serialize and deserialize into the same value', (value) => {
+  it.each(serializeAndDeserializeCases)('int16 should serialize and deserialize into the same value', async (value) => {
     const int16 = new Int16(value);
     const writeBuffer = new WriteBuffer();
-    int16.serialize(writeBuffer);
+    await int16.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
     const deserializedInt16 = Int16.deserialize(readBuffer);

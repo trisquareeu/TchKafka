@@ -19,10 +19,10 @@ describe('Uuid', () => {
     );
   });
 
-  it('Should correctly serialize the value into WriteBuffer', () => {
+  it('Should correctly serialize the value into WriteBuffer', async () => {
     const uuidBytes = Buffer.allocUnsafe(16).fill(42);
     const writeBuffer = new WriteBuffer();
-    new Uuid(uuidBytes).serialize(writeBuffer);
+    await new Uuid(uuidBytes).serialize(writeBuffer);
 
     expect(writeBuffer.toBuffer()).toEqual(uuidBytes);
   });

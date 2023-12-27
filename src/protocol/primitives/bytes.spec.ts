@@ -13,9 +13,9 @@ describe('Bytes', () => {
     }
   ];
 
-  it.each(cases)('should correctly serialize to byte array', ({ value, buffer }) => {
+  it.each(cases)('should correctly serialize to byte array', async ({ value, buffer }) => {
     const writeBuffer = new WriteBuffer();
-    new Bytes(value).serialize(writeBuffer);
+    await new Bytes(value).serialize(writeBuffer);
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
@@ -24,10 +24,10 @@ describe('Bytes', () => {
     expect(Bytes.deserialize(readBuffer).value).toEqual(value);
   });
 
-  it('should throw if Bytes length is greater than Int16.MAX_VALUE', () => {
+  it('should throw if Bytes length is greater than Int16.MAX_VALUE', async () => {
     const bytes = new Bytes(Buffer.allocUnsafe(Int32.MAX_VALUE + 1).fill(0xff));
     const writeBuffer = new WriteBuffer();
-    expect(() => bytes.serialize(writeBuffer)).toThrow();
+    await expect(() => bytes.serialize(writeBuffer)).rejects.toThrow();
   });
 
   it('should throw when attempted to deserialize illegal length', () => {

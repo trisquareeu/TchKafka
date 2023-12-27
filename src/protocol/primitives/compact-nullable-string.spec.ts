@@ -12,10 +12,10 @@ describe('CompactNullableString', () => {
     { value: '¤¤¤' }
   ];
 
-  it.each(cases)('serialize and deserialize into the same value', ({ value }) => {
+  it.each(cases)('serialize and deserialize into the same value', async ({ value }) => {
     const string = new CompactNullableString(value);
     const writeBuffer = new WriteBuffer();
-    string.serialize(writeBuffer);
+    await string.serialize(writeBuffer);
 
     const buffer = writeBuffer.toBuffer();
     const readBuffer = new ReadBuffer(buffer);

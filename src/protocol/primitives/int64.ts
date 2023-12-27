@@ -23,7 +23,7 @@ export class Int64 implements Serializable {
     return new Int64(buffer.readInt64());
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     buffer.writeInt64(this.value);
   }
 }

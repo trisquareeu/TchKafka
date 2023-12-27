@@ -24,11 +24,11 @@ export class CompactNullableBytes implements Serializable {
     return new CompactNullableBytes(buffer.readBuffer(length.value - 1));
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     if (this.value === null) {
-      new UVarInt(0).serialize(buffer);
+      await new UVarInt(0).serialize(buffer);
     } else {
-      new UVarInt(this.value.length + 1).serialize(buffer);
+      await new UVarInt(this.value.length + 1).serialize(buffer);
       buffer.writeBuffer(this.value);
     }
   }

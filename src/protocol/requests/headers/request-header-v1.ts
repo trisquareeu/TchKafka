@@ -19,10 +19,10 @@ export class RequestHeaderV1 implements RequestHeader {
     public readonly clientId: NullableString
   ) {}
 
-  public serialize(buffer: WriteBuffer): void {
-    this.requestApiKey.serialize(buffer);
-    this.requestApiVersion.serialize(buffer);
-    this.correlationId.serialize(buffer);
-    this.clientId.serialize(buffer);
+  public async serialize(buffer: WriteBuffer): Promise<void> {
+    await this.requestApiKey.serialize(buffer);
+    await this.requestApiVersion.serialize(buffer);
+    await this.correlationId.serialize(buffer);
+    await this.clientId.serialize(buffer);
   }
 }

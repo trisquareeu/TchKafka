@@ -32,7 +32,7 @@ export class VarInt implements Serializable {
     return new VarInt(VarInt.decodeZigZag(UVarInt.deserialize(buffer).value));
   }
 
-  public serialize(buffer: WriteBuffer): void {
-    new UVarInt(VarInt.encodeZigZag(this.value)).serialize(buffer);
+  public async serialize(buffer: WriteBuffer): Promise<void> {
+    await new UVarInt(VarInt.encodeZigZag(this.value)).serialize(buffer);
   }
 }

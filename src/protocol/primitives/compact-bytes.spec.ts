@@ -14,10 +14,10 @@ describe('CompactBytes', () => {
     }
   ];
 
-  it.each(cases)('should serialize properly', ({ value, serialized }) => {
+  it.each(cases)('should serialize properly', async ({ value, serialized }) => {
     const compactBytes = new CompactBytes(value);
     const buffer = new WriteBuffer();
-    compactBytes.serialize(buffer);
+    await compactBytes.serialize(buffer);
     expect(buffer.toBuffer()).toEqual(serialized);
   });
 
@@ -27,10 +27,10 @@ describe('CompactBytes', () => {
     expect(compactBytes.value).toEqual(value);
   });
 
-  it.each(cases)('should serialize and deserialize into the same value', ({ value }) => {
+  it.each(cases)('should serialize and deserialize into the same value', async ({ value }) => {
     const compactBytes = new CompactBytes(Buffer.from(value));
     const buffer = new WriteBuffer();
-    compactBytes.serialize(buffer);
+    await compactBytes.serialize(buffer);
     const deserializedCompactBytes = CompactBytes.deserialize(new ReadBuffer(buffer.toBuffer()));
     expect(deserializedCompactBytes.value).toEqual(compactBytes.value);
   });
