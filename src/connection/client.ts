@@ -1,4 +1,3 @@
-import { type CompactString, type NullableString } from '../protocol/primitives';
 import { type RequestBuilder } from '../protocol/requests/request-builder';
 import { Session } from './session';
 
@@ -8,14 +7,14 @@ export class Client {
   constructor(
     private readonly host: string,
     private readonly port: number,
-    private readonly clientId: NullableString,
-    private readonly clientSoftwareName: CompactString,
-    private readonly clientSoftwareVersion: CompactString
+    private readonly clientId: string | null,
+    private readonly clientSoftwareName: string,
+    private readonly clientSoftwareVersion: string
   ) {}
 
   public async send<T extends RequestBuilder<any>>(
     requestBuilder: T
-  ): Promise<InstanceType<ReturnType<T['build']>['request']['ExpectedResponseDataClass']>> {
+  ): Promise<InstanceType<ReturnType<T['build']>['ExpectedResponseDataClass']>> {
     const session = await this.getOrCreateSession();
 
     return session.send(requestBuilder);
