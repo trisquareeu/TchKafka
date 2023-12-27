@@ -1,25 +1,21 @@
 import { BufferUnderflowError } from '../../exceptions';
 import { ReadBuffer, WriteBuffer } from '../../serialization';
-import { CompactArray } from '../compact-array';
 import { Int8 } from '../int8';
 import { VarInt } from '../varint';
 import { VarLong } from '../varlong';
-import { Record, RecordHeader, VarIntBytes, RecordHeaderKey } from './record';
+import { Record, RecordHeader, RecordHeaderArray, RecordHeaderKey, VarIntBytes } from './record';
 
 describe('Record', () => {
   const attributes = new Int8(0);
   const timestampDelta = new VarLong(353n);
   const offsetDelta = new VarInt(1);
 
-  const headers = new CompactArray(
-    [
-      new RecordHeader(new RecordHeaderKey('foo'), new VarIntBytes(Buffer.from('value'))),
-      new RecordHeader(new RecordHeaderKey('🥸🇵🇱🫶🏻'), new VarIntBytes(Buffer.from('value'))),
-      new RecordHeader(new RecordHeaderKey('bar'), new VarIntBytes(null)),
-      new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from('')))
-    ],
-    (header, buffer) => header.serialize(buffer)
-  );
+  const headers = new RecordHeaderArray([
+    new RecordHeader(new RecordHeaderKey('foo'), new VarIntBytes(Buffer.from('value'))),
+    new RecordHeader(new RecordHeaderKey('🥸🇵🇱🫶🏻'), new VarIntBytes(Buffer.from('value'))),
+    new RecordHeader(new RecordHeaderKey('bar'), new VarIntBytes(null)),
+    new RecordHeader(new RecordHeaderKey(''), new VarIntBytes(Buffer.from('')))
+  ]);
 
   const records = [
     new Record({
@@ -36,7 +32,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(Buffer.from('key')),
       value: new VarIntBytes(Buffer.from('value')),
-      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
+      headers: new RecordHeaderArray([])
     }),
     new Record({
       attributes,
@@ -44,7 +40,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(Buffer.from('key')),
       value: new VarIntBytes(Buffer.from('value')),
-      headers: new CompactArray<RecordHeader>(null, (header, buffer) => header.serialize(buffer))
+      headers: new RecordHeaderArray([])
     }),
     new Record({
       attributes,
@@ -52,7 +48,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(Buffer.from('')),
       value: new VarIntBytes(Buffer.from('')),
-      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
+      headers: new RecordHeaderArray([])
     }),
     new Record({
       attributes,
@@ -60,7 +56,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(null),
       value: new VarIntBytes(null),
-      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
+      headers: new RecordHeaderArray([])
     }),
     new Record({
       attributes,
@@ -68,7 +64,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(Buffer.from('key')),
       value: new VarIntBytes(null),
-      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
+      headers: new RecordHeaderArray([])
     }),
     new Record({
       attributes,
@@ -76,7 +72,7 @@ describe('Record', () => {
       offsetDelta,
       key: new VarIntBytes(null),
       value: new VarIntBytes(Buffer.from('value')),
-      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
+      headers: new RecordHeaderArray([])
     }),
     new Record({
       attributes,
@@ -84,7 +80,7 @@ describe('Record', () => {
       offsetDelta: new VarInt(0),
       key: new VarIntBytes(Buffer.from('key')),
       value: new VarIntBytes(Buffer.from('value')),
-      headers: new CompactArray<RecordHeader>([], (header, buffer) => header.serialize(buffer))
+      headers: new RecordHeaderArray([])
     })
   ];
 
@@ -116,7 +112,7 @@ describe('Record', () => {
       offsetDelta: new VarInt(0),
       key: new VarIntBytes(null),
       value: new VarIntBytes(null),
-      headers: new CompactArray([header], (header, buffer) => header.serialize(buffer))
+      headers: new RecordHeaderArray([header])
     });
 
     const writeBuffer = new WriteBuffer();
