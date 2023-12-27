@@ -39,9 +39,7 @@ describe('CompressedRecords', () => {
           )
         })
       ],
-      (record, buffer) => {
-        record.serialize(buffer);
-      }
+      async (record, buffer) => record.serialize(buffer)
     );
 
     const compressed = new CompressedRecords(array, compressor);

@@ -26,7 +26,7 @@ describe('ApiVersionsRequest', () => {
   });
 
   afterAll(async () => {
-    container.stop();
+    await container.stop();
   });
 
   beforeEach(async () => {

@@ -95,7 +95,7 @@ export class Record implements Serializable {
     });
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     const temporary = new WriteBuffer();
 
     this.attributes.serialize(temporary);
@@ -103,7 +103,7 @@ export class Record implements Serializable {
     this.offsetDelta.serialize(temporary);
     this.key.serialize(temporary);
     this.value.serialize(temporary);
-    this.headers.serialize(temporary);
+    await this.headers.serialize(temporary);
 
     const tempBuf = temporary.toBuffer();
     new VarInt(tempBuf.length).serialize(buffer);
