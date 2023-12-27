@@ -10,10 +10,10 @@ describe('NullableBytes', () => {
     { value: Buffer.from([0xff, 0x02, 0xff]), serialized: Buffer.from([0x00, 0x00, 0x00, 0x03, 0xff, 0x02, 0xff]) }
   ];
 
-  it.each(cases)('should serialize properly', ({ value, serialized }) => {
+  it.each(cases)('should serialize properly', async ({ value, serialized }) => {
     const nullableBytes = new NullableBytes(value);
     const buffer = new WriteBuffer();
-    nullableBytes.serialize(buffer);
+    await nullableBytes.serialize(buffer);
     expect(buffer.toBuffer()).toEqual(serialized);
   });
 
@@ -22,10 +22,10 @@ describe('NullableBytes', () => {
     expect(nullableBytes.value).toEqual(value);
   });
 
-  it.each(cases)('should serialize and deserialize into the same value', ({ value }) => {
+  it.each(cases)('should serialize and deserialize into the same value', async ({ value }) => {
     const nullableBytes = new NullableBytes(value);
     const buffer = new WriteBuffer();
-    nullableBytes.serialize(buffer);
+    await nullableBytes.serialize(buffer);
     const deserializedNullableBytes = NullableBytes.deserialize(new ReadBuffer(buffer.toBuffer()));
     expect(deserializedNullableBytes.value).toEqual(nullableBytes.value);
   });

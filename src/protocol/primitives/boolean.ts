@@ -17,7 +17,7 @@ export class Boolean implements Serializable {
     return new Boolean(buffer.readUInt8() !== 0);
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     buffer.writeUInt8(this.value ? 1 : 0);
   }
 }

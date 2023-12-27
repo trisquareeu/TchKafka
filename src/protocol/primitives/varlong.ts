@@ -43,7 +43,7 @@ export class VarLong implements Serializable {
     throw new TooManyBytesError(`The value exceeds the maximum allowed value of bytes (${this.MAX_BYTES_TO_DECODE})`);
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     let value = VarLong.encodeZigZag(this.value);
     while ((value & 0xffffffffffffff80n) !== 0n) {
       buffer.writeUInt8(Number((value & 0x7fn) | 0x80n));

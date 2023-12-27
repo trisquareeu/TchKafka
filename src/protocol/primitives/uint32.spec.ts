@@ -8,10 +8,10 @@ describe('UInt32', () => {
     { value: 4294967295, buffer: Buffer.from([0xff, 0xff, 0xff, 0xff]) }
   ];
 
-  it.each(cases)('value stored in the UInt32 should be correctly serialized', ({ value, buffer }) => {
+  it.each(cases)('value stored in the UInt32 should be correctly serialized', async ({ value, buffer }) => {
     const uint32 = new UInt32(value);
     const writeBuffer = new WriteBuffer();
-    uint32.serialize(writeBuffer);
+    await uint32.serialize(writeBuffer);
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
@@ -23,15 +23,18 @@ describe('UInt32', () => {
 
   const serializeAndDeserializeCases = [0, 1, 2 ^ (32 - 1)];
 
-  it.each(serializeAndDeserializeCases)('uInt32 should serialize and deserialize into the same value', (value) => {
-    const uint32 = new UInt32(value);
-    const writeBuffer = new WriteBuffer();
-    uint32.serialize(writeBuffer);
+  it.each(serializeAndDeserializeCases)(
+    'uInt32 should serialize and deserialize into the same value',
+    async (value) => {
+      const uint32 = new UInt32(value);
+      const writeBuffer = new WriteBuffer();
+      await uint32.serialize(writeBuffer);
 
-    const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-    const deserializedUInt32 = UInt32.deserialize(readBuffer);
-    expect(deserializedUInt32.value).toEqual(value);
-  });
+      const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
+      const deserializedUInt32 = UInt32.deserialize(readBuffer);
+      expect(deserializedUInt32.value).toEqual(value);
+    }
+  );
 
   it.each([-1, 4294967296])('should not accept values exceeding allowed range', (value) => {
     expect(() => new UInt32(value)).toThrow();

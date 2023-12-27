@@ -10,7 +10,7 @@ export class ApiVersionsRequestV0 implements Request<ApiVersionsResponseV0Data> 
 
   constructor(public readonly header: RequestHeaderV1) {}
 
-  public serialize(buffer: WriteBuffer): void {
-    this.header.serialize(buffer);
+  public async serialize(buffer: WriteBuffer): Promise<void> {
+    await this.header.serialize(buffer);
   }
 }

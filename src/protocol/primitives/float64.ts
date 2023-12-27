@@ -17,7 +17,7 @@ export class Float64 implements Serializable {
     return new Float64(buffer.readDouble());
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     buffer.writeDouble(this.value);
   }
 }

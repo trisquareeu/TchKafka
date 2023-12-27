@@ -38,7 +38,7 @@ export class UVarInt implements Serializable {
     throw new TooManyBytesError(`The value exceeds the maximum allowed value of bytes (${this.MAX_VALUE})`);
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     let remaining = this.value;
     while (remaining > 0b01111111) {
       //the first bit is a continuation bit

@@ -11,10 +11,10 @@ describe('Float64', () => {
     { value: -3.1050361846014175e231, buffer: Buffer.from([0xef, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]) }
   ];
 
-  it.each(cases)('value stored in the Float64 should be correctly serialized', ({ value, buffer }) => {
+  it.each(cases)('value stored in the Float64 should be correctly serialized', async ({ value, buffer }) => {
     const float64 = new Float64(value);
     const writeBuffer = new WriteBuffer();
-    float64.serialize(writeBuffer);
+    await float64.serialize(writeBuffer);
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
@@ -26,13 +26,16 @@ describe('Float64', () => {
 
   const serializeAndDeserializeCases = [-2147483648, -1, 0, 1, 2147483647];
 
-  it.each(serializeAndDeserializeCases)('float64 should serialize and deserialize into the same value', (value) => {
-    const float64 = new Float64(value);
-    const writeBuffer = new WriteBuffer();
-    float64.serialize(writeBuffer);
+  it.each(serializeAndDeserializeCases)(
+    'float64 should serialize and deserialize into the same value',
+    async (value) => {
+      const float64 = new Float64(value);
+      const writeBuffer = new WriteBuffer();
+      await float64.serialize(writeBuffer);
 
-    const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-    const deserializedFloat64 = Float64.deserialize(readBuffer);
-    expect(deserializedFloat64.value).toEqual(value);
-  });
+      const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
+      const deserializedFloat64 = Float64.deserialize(readBuffer);
+      expect(deserializedFloat64.value).toEqual(value);
+    }
+  );
 });

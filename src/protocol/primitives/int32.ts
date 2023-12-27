@@ -23,7 +23,7 @@ export class Int32 implements Serializable {
     return new Int32(buffer.readInt32());
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     buffer.writeInt32(this.value);
   }
 }

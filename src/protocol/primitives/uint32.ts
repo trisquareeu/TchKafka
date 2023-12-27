@@ -23,7 +23,7 @@ export class UInt32 implements Serializable {
     return new UInt32(buffer.readUInt32());
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     buffer.writeUInt32(this.value);
   }
 }

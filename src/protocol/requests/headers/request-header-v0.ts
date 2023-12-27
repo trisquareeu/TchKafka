@@ -17,9 +17,9 @@ export class RequestHeaderV0 implements RequestHeader {
     public readonly correlationId: Int32
   ) {}
 
-  public serialize(buffer: WriteBuffer): void {
-    this.requestApiKey.serialize(buffer);
-    this.requestApiVersion.serialize(buffer);
-    this.correlationId.serialize(buffer);
+  public async serialize(buffer: WriteBuffer): Promise<void> {
+    await this.requestApiKey.serialize(buffer);
+    await this.requestApiVersion.serialize(buffer);
+    await this.correlationId.serialize(buffer);
   }
 }

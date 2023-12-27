@@ -88,9 +88,9 @@ describe('Record', () => {
     })
   ];
 
-  it.each(records)('should serialize and deserialize into the same value', (record) => {
+  it.each(records)('should serialize and deserialize into the same value', async (record) => {
     const writeBuffer = new WriteBuffer();
-    record.serialize(writeBuffer);
+    await record.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
     const deserialized = Record.deserialize(readBuffer);
@@ -108,7 +108,7 @@ describe('Record', () => {
     expect(() => Record.deserialize(readBuffer)).toThrowError(BufferUnderflowError);
   });
 
-  it('should throw if there is no enough headers', () => {
+  it('should throw if there is no enough headers', async () => {
     const header = new RecordHeader(new RecordHeaderKey('foo'), new VarIntBytes(Buffer.from('bar')));
     const record = new Record({
       attributes,
@@ -120,10 +120,10 @@ describe('Record', () => {
     });
 
     const writeBuffer = new WriteBuffer();
-    record.serialize(writeBuffer);
+    await record.serialize(writeBuffer);
 
     const headerBuffer = new WriteBuffer();
-    header.serialize(headerBuffer);
+    await header.serialize(headerBuffer);
 
     const buffer = writeBuffer.toBuffer();
     const readBuffer = new ReadBuffer(buffer.subarray(0, buffer.length - headerBuffer.toBuffer().length));

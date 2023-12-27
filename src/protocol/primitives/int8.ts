@@ -22,7 +22,7 @@ export class Int8 implements Serializable {
     return new Int8(buffer.readInt8());
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     buffer.writeInt8(this.value);
   }
 }

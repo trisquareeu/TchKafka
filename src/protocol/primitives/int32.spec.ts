@@ -14,10 +14,10 @@ describe('Int32', () => {
     { value: -2147483648, buffer: Buffer.from([0x80, 0x00, 0x00, 0x00]) }
   ];
 
-  it.each(cases)('value stored in the Int32 should be correctly serialized', ({ value, buffer }) => {
+  it.each(cases)('value stored in the Int32 should be correctly serialized', async ({ value, buffer }) => {
     const int32 = new Int32(value);
     const writeBuffer = new WriteBuffer();
-    int32.serialize(writeBuffer);
+    await int32.serialize(writeBuffer);
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
@@ -29,10 +29,10 @@ describe('Int32', () => {
 
   const serializeAndDeserializeCases = [-2147483648, -1, 0, 1, 2147483647];
 
-  it.each(serializeAndDeserializeCases)('int32 should serialize and deserialize into the same value', (value) => {
+  it.each(serializeAndDeserializeCases)('int32 should serialize and deserialize into the same value', async (value) => {
     const int32 = new Int32(value);
     const writeBuffer = new WriteBuffer();
-    int32.serialize(writeBuffer);
+    await int32.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
     const deserializedInt32 = Int32.deserialize(readBuffer);

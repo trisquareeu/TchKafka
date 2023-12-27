@@ -171,27 +171,27 @@ export class RecordBatch implements Serializable {
 
     const body = new WriteBuffer();
 
-    attributes.serialize(body);
-    this.lastOffsetDelta.serialize(body);
-    this.baseTimestamp.serialize(body);
-    this.maxTimestamp.serialize(body);
-    this.producerId.serialize(body);
-    this.producerEpoch.serialize(body);
-    this.baseSequence.serialize(body);
+    await attributes.serialize(body);
+    await this.lastOffsetDelta.serialize(body);
+    await this.baseTimestamp.serialize(body);
+    await this.maxTimestamp.serialize(body);
+    await this.producerId.serialize(body);
+    await this.producerEpoch.serialize(body);
+    await this.baseSequence.serialize(body);
 
     const compressor = CompressorDeterminer.fromValue(this.attributes.compressionType);
     await new CompressedRecords(this.records, compressor).serialize(body);
 
     const batch = new WriteBuffer();
-    this.partitionLeaderEpoch.serialize(batch);
-    this.magic.serialize(batch);
-    new Int32(crc32c(body.toBuffer())).serialize(batch);
+    await this.partitionLeaderEpoch.serialize(batch);
+    await this.magic.serialize(batch);
+    await new Int32(crc32c(body.toBuffer())).serialize(batch);
     batch.writeBuffer(body.toBuffer());
 
     const batchBuffer = batch.toBuffer();
 
-    this.baseOffset.serialize(buffer);
-    new Int32(batchBuffer.length).serialize(buffer);
+    await this.baseOffset.serialize(buffer);
+    await new Int32(batchBuffer.length).serialize(buffer);
     buffer.writeBuffer(batchBuffer);
   }
 }

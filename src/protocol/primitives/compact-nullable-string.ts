@@ -24,8 +24,8 @@ export class CompactNullableString implements Serializable {
     return new CompactNullableString(compactNullableBytes.value.toString('utf-8'));
   }
 
-  public serialize(buffer: WriteBuffer): void {
+  public async serialize(buffer: WriteBuffer): Promise<void> {
     const nullableBuffer = this.value === null ? null : Buffer.from(this.value, 'utf-8');
-    new CompactNullableBytes(nullableBuffer).serialize(buffer);
+    await new CompactNullableBytes(nullableBuffer).serialize(buffer);
   }
 }

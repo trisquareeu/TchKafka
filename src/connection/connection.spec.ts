@@ -55,8 +55,8 @@ describe('connection', () => {
       )
     );
 
-    serverSocket.write(createResponseMessage(expectedString1, 0));
-    serverSocket.write(createResponseMessage(expectedString2, 1));
+    serverSocket.write(await createResponseMessage(expectedString1, 0));
+    serverSocket.write(await createResponseMessage(expectedString2, 1));
 
     const receivedData1 = await sentData1;
     const receivedData2 = await sentData2;
@@ -82,7 +82,7 @@ describe('connection', () => {
       )
     );
 
-    serverSocket.write(createResponseMessage(expectedString, 1));
+    serverSocket.write(await createResponseMessage(expectedString, 1));
 
     await expect(sentData).rejects.toThrowError(CorrelationIdMismatchError);
   });
@@ -102,7 +102,7 @@ describe('connection', () => {
       )
     );
 
-    serverSocket.write(createResponseMessage(expectedString, 1));
+    serverSocket.write(await createResponseMessage(expectedString, 1));
 
     const receivedData = await sentData;
 
@@ -111,9 +111,9 @@ describe('connection', () => {
   });
 });
 
-function createResponseMessage(data: Serializable, id: number): Buffer {
+async function createResponseMessage(data: Serializable, id: number): Promise<Buffer> {
   const wb = new WriteBuffer();
-  data.serialize(wb);
+  await data.serialize(wb);
   const dataBuffer = wb.toBuffer();
 
   const length = new Int32(dataBuffer.length + 4);
@@ -121,8 +121,8 @@ function createResponseMessage(data: Serializable, id: number): Buffer {
 
   const buffer = new WriteBuffer();
 
-  length.serialize(buffer);
-  correlationId.serialize(buffer);
+  await length.serialize(buffer);
+  await correlationId.serialize(buffer);
   buffer.writeBuffer(dataBuffer);
 
   return buffer.toBuffer();
@@ -145,8 +145,8 @@ class TestRequestV1337 implements Request<TestResponseData> {
     public readonly test: String
   ) {}
 
-  serialize(buffer: WriteBuffer): void {
-    this.header.serialize(buffer);
-    this.test.serialize(buffer);
+  public async serialize(buffer: WriteBuffer): Promise<void> {
+    await this.header.serialize(buffer);
+    await this.test.serialize(buffer);
   }
 }

@@ -51,10 +51,10 @@ describe('VarLong', () => {
     { value: Int64.MIN_VALUE, buffer: Buffer.from([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01]) }
   ];
 
-  it.each(cases)('should serialize value correctly', ({ value, buffer }) => {
+  it.each(cases)('should serialize value correctly', async ({ value, buffer }) => {
     const varlong = new VarLong(value);
     const writeBuffer = new WriteBuffer();
-    varlong.serialize(writeBuffer);
+    await varlong.serialize(writeBuffer);
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
@@ -64,11 +64,11 @@ describe('VarLong', () => {
     expect(varlong.value).toEqual(value);
   });
 
-  it.each(cases)('should serialize and deserialize into the same value', ({ value, buffer }) => {
+  it.each(cases)('should serialize and deserialize into the same value', async ({ value, buffer }) => {
     const varlong = new VarLong(value);
 
     const writeBuffer = new WriteBuffer();
-    varlong.serialize(writeBuffer);
+    await varlong.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(buffer);
     const deserialized = VarLong.deserialize(readBuffer);

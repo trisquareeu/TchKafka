@@ -13,10 +13,10 @@ describe('UVarInt', () => {
     { value: UVarInt.MAX_VALUE, buffer: Buffer.from([0xff, 0xff, 0xff, 0xff, 0x0f]) }
   ];
 
-  it.each(cases)('value stored in the UVarInt should be correctly serialized', ({ value, buffer }) => {
-    const uVarInt = new UVarInt(value);
+  it.each(cases)('value stored in the UVarInt should be correctly serialized', async ({ value, buffer }) => {
+    const uvarint = new UVarInt(value);
     const writeBuffer = new WriteBuffer();
-    uVarInt.serialize(writeBuffer);
+    await uvarint.serialize(writeBuffer);
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
@@ -34,10 +34,10 @@ describe('UVarInt', () => {
 
   const serializeAndDeserializeCases = [UVarInt.MIN_VALUE, 2 ** 31 - 1, UVarInt.MAX_VALUE];
 
-  it.each(serializeAndDeserializeCases)('it should serialize and deserialize into the same value', (value) => {
+  it.each(serializeAndDeserializeCases)('it should serialize and deserialize into the same value', async (value) => {
     const uvarint = new UVarInt(value);
     const writeBuffer = new WriteBuffer();
-    uvarint.serialize(writeBuffer);
+    await uvarint.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
     const deserializedUVarInt = UVarInt.deserialize(readBuffer);

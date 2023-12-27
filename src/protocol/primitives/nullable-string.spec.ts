@@ -13,10 +13,10 @@ describe('nullable string', () => {
     { value: '¤¤¤' }
   ];
 
-  it.each(cases)('serialize and deserialize into the same value', ({ value }) => {
+  it.each(cases)('serialize and deserialize into the same value', async ({ value }) => {
     const string = new NullableString(value);
     const writeBuffer = new WriteBuffer();
-    string.serialize(writeBuffer);
+    await string.serialize(writeBuffer);
 
     const buffer = writeBuffer.toBuffer();
     const readBuffer = new ReadBuffer(buffer);
@@ -24,19 +24,19 @@ describe('nullable string', () => {
     expect(deserializedString.value).toEqual(string.value);
   });
 
-  it('should throw if String length is greater than Int16.MAX_VALUE', () => {
+  it('should throw if String length is greater than Int16.MAX_VALUE', async () => {
     const string = new NullableString('a'.repeat(Int16.MAX_VALUE + 1));
     const writeBuffer = new WriteBuffer();
-    expect(() => string.serialize(writeBuffer)).toThrow();
+    await expect(() => string.serialize(writeBuffer)).rejects.toThrow();
   });
 
-  it('should correctly serialize and deserialize null values', () => {
+  it('should correctly serialize and deserialize null values', async () => {
     const nullValue = Buffer.from([0xff, 0xff]);
     const deserialized = NullableString.deserialize(new ReadBuffer(nullValue));
     expect(deserialized.value).toBeNull();
 
     const serialized = new WriteBuffer();
-    new NullableString(null).serialize(serialized);
+    await new NullableString(null).serialize(serialized);
     expect(serialized.toBuffer()).toEqual(nullValue);
   });
 });

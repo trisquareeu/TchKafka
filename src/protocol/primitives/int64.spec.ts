@@ -14,10 +14,10 @@ describe('Int64', () => {
     { value: BigInt('-9223372036854775808'), buffer: Buffer.from([0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]) }
   ];
 
-  it.each(cases)('value stored in the Int64 should be correctly serialized', ({ value, buffer }) => {
+  it.each(cases)('value stored in the Int64 should be correctly serialized', async ({ value, buffer }) => {
     const int64 = new Int64(value);
     const writeBuffer = new WriteBuffer();
-    int64.serialize(writeBuffer);
+    await int64.serialize(writeBuffer);
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
@@ -29,10 +29,10 @@ describe('Int64', () => {
 
   const serializeAndDeserializeCases = [BigInt(-2147483648), BigInt(-1), BigInt(0), BigInt(1), BigInt(2147483647)];
 
-  it.each(serializeAndDeserializeCases)('int64 should serialize and deserialize into the same value', (value) => {
+  it.each(serializeAndDeserializeCases)('int64 should serialize and deserialize into the same value', async (value) => {
     const int64 = new Int64(value);
     const writeBuffer = new WriteBuffer();
-    int64.serialize(writeBuffer);
+    await int64.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
     const deserializedInt64 = Int64.deserialize(readBuffer);
