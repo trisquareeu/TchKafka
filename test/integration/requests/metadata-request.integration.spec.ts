@@ -19,7 +19,7 @@ describe('MetadataRequest', () => {
   beforeAll(async () => {
     container = await new KafkaContainer('confluentinc/cp-kafka:7.3.2').withExposedPorts(port).withReuse().start();
 
-    brokerUtils = new KafkaBrokerUtils(container, port);
+    brokerUtils = new KafkaBrokerUtils(container);
     brokerUtils.createTopic(topicName);
   });
 

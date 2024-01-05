@@ -47,7 +47,6 @@ export class Session {
     );
 
     //todo #1: if ApiVersionsRequest version is not supported, fallback to v0
-    //todo #2: placeholder for authenticator
 
     return new Session(correlationId, connection, supportedApiVersions);
   }

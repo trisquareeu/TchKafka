@@ -18,7 +18,10 @@ export class Connection {
 
   constructor(private readonly socket: Socket) {
     this.responseReader = new ResponseReader(this.handleResponse.bind(this));
-    socket.on('data', (stream) => this.responseReader.maybeReadResponse(stream));
+    socket.on('data', (stream) => {
+      console.log('Received data', stream);
+      this.responseReader.maybeReadResponse(stream);
+    });
   }
 
   public async send<T extends Request<any>>(request: T): Promise<InstanceType<T['ExpectedResponseDataClass']>> {

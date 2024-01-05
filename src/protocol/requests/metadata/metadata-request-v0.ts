@@ -5,8 +5,6 @@ import { type RequestHeaderV1 } from '../headers';
 import { type Request } from '../request';
 
 export class MetadataRequestV0 implements Request<MetadataResponseV0Data> {
-  public readonly apiKey = 3;
-  public readonly apiVersion = 0;
   public readonly ExpectedResponseHeaderClass = ResponseHeaderV0;
   public readonly ExpectedResponseDataClass = MetadataResponseV0Data;
 
