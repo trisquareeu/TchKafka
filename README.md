@@ -14,6 +14,9 @@ and is not endorsed by The Apache Software Foundation.
 This library is currently in its early stages of development. 
 It's not recommended for production use yet as it's undergoing active development and improvements.
 
+## License 
+See [LICENSE](https://github.com/trisquareeu/TchKafka/blob/master/LICENSE) for more details.
+
 ## Contribution
 
 Feel free to explore, contribute, and provide feedback as we work towards a stable release!
