@@ -25,7 +25,10 @@ export class MetadataRequestBuilder implements RequestBuilder<MetadataRequest> {
         new Int32(correlationId),
         new NullableString(this.clientId)
       ),
-      new Array(this.topics.map((topic) => new String(topic)))
+      new Array(
+        this.topics.map((topic) => new String(topic)),
+        (topic, buffer) => topic.serialize(buffer)
+      )
     );
   }
 }
