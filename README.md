@@ -1,7 +1,8 @@
 # TchKafka
 
-**TchKafka is a Type-checked Kafka client** library designed to provide 
-first-class experience for TypeScript developers interacting with Kafka.
+**TchKafka is a Type-checked Kafka client** library for Node.js, 
+crafted to offer a first-class experience for TypeScript developers 
+when interacting with Apache Kafka.
 
 KAFKA is a registered trademark of The Apache Software Foundation and
 has been licensed for use by TchKafka. TchKafka has no affiliation with 
