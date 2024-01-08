@@ -2,18 +2,19 @@ import { createConnection, type Socket } from 'net';
 import { KafkaContainer, type StartedKafkaContainer } from '@testcontainers/kafka';
 import { Connection } from '../../../src/connection/connection';
 import {
+  ApiVersionsRequestBuilder,
   ApiVersionsRequestV0,
   ApiVersionsRequestV1,
   ApiVersionsRequestV2,
   ApiVersionsRequestV3
 } from '../../../src/protocol/requests';
-import { CompactString } from '../../../src/protocol/primitives';
 
 jest.setTimeout(120_000);
 
 const port = 9092;
 
 describe('ApiVersionsRequest', () => {
+  const apiVersionsRequestBuilder = new ApiVersionsRequestBuilder('clientId', 'the-best-kafka-client', '1.2.3');
   let socket: Socket;
   let connection: Connection;
   let container: StartedKafkaContainer;
@@ -37,7 +38,9 @@ describe('ApiVersionsRequest', () => {
 
   describe('v0', () => {
     it('should send the request and properly parse the response', async () => {
-      const request = new ApiVersionsRequestV0();
+      const request = apiVersionsRequestBuilder.build(0, 0, 0);
+      expect(request).toBeInstanceOf(ApiVersionsRequestV0);
+
       const response = await connection.send(request);
 
       expect(response).toBeInstanceOf(request.ExpectedResponseDataClass);
@@ -46,7 +49,9 @@ describe('ApiVersionsRequest', () => {
 
   describe('v1', () => {
     it('should send the request and properly parse the response', async () => {
-      const request = new ApiVersionsRequestV1();
+      const request = apiVersionsRequestBuilder.build(1, 0, 1);
+      expect(request).toBeInstanceOf(ApiVersionsRequestV1);
+
       const response = await connection.send(request);
 
       expect(response).toBeInstanceOf(request.ExpectedResponseDataClass);
@@ -55,7 +60,9 @@ describe('ApiVersionsRequest', () => {
 
   describe('v2', () => {
     it('should send the request and properly parse the response', async () => {
-      const request = new ApiVersionsRequestV2();
+      const request = apiVersionsRequestBuilder.build(2, 0, 2);
+      expect(request).toBeInstanceOf(ApiVersionsRequestV2);
+
       const response = await connection.send(request);
 
       expect(response).toBeInstanceOf(request.ExpectedResponseDataClass);
@@ -64,7 +71,9 @@ describe('ApiVersionsRequest', () => {
 
   describe('v3', () => {
     it('should send the request and properly parse the response', async () => {
-      const request = new ApiVersionsRequestV3(new CompactString('the-best-kafka-client'), new CompactString('1.0.0'));
+      const request = apiVersionsRequestBuilder.build(3, 0, 3);
+      expect(request).toBeInstanceOf(ApiVersionsRequestV3);
+
       const response = await connection.send(request);
 
       expect(response).toBeInstanceOf(request.ExpectedResponseDataClass);
