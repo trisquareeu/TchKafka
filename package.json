@@ -55,6 +55,7 @@
   "dependencies": {
     "@mongodb-js/zstd": "1.2.0",
     "crc-32": "1.2.2",
+    "isutf8": "4.0.0",
     "lz4": "0.6.5",
     "reflect-metadata": "0.2.1",
     "simple-zstd": "1.4.2",
