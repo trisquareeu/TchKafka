@@ -1,7 +1,7 @@
 import { TagSection } from '../../commons';
 import { CompactString, Int16, Int32, NullableString } from '../../primitives';
 import { RequestHeaderV1, RequestHeaderV2 } from '../headers';
-import { type RequestBuilder } from '../request-builder';
+import { RequestBuilderTemplate } from '../request-builder';
 import { ApiVersionsRequestV0 } from './api-versions-request-v0';
 import { ApiVersionsRequestV1 } from './api-versions-request-v1';
 import { ApiVersionsRequestV2 } from './api-versions-request-v2';
@@ -13,22 +13,18 @@ export type ApiVersionsRequest =
   | ApiVersionsRequestV2
   | ApiVersionsRequestV3;
 
-export class ApiVersionsRequestBuilder implements RequestBuilder<ApiVersionsRequest> {
+export class ApiVersionsRequestBuilder extends RequestBuilderTemplate<ApiVersionsRequest> {
   private static readonly apiKey = 18;
 
   constructor(
     private readonly clientId: string | null,
     private readonly clientSoftwareName: string,
     private readonly clientSoftwareVersion: string
-  ) {}
-
-  public getApiKey(): number {
-    return ApiVersionsRequestBuilder.apiKey;
+  ) {
+    super(ApiVersionsRequestBuilder.apiKey, 0, 3);
   }
 
-  public build(correlationId: number, minVersion: number, maxVersion: number): ApiVersionsRequest {
-    this.validateSupportedVersions(minVersion, maxVersion);
-
+  protected buildRequest(correlationId: number, _minVersion: number, maxVersion: number): ApiVersionsRequest {
     switch (maxVersion) {
       case 0:
         return new ApiVersionsRequestV0(
@@ -71,20 +67,6 @@ export class ApiVersionsRequestBuilder implements RequestBuilder<ApiVersionsRequ
           new CompactString(this.clientSoftwareVersion),
           new TagSection()
         );
-    }
-  }
-
-  private validateSupportedVersions(minVersion: number, maxVersion: number): void {
-    if (minVersion < 0) {
-      throw new Error(``); // TODO Add some proper exception
-    }
-
-    if (minVersion > maxVersion) {
-      throw new Error(``); // TODO Add some proper exception
-    }
-
-    if (minVersion > 3) {
-      throw new Error(``); // TODO Add some proper exception
     }
   }
 }
