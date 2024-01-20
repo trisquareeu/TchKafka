@@ -1,18 +1,40 @@
 import { type ScramCredentials } from './scram-credentials';
 import { type ScramMechanism } from './scram-mechanism';
 import { type ServerFirstMessage } from './server-first-message';
-import { createHash, createHmac, pbkdf2Sync, randomBytes } from 'crypto';
+import { createHash, createHmac, pbkdf2, randomBytes } from 'crypto';
 import { xor } from './buffer-xor';
+import { promisify } from 'util';
+
+const asyncRandomBytes = promisify(randomBytes);
+const asyncPbkdf2 = promisify(pbkdf2);
 
 export class ScramAuthentication {
   private static readonly GS2_HEADER = 'n,,';
-  private readonly clientNonce: string;
 
-  constructor(
+  private constructor(
     private readonly credentials: ScramCredentials,
-    private readonly mechanism: ScramMechanism
-  ) {
-    this.clientNonce = this.newNonce();
+    private readonly mechanism: ScramMechanism,
+    private readonly clientNonce: string
+  ) {}
+
+  public static async nextAuthentication(
+    credentials: ScramCredentials,
+    mechanism: ScramMechanism
+  ): Promise<ScramAuthentication> {
+    return new ScramAuthentication(credentials, mechanism, await ScramAuthentication.newNonce());
+  }
+
+  /**
+   * According to the RFC-5802 5.1. SCRAM Attributes, the nonce is a sequence of
+   * random printable ASCII characters, excluding the ',' character. The sequence
+   * must be different for each authorization attempt.
+   *
+   * @see https://datatracker.ietf.org/doc/html/rfc5802#section-5.1
+   */
+  private static async newNonce(): Promise<string> {
+    const random = await asyncRandomBytes(16);
+
+    return random.toString('base64');
   }
 
   /**
@@ -26,12 +48,12 @@ export class ScramAuthentication {
    * @see https://datatracker.ietf.org/doc/html/rfc5802#section-3
    * @see https://datatracker.ietf.org/doc/html/rfc5802#section-7
    */
-  public getClientFinalMessage(serverFirstMessage: ServerFirstMessage): string {
+  public async getClientFinalMessage(serverFirstMessage: ServerFirstMessage): Promise<string> {
     if (!serverFirstMessage.serverNonce.startsWith(this.clientNonce)) {
       throw new Error('Invalid server nonce: does not start with client nonce');
     }
     //ClientKey = HMAC(SaltedPassword, "Client Key")
-    const clientKey = createHmac(this.mechanism.name, this.getSaltedPassword(serverFirstMessage))
+    const clientKey = createHmac(this.mechanism.name, await this.getSaltedPassword(serverFirstMessage))
       .update('Client Key')
       .digest();
 
@@ -73,14 +95,14 @@ export class ScramAuthentication {
    * @see https://datatracker.ietf.org/doc/html/rfc5802#section-5.1
    * @param serverFirstMessage
    */
-  private getSaltedPassword(serverFirstMessage: ServerFirstMessage): Buffer {
+  private async getSaltedPassword(serverFirstMessage: ServerFirstMessage): Promise<Buffer> {
     if (serverFirstMessage.iterations < this.mechanism.minimumIterations) {
       throw new Error(
         `Requested iterations ${serverFirstMessage.iterations} is less than the minimum ${this.mechanism.minimumIterations} for ${this.mechanism.name}`
       );
     }
 
-    return pbkdf2Sync(
+    return asyncPbkdf2(
       this.credentials.password,
       serverFirstMessage.salt,
       serverFirstMessage.iterations,
@@ -88,17 +110,6 @@ export class ScramAuthentication {
       this.mechanism.name
     );
   }
-
-  /**
-   * According to the RFC-5802 5.1. SCRAM Attributes, the nonce is a sequence of
-   * random printable ASCII characters, excluding the ',' character. The sequence
-   * must be different for each authorization attempt.
-   *
-   * @see https://datatracker.ietf.org/doc/html/rfc5802#section-5.1
-   */
-  private newNonce = (): string => {
-    return randomBytes(16).toString('base64');
-  };
 
   /**
    * According to the RFC-5802 7. Formal Syntax, the client-first-message-bare has a following format:
