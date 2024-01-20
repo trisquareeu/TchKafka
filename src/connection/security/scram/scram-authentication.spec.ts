@@ -4,22 +4,22 @@ import { ScramSha512 } from './scram-mechanism';
 import { ServerFirstMessage } from './server-first-message';
 
 describe('scram authentication', () => {
-  it('should create unique nonce everytime authentication is created', () => {
+  it('should create unique nonce everytime authentication is created', async () => {
     const credentials = new ScramCredentials(Buffer.from('username'), Buffer.from('password'));
     const clientFirstMessages = new Set<string>();
 
     for (let i = 0; i < 10; i++) {
-      const auth = new ScramAuthentication(credentials, ScramSha512);
+      const auth = await ScramAuthentication.nextAuthentication(credentials, ScramSha512);
       clientFirstMessages.add(auth.getClientFirstMessage());
     }
 
     expect(clientFirstMessages.size).toBe(10);
   });
 
-  it('should create client first message in correct format', () => {
+  it('should create client first message in correct format', async () => {
     const username = 'username';
     const credentials = new ScramCredentials(Buffer.from(username), Buffer.from('password'));
-    const auth = new ScramAuthentication(credentials, ScramSha512);
+    const auth = await ScramAuthentication.nextAuthentication(credentials, ScramSha512);
     const clientFirstMessage = auth.getClientFirstMessage();
 
     expect(clientFirstMessage).toMatch(
@@ -27,16 +27,16 @@ describe('scram authentication', () => {
     );
   });
 
-  it('should return client final message in expected format', () => {
+  it('should return client final message in expected format', async () => {
     const username = 'username';
     const credentials = new ScramCredentials(Buffer.from(username), Buffer.from('password'));
-    const auth = new ScramAuthentication(credentials, ScramSha512);
+    const auth = await ScramAuthentication.nextAuthentication(credentials, ScramSha512);
 
     const clientFirstMessage = auth.getClientFirstMessage();
     const clientNonce = clientFirstMessage.split('r=')[1];
     const serverNonce = `${clientNonce}serverNonce`;
     const serverFirstMessage = `r=${serverNonce},s=${Buffer.from('serversalt').toString('base64')},i=4096`;
-    const clientFinalMessage = auth.getClientFinalMessage(new ServerFirstMessage(serverFirstMessage));
+    const clientFinalMessage = await auth.getClientFinalMessage(new ServerFirstMessage(serverFirstMessage));
 
     const escapedServerNonce = serverNonce.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 
@@ -45,32 +45,32 @@ describe('scram authentication', () => {
     );
   });
 
-  it('should throw when server requested less than 4096 iterations', () => {
+  it('should throw when server requested less than 4096 iterations', async () => {
     const username = 'username';
     const credentials = new ScramCredentials(Buffer.from(username), Buffer.from('password'));
-    const auth = new ScramAuthentication(credentials, ScramSha512);
+    const auth = await ScramAuthentication.nextAuthentication(credentials, ScramSha512);
 
     const clientFirstMessage = auth.getClientFirstMessage();
     const clientNonce = clientFirstMessage.split('r=')[1];
     const serverNonce = `${clientNonce}serverNonce`;
     const serverFirstMessage = `r=${serverNonce},s=${Buffer.from('serversalt').toString('base64')},i=4095`;
 
-    expect(() => auth.getClientFinalMessage(new ServerFirstMessage(serverFirstMessage))).toThrow(
+    await expect(() => auth.getClientFinalMessage(new ServerFirstMessage(serverFirstMessage))).rejects.toThrow(
       'Requested iterations 4095 is less than the minimum 4096 for sha512'
     );
   });
 
-  it('should throw when server returned s-nonce not starting with c-nonce', () => {
+  it('should throw when server returned s-nonce not starting with c-nonce', async () => {
     const username = 'username';
     const credentials = new ScramCredentials(Buffer.from(username), Buffer.from('password'));
-    const auth = new ScramAuthentication(credentials, ScramSha512);
+    const auth = await ScramAuthentication.nextAuthentication(credentials, ScramSha512);
 
     const clientFirstMessage = auth.getClientFirstMessage();
     const clientNonce = clientFirstMessage.split('r=')[1];
     const serverNonce = `serverNonce${clientNonce}`;
     const serverFirstMessage = `r=${serverNonce},s=${Buffer.from('serversalt').toString('base64')},i=4096`;
 
-    expect(() => auth.getClientFinalMessage(new ServerFirstMessage(serverFirstMessage))).toThrow(
+    await expect(() => auth.getClientFinalMessage(new ServerFirstMessage(serverFirstMessage))).rejects.toThrow(
       'Invalid server nonce: does not start with client nonce'
     );
   });
