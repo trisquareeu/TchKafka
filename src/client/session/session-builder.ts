@@ -28,7 +28,7 @@ export class SessionBuilder {
       this.clientOptions.clientId,
       this.clientOptions.clientSoftwareName,
       this.clientOptions.clientSoftwareVersion
-    ).build(connection.getSentRequestsCount(), 0, 3);
+    ).build(0, 3);
 
     const { apiVersions } = await connection.send(request);
     if (apiVersions.value === null) {

@@ -30,33 +30,19 @@ describe('connection', () => {
   it('should resolve promises in correct order', async () => {
     const expectedString1 = new String('String 1');
     const expectedString2 = new String('String 2');
-    const sentData1 = connection.send(
-      new TestRequestV1337(
-        new RequestHeaderV2(
-          new Int16(99),
-          new Int16(1337),
-          new Int32(0),
-          new NullableString('client'),
-          new TagSection()
-        ),
-        expectedString1
-      )
+    const testRequest1 = new TestRequestV1337(
+      new RequestHeaderV2(new Int16(99), new Int16(1337), new NullableString('client'), new TagSection()),
+      expectedString1
     );
-    const sentData2 = connection.send(
-      new TestRequestV1337(
-        new RequestHeaderV2(
-          new Int16(99),
-          new Int16(1337),
-          new Int32(1),
-          new NullableString('client'),
-          new TagSection()
-        ),
-        expectedString2
-      )
+    const sentData1 = connection.send(testRequest1);
+    const testRequest2 = new TestRequestV1337(
+      new RequestHeaderV2(new Int16(99), new Int16(1337), new NullableString('client'), new TagSection()),
+      expectedString2
     );
+    const sentData2 = connection.send(testRequest2);
 
-    serverSocket.write(await createResponseMessage(expectedString1, 0));
-    serverSocket.write(await createResponseMessage(expectedString2, 1));
+    serverSocket.write(await createResponseMessage(expectedString1, testRequest1.header.correlationId.value));
+    serverSocket.write(await createResponseMessage(expectedString2, testRequest2.header.correlationId.value));
 
     const receivedData1 = await sentData1;
     const receivedData2 = await sentData2;
@@ -69,40 +55,26 @@ describe('connection', () => {
 
   it('should throw if there is correlationId mismatch', async () => {
     const expectedString = new String('String 1');
-    const sentData = connection.send(
-      new TestRequestV1337(
-        new RequestHeaderV2(
-          new Int16(99),
-          new Int16(1337),
-          new Int32(5),
-          new NullableString('client'),
-          new TagSection()
-        ),
-        expectedString
-      )
+    const testRequest = new TestRequestV1337(
+      new RequestHeaderV2(new Int16(99), new Int16(1337), new NullableString('client'), new TagSection()),
+      expectedString
     );
+    const sentData = connection.send(testRequest);
 
-    serverSocket.write(await createResponseMessage(expectedString, 1));
+    serverSocket.write(await createResponseMessage(expectedString, testRequest.header.correlationId.value + 1));
 
     await expect(sentData).rejects.toThrowError(CorrelationIdMismatchError);
   });
 
   it('should receive full response', async () => {
     const expectedString = new String("I'll be blazingly fast!");
-    const sentData = connection.send(
-      new TestRequestV1337(
-        new RequestHeaderV2(
-          new Int16(99),
-          new Int16(1337),
-          new Int32(1),
-          new NullableString('client'),
-          new TagSection()
-        ),
-        expectedString
-      )
+    const testRequest = new TestRequestV1337(
+      new RequestHeaderV2(new Int16(99), new Int16(1337), new NullableString('client'), new TagSection()),
+      expectedString
     );
+    const sentData = connection.send(testRequest);
 
-    serverSocket.write(await createResponseMessage(expectedString, 1));
+    serverSocket.write(await createResponseMessage(expectedString, testRequest.header.correlationId.value));
 
     const receivedData = await sentData;
 

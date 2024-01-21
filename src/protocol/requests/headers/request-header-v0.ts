@@ -1,6 +1,6 @@
-import type { Int16, Int32 } from '../../primitives';
+import type { Int16 } from '../../primitives';
 import type { WriteBuffer } from '../../serialization';
-import type { RequestHeader } from './request-header';
+import { RequestHeader } from './request-header';
 
 /**
  * Request Header v0 => request_api_key request_api_version correlation_id
@@ -10,12 +10,13 @@ import type { RequestHeader } from './request-header';
  *
  * @see https://kafka.apache.org/24/protocol.html#protocol_messages
  */
-export class RequestHeaderV0 implements RequestHeader {
+export class RequestHeaderV0 extends RequestHeader {
   constructor(
     public readonly requestApiKey: Int16,
-    public readonly requestApiVersion: Int16,
-    public readonly correlationId: Int32
-  ) {}
+    public readonly requestApiVersion: Int16
+  ) {
+    super();
+  }
 
   public async serialize(buffer: WriteBuffer): Promise<void> {
     await this.requestApiKey.serialize(buffer);

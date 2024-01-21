@@ -21,25 +21,25 @@ describe('ApiVersionsRequestBuilder', () => {
   it.each(cases)(
     'should build request $expected.name with minVersion $minVersion and maxVersion $maxVersion',
     ({ minVersion, maxVersion, expected }) => {
-      const request = requestBuilder.build(123, minVersion, maxVersion);
+      const request = requestBuilder.build(minVersion, maxVersion);
 
       expect(request).toBeInstanceOf(expected);
     }
   );
 
   it('should throw if required range does not overlap with supported one', () => {
-    expect(() => requestBuilder.build(123, 5, 10)).toThrow(IllegalArgumentError);
+    expect(() => requestBuilder.build(5, 10)).toThrow(IllegalArgumentError);
   });
 
   it('should throw if minVersion is higher than maxVersion', () => {
-    expect(() => requestBuilder.build(123, 10, 5)).toThrow(IllegalArgumentError);
+    expect(() => requestBuilder.build(10, 5)).toThrow(IllegalArgumentError);
   });
 
   it('should throw if minVersion is negative', () => {
-    expect(() => requestBuilder.build(123, -10, 10)).toThrow(IllegalArgumentError);
+    expect(() => requestBuilder.build(-10, 10)).toThrow(IllegalArgumentError);
   });
 
   it('should throw if maxVersion is negative', () => {
-    expect(() => requestBuilder.build(123, -10, -10)).toThrow(IllegalArgumentError);
+    expect(() => requestBuilder.build(-10, -10)).toThrow(IllegalArgumentError);
   });
 });

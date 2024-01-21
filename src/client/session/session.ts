@@ -14,7 +14,7 @@ export class Session {
       throw new Error(`API version not supported: ${requestBuilder.getApiKey()}`);
     }
 
-    const request = requestBuilder.build(this.connection.getSentRequestsCount(), apiVersions.min, apiVersions.max);
+    const request = requestBuilder.build(apiVersions.min, apiVersions.max);
 
     return this.connection.send(request);
   }
