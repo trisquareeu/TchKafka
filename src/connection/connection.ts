@@ -1,7 +1,7 @@
 import { type Socket } from 'net';
 import { type ReadBuffer, WriteBuffer } from '../protocol/serialization';
 import { ResponseReader } from './response-reader';
-import { type RequestResponseType, type Request } from '../protocol/requests';
+import { type Request, type RequestResponseType } from '../protocol/requests';
 import { CorrelationIdMismatchError } from '../protocol/exceptions';
 
 type InflightRequest<T> = {
@@ -13,8 +13,8 @@ type InflightRequest<T> = {
 
 export class Connection {
   private readonly responseReader: ResponseReader;
-
   private readonly inFlightRequests: InflightRequest<any>[] = [];
+  private sentRequestsCounter: number = 0;
 
   constructor(private readonly socket: Socket) {
     this.responseReader = new ResponseReader(this.handleResponse.bind(this));
@@ -28,11 +28,16 @@ export class Connection {
     const header = Buffer.alloc(4);
     header.writeInt32BE(serializedRequest.toBuffer().length);
     this.socket.write(Buffer.concat([header, serializedRequest.toBuffer()]));
+    this.sentRequestsCounter++;
     //todo: implement problem handling
 
     return new Promise<RequestResponseType<T>>((resolve, reject) => {
       this.inFlightRequests.push({ request, resolve, reject, correlationId: request.header.correlationId.value });
     });
+  }
+
+  public getSentRequestsCount(): number {
+    return this.sentRequestsCounter;
   }
 
   public isHealthy(): boolean {

@@ -1,6 +1,6 @@
 import { createConnection } from 'net';
 import { ApiVersionsRequestBuilder } from '../protocol/requests/api-versions/api-versions-request-builder';
-import { type RequestBuilderTemplate, type RequestBuilderResponseType } from '../protocol/requests/request-builder';
+import { type RequestBuilderResponseType, type RequestBuilderTemplate } from '../protocol/requests/request-builder';
 import { Connection } from './connection';
 
 type SupportedApiVersions = {
@@ -12,7 +12,6 @@ type SupportedApiVersions = {
 
 export class Session {
   constructor(
-    private correlationId: number,
     private readonly connection: Connection,
     private readonly apiVersions: SupportedApiVersions
   ) {}
@@ -25,10 +24,9 @@ export class Session {
     clientSoftwareVersion: string
   ): Promise<Session> {
     const connection = new Connection(createConnection({ host, port }));
-    let correlationId = 0;
 
     const request = new ApiVersionsRequestBuilder(clientId, clientSoftwareName, clientSoftwareVersion).build(
-      correlationId++,
+      connection.getSentRequestsCount(),
       0,
       3
     );
@@ -49,7 +47,7 @@ export class Session {
     //todo #1: if ApiVersionsRequest version is not supported, fallback to v0
     //todo #2: placeholder for authenticator
 
-    return new Session(correlationId, connection, supportedApiVersions);
+    return new Session(connection, supportedApiVersions);
   }
 
   public async send<T extends RequestBuilderTemplate<any>>(requestBuilder: T): Promise<RequestBuilderResponseType<T>> {
@@ -58,16 +56,12 @@ export class Session {
       throw new Error(`API version not supported: ${requestBuilder.getApiKey()}`);
     }
 
-    const request = requestBuilder.build(this.nextCorrelationId(), apiVersions.min, apiVersions.max);
+    const request = requestBuilder.build(this.connection.getSentRequestsCount(), apiVersions.min, apiVersions.max);
 
     return this.connection.send(request);
   }
 
   public isHealthy(): boolean {
     return this.connection.isHealthy();
-  }
-
-  private nextCorrelationId(): number {
-    return this.correlationId++;
   }
 }
