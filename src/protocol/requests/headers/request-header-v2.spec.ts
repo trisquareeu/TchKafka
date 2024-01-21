@@ -1,4 +1,4 @@
-import { CompactNullableString, Int16, Int32, NullableString } from '../../primitives';
+import { CompactNullableString, Int16, NullableString } from '../../primitives';
 import { WriteBuffer } from '../../serialization';
 import { RequestHeaderV2 } from './request-header-v2';
 import { TaggedField, TagSection } from '../../commons';
@@ -8,56 +8,49 @@ describe('RequestHeaderV2', () => {
     const header = new RequestHeaderV2(
       new Int16(99),
       new Int16(88),
-      new Int32(123456789),
       new NullableString('someClientId'),
       new TagSection()
     );
     const buffer = new WriteBuffer();
     await header.serialize(buffer);
 
-    expect(buffer.toBuffer()).toEqual(
-      Buffer.from([
-        0x00, 0x63, 0x00, 0x58, 0x07, 0x5b, 0xcd, 0x15, 0x00, 0x0c, 0x73, 0x6f, 0x6d, 0x65, 0x43, 0x6c, 0x69, 0x65,
-        0x6e, 0x74, 0x49, 0x64, 0x00
-      ])
-    );
+    const serialized = buffer.toBuffer().toString('hex');
+    expect(serialized.substring(0, 4)).toEqual('0063');
+    expect(serialized.substring(4, 8)).toEqual('0058');
+    expect(serialized.substring(16, 44)).toEqual('000c736f6d65436c69656e744964');
+    expect(serialized.substring(44)).toEqual('00');
   });
 
   it('should properly serialize when ClientId is set to empty string', async () => {
-    const header = new RequestHeaderV2(
-      new Int16(99),
-      new Int16(88),
-      new Int32(123456789),
-      new NullableString(''),
-      new TagSection()
-    );
+    const header = new RequestHeaderV2(new Int16(99), new Int16(88), new NullableString(''), new TagSection());
 
     const buffer = new WriteBuffer();
     await header.serialize(buffer);
 
-    expect(buffer.toBuffer()).toEqual(Buffer.from([0x00, 0x63, 0x00, 0x58, 0x07, 0x5b, 0xcd, 0x15, 0x00, 0x00, 0x00]));
+    const serialized = buffer.toBuffer().toString('hex');
+    expect(serialized.substring(0, 4)).toEqual('0063');
+    expect(serialized.substring(4, 8)).toEqual('0058');
+    expect(serialized.substring(16, 20)).toEqual('0000');
+    expect(serialized.substring(20)).toEqual('00');
   });
 
   it('should properly serialize when ClientId is set to null', async () => {
-    const header = new RequestHeaderV2(
-      new Int16(99),
-      new Int16(88),
-      new Int32(123456789),
-      new NullableString(null),
-      new TagSection()
-    );
+    const header = new RequestHeaderV2(new Int16(99), new Int16(88), new NullableString(null), new TagSection());
 
     const buffer = new WriteBuffer();
     await header.serialize(buffer);
 
-    expect(buffer.toBuffer()).toEqual(Buffer.from([0x00, 0x63, 0x00, 0x58, 0x07, 0x5b, 0xcd, 0x15, 0xff, 0xff, 0x00]));
+    const serialized = buffer.toBuffer().toString('hex');
+    expect(serialized.substring(0, 4)).toEqual('0063');
+    expect(serialized.substring(4, 8)).toEqual('0058');
+    expect(serialized.substring(16, 20)).toEqual('ffff');
+    expect(serialized.substring(20)).toEqual('00');
   });
 
   it('should properly serialize when using tagged fields', async () => {
     const header = new RequestHeaderV2(
       new Int16(99),
       new Int16(88),
-      new Int32(123456789),
       new NullableString('someClientId'),
       new TagSection([await TaggedField.from(0, new CompactNullableString('someClusterId'))])
     );
@@ -65,12 +58,10 @@ describe('RequestHeaderV2', () => {
     const buffer = new WriteBuffer();
     await header.serialize(buffer);
 
-    expect(buffer.toBuffer()).toEqual(
-      Buffer.from([
-        0x00, 0x63, 0x00, 0x58, 0x07, 0x5b, 0xcd, 0x15, 0x00, 0x0c, 0x73, 0x6f, 0x6d, 0x65, 0x43, 0x6c, 0x69, 0x65,
-        0x6e, 0x74, 0x49, 0x64, 0x01, 0x00, 0x0e, 0x0e, 0x73, 0x6f, 0x6d, 0x65, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65,
-        0x72, 0x49, 0x64
-      ])
-    );
+    const serialized = buffer.toBuffer().toString('hex');
+    expect(serialized.substring(0, 4)).toEqual('0063');
+    expect(serialized.substring(4, 8)).toEqual('0058');
+    expect(serialized.substring(16, 44)).toEqual('000c736f6d65436c69656e744964');
+    expect(serialized.substring(44)).toEqual('01000e0e736f6d65436c75737465724964');
   });
 });

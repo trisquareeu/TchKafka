@@ -16,12 +16,12 @@ export abstract class RequestBuilderTemplate<T extends Request<any>> {
     return this.apiKey;
   }
 
-  public build(correlationId: number, minVersion: number, maxVersion: number): T {
+  public build(minVersion: number, maxVersion: number): T {
     this.validateVersionIsNotNegative(minVersion, maxVersion);
     this.validateVersionOverlap(minVersion, maxVersion);
     this.validateVersionIsSupported(minVersion, maxVersion);
 
-    return this.buildRequest(correlationId, minVersion, maxVersion);
+    return this.buildRequest(minVersion, maxVersion);
   }
 
   private validateVersionIsNotNegative(minVersion: number, maxVersion: number): void {
@@ -44,5 +44,5 @@ export abstract class RequestBuilderTemplate<T extends Request<any>> {
     }
   }
 
-  protected abstract buildRequest(correlationId: number, minVersion: number, maxVersion: number): T;
+  protected abstract buildRequest(minVersion: number, maxVersion: number): T;
 }

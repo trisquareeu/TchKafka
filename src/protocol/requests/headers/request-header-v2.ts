@@ -1,6 +1,6 @@
-import type { Int16, Int32, NullableString } from '../../primitives';
+import type { Int16, NullableString } from '../../primitives';
 import type { WriteBuffer } from '../../serialization';
-import type { RequestHeader } from './request-header';
+import { RequestHeader } from './request-header';
 import type { TagSection } from '../../commons';
 
 /**
@@ -12,14 +12,15 @@ import type { TagSection } from '../../commons';
  *
  *  @see https://kafka.apache.org/24/protocol.html#protocol_messages
  */
-export class RequestHeaderV2 implements RequestHeader {
+export class RequestHeaderV2 extends RequestHeader {
   constructor(
     public readonly requestApiKey: Int16,
     public readonly requestApiVersion: Int16,
-    public readonly correlationId: Int32,
     public readonly clientId: NullableString,
     public readonly tagBuffer: TagSection
-  ) {}
+  ) {
+    super();
+  }
 
   public async serialize(buffer: WriteBuffer): Promise<void> {
     await this.requestApiKey.serialize(buffer);

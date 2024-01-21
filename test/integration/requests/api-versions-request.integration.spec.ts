@@ -38,7 +38,7 @@ describe('ApiVersionsRequest', () => {
 
   describe('v0', () => {
     it('should send the request and properly parse the response', async () => {
-      const request = apiVersionsRequestBuilder.build(0, 0, 0);
+      const request = apiVersionsRequestBuilder.build(0, 0);
       expect(request).toBeInstanceOf(ApiVersionsRequestV0);
 
       const response = await connection.send(request);
@@ -49,7 +49,7 @@ describe('ApiVersionsRequest', () => {
 
   describe('v1', () => {
     it('should send the request and properly parse the response', async () => {
-      const request = apiVersionsRequestBuilder.build(1, 0, 1);
+      const request = apiVersionsRequestBuilder.build(0, 1);
       expect(request).toBeInstanceOf(ApiVersionsRequestV1);
 
       const response = await connection.send(request);
@@ -60,7 +60,7 @@ describe('ApiVersionsRequest', () => {
 
   describe('v2', () => {
     it('should send the request and properly parse the response', async () => {
-      const request = apiVersionsRequestBuilder.build(2, 0, 2);
+      const request = apiVersionsRequestBuilder.build(0, 2);
       expect(request).toBeInstanceOf(ApiVersionsRequestV2);
 
       const response = await connection.send(request);
@@ -71,7 +71,7 @@ describe('ApiVersionsRequest', () => {
 
   describe('v3', () => {
     it('should send the request and properly parse the response', async () => {
-      const request = apiVersionsRequestBuilder.build(3, 0, 3);
+      const request = apiVersionsRequestBuilder.build(0, 3);
       expect(request).toBeInstanceOf(ApiVersionsRequestV3);
 
       const response = await connection.send(request);

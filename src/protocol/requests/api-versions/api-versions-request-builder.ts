@@ -1,5 +1,5 @@
 import { TagSection } from '../../commons';
-import { CompactString, Int16, Int32, NullableString } from '../../primitives';
+import { CompactString, Int16, NullableString } from '../../primitives';
 import { RequestHeaderV1, RequestHeaderV2 } from '../headers';
 import { RequestBuilderTemplate } from '../request-builder';
 import { ApiVersionsRequestV0 } from './api-versions-request-v0';
@@ -24,14 +24,13 @@ export class ApiVersionsRequestBuilder extends RequestBuilderTemplate<ApiVersion
     super(ApiVersionsRequestBuilder.apiKey, 0, 3);
   }
 
-  protected buildRequest(correlationId: number, _minVersion: number, maxVersion: number): ApiVersionsRequest {
+  protected buildRequest(_minVersion: number, maxVersion: number): ApiVersionsRequest {
     switch (maxVersion) {
       case 0:
         return new ApiVersionsRequestV0(
           new RequestHeaderV1(
             new Int16(ApiVersionsRequestBuilder.apiKey),
             new Int16(0),
-            new Int32(correlationId),
             new NullableString(this.clientId)
           )
         );
@@ -40,7 +39,6 @@ export class ApiVersionsRequestBuilder extends RequestBuilderTemplate<ApiVersion
           new RequestHeaderV1(
             new Int16(ApiVersionsRequestBuilder.apiKey),
             new Int16(1),
-            new Int32(correlationId),
             new NullableString(this.clientId)
           )
         );
@@ -49,7 +47,6 @@ export class ApiVersionsRequestBuilder extends RequestBuilderTemplate<ApiVersion
           new RequestHeaderV1(
             new Int16(ApiVersionsRequestBuilder.apiKey),
             new Int16(2),
-            new Int32(correlationId),
             new NullableString(this.clientId)
           )
         );
@@ -59,7 +56,6 @@ export class ApiVersionsRequestBuilder extends RequestBuilderTemplate<ApiVersion
           new RequestHeaderV2(
             new Int16(ApiVersionsRequestBuilder.apiKey),
             new Int16(3),
-            new Int32(correlationId),
             new NullableString(this.clientId),
             new TagSection()
           ),
