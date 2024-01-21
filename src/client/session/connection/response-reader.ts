@@ -1,4 +1,4 @@
-import { ReadBuffer } from '../protocol/serialization';
+import { ReadBuffer } from '../../../protocol/serialization';
 
 type FullResponseCallback = (response: ReadBuffer) => any;
 export class ResponseReader {

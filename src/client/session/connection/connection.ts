@@ -1,8 +1,8 @@
 import { type Socket } from 'net';
-import { type ReadBuffer, WriteBuffer } from '../protocol/serialization';
+import { type Request, type RequestResponseType } from '../../../protocol/requests';
+import { type ReadBuffer, WriteBuffer } from '../../../protocol/serialization';
+import { CorrelationIdMismatchError } from '../../../protocol/exceptions';
 import { ResponseReader } from './response-reader';
-import { type Request, type RequestResponseType } from '../protocol/requests';
-import { CorrelationIdMismatchError } from '../protocol/exceptions';
 
 type InflightRequest<T> = {
   request: Request<T>;

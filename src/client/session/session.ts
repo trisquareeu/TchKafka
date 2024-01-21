@@ -1,4 +1,4 @@
-import { type RequestBuilderResponseType, type RequestBuilderTemplate } from '../protocol/requests/request-builder';
+import { type RequestBuilderResponseType, type RequestBuilderTemplate } from '../../protocol/requests/request-builder';
 import { type Connection } from './connection';
 import { type SupportedApiVersions } from './supported-api-versions';
 

@@ -1,9 +1,8 @@
-import { type SocketFactory } from './socket';
+import { Connection, type SocketFactory } from './connection';
 import { type SessionOptions } from './session-options';
 import { type SupportedApiVersions } from './supported-api-versions';
 import { Session } from './session';
-import { Connection } from './connection';
-import { ApiVersionsRequestBuilder } from '../protocol/requests';
+import { ApiVersionsRequestBuilder } from '../../protocol/requests';
 
 export class SessionBuilder {
   constructor(

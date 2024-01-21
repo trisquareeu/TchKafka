@@ -1,6 +1,5 @@
 import { createConnection, type Socket } from 'net';
 import { KafkaContainer, type StartedKafkaContainer } from '@testcontainers/kafka';
-import { Connection } from '../../../src/connection/connection';
 import {
   ApiVersionsRequestBuilder,
   ApiVersionsRequestV0,
@@ -8,6 +7,7 @@ import {
   ApiVersionsRequestV2,
   ApiVersionsRequestV3
 } from '../../../src/protocol/requests';
+import { Connection } from '../../../src/client/session';
 
 jest.setTimeout(120_000);
 
