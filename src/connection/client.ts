@@ -1,5 +1,6 @@
-import { type RequestBuilderTemplate, type RequestBuilderResponseType } from '../protocol/requests/request-builder';
-import { Session } from './session';
+import { type RequestBuilderResponseType, type RequestBuilderTemplate } from '../protocol/requests/request-builder';
+import { type Session } from './session';
+import { type SessionBuilder } from './session-builder';
 
 export class Client {
   private session: Session | null = null;
@@ -7,9 +8,7 @@ export class Client {
   constructor(
     private readonly host: string,
     private readonly port: number,
-    private readonly clientId: string | null,
-    private readonly clientSoftwareName: string,
-    private readonly clientSoftwareVersion: string
+    private readonly sessionBuilder: SessionBuilder
   ) {}
 
   public async send<T extends RequestBuilderTemplate<any>>(requestBuilder: T): Promise<RequestBuilderResponseType<T>> {
@@ -21,13 +20,7 @@ export class Client {
   private async getOrCreateSession(): Promise<Session> {
     //todo: consider changing this condition
     if (this.session === null || !this.session.isHealthy()) {
-      this.session = await Session.create(
-        this.host,
-        this.port,
-        this.clientId,
-        this.clientSoftwareName,
-        this.clientSoftwareVersion
-      );
+      this.session = await this.sessionBuilder.newSession(this.port, this.host);
     }
 
     return this.session;
