@@ -1,6 +1,5 @@
 import { type RequestBuilderResponseType, type RequestBuilderTemplate } from '../protocol/requests/request-builder';
-import { type Session } from './session';
-import { type SessionBuilder } from './session-builder';
+import { type Session, type SessionBuilder } from './session';
 
 export class Client {
   private session: Session | null = null;

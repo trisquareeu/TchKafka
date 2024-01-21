@@ -1,11 +1,11 @@
 import Mitm from 'mitm';
 import Net from 'net';
-import { TagSection } from '../protocol/commons';
-import { CorrelationIdMismatchError } from '../protocol/exceptions';
-import { Int16, Int32, NullableString, String } from '../protocol/primitives';
-import { RequestHeaderV2, type Request } from '../protocol/requests';
-import { ResponseHeaderV0 } from '../protocol/responses';
-import { WriteBuffer, type ReadBuffer, type Serializable } from '../protocol/serialization';
+import { TagSection } from '../../../protocol/commons';
+import { CorrelationIdMismatchError } from '../../../protocol/exceptions';
+import { Int16, Int32, NullableString, String } from '../../../protocol/primitives';
+import { type Request, RequestHeaderV2 } from '../../../protocol/requests';
+import { ResponseHeaderV0 } from '../../../protocol/responses';
+import { type ReadBuffer, type Serializable, WriteBuffer } from '../../../protocol/serialization';
 import { Connection } from './connection';
 
 describe('connection', () => {
