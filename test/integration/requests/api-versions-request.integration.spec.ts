@@ -1,5 +1,6 @@
-import { createConnection, type Socket } from 'net';
 import { KafkaContainer, type StartedKafkaContainer } from '@testcontainers/kafka';
+import { type Socket } from 'net';
+import { Connection } from '../../../src/client/session';
 import {
   ApiVersionsRequestBuilder,
   ApiVersionsRequestV0,
@@ -7,7 +8,7 @@ import {
   ApiVersionsRequestV2,
   ApiVersionsRequestV3
 } from '../../../src/protocol/requests';
-import { Connection } from '../../../src/client/session';
+import { KafkaContainerUtils } from '../utils/kafka-container-utils';
 
 jest.setTimeout(120_000);
 
@@ -18,9 +19,11 @@ describe('ApiVersionsRequest', () => {
   let socket: Socket;
   let connection: Connection;
   let container: StartedKafkaContainer;
+  let kafkaContainerUtils: KafkaContainerUtils;
 
   beforeAll(async () => {
     container = await new KafkaContainer('confluentinc/cp-kafka:7.3.2').withExposedPorts(port).withReuse().start();
+    kafkaContainerUtils = new KafkaContainerUtils(container);
   });
 
   afterAll(async () => {
@@ -28,7 +31,7 @@ describe('ApiVersionsRequest', () => {
   });
 
   beforeEach(async () => {
-    socket = await createConnectedSocket(container.getHost(), container.getMappedPort(port));
+    socket = await kafkaContainerUtils.getConnectedSocket(port);
     connection = new Connection(socket);
   });
 
@@ -80,17 +83,3 @@ describe('ApiVersionsRequest', () => {
     });
   });
 });
-
-function createConnectedSocket(host: string, port: number): Promise<Socket> {
-  const socket = createConnection(port, host);
-
-  return new Promise((resolve, reject) => {
-    socket.on('connect', () => {
-      resolve(socket);
-    });
-
-    socket.on('error', (error) => {
-      reject(error);
-    });
-  });
-}
