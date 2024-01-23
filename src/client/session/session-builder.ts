@@ -1,9 +1,9 @@
+import { ApiVersionsRequestBuilder } from '../../protocol/requests';
 import { Connection, type SocketFactory } from './connection';
-import { type SessionOptions } from './session-options';
-import { type SupportedApiVersions } from './supported-api-versions';
 import { type Authenticator } from './security';
 import { Session } from './session';
-import { ApiVersionsRequestBuilder } from '../../protocol/requests';
+import { type SessionOptions } from './session-options';
+import { type SupportedApiVersions } from './supported-api-versions';
 
 export class SessionBuilder {
   constructor(
