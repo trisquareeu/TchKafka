@@ -1,6 +1,5 @@
-import { ReadBuffer } from '../../../protocol/serialization';
+type FullResponseCallback = (response: Buffer) => any;
 
-type FullResponseCallback = (response: ReadBuffer) => any;
 export class ResponseReader {
   private buffer: Buffer = Buffer.from([]);
 
@@ -12,7 +11,7 @@ export class ResponseReader {
     if (responseLength > 0) {
       const response = this.buffer.subarray(4, responseLength); //take the response from the socket buffer without the first int32 indicating the response length
       this.buffer = this.buffer.subarray(responseLength); //remove the response from the socket buffer
-      this.onFullResponseReceived(new ReadBuffer(response));
+      this.onFullResponseReceived(response);
     }
   }
 

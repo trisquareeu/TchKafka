@@ -1,124 +1,122 @@
-import Mitm from 'mitm';
-import Net from 'net';
-import { TagSection } from '../../../protocol/commons';
-import { CorrelationIdMismatchError } from '../../../protocol/exceptions';
-import { Int16, Int32, NullableString, String } from '../../../protocol/primitives';
-import { type Request, RequestHeaderV2 } from '../../../protocol/requests';
-import { ResponseHeaderV0 } from '../../../protocol/responses';
-import { type ReadBuffer, type Serializable, WriteBuffer } from '../../../protocol/serialization';
+import { type DeepMocked, createMock } from '@golevelup/ts-jest';
+import { Buffer } from 'buffer';
+import { Socket } from 'net';
+import { Int32 } from '../../../protocol/primitives';
+import { type RequestHeader, type Request } from '../../../protocol/requests';
 import { Connection } from './connection';
+import { ReadBuffer } from '../../../protocol/serialization';
 
 describe('connection', () => {
-  let mitm: ReturnType<typeof Mitm>;
-  let serverSocket: Net.Socket;
+  let clientSocket: MockedSocket;
   let connection: Connection;
 
   beforeEach(async () => {
-    mitm = Mitm();
-
-    const serverSocketPromise = new Promise<Net.Socket>((resolve) => {
-      mitm.on('connection', (socket: Net.Socket) => {
-        resolve(socket);
-      });
-    });
-
-    const clientSocket = Net.connect(22, 'example.org');
+    clientSocket = new MockedSocket();
     connection = new Connection(clientSocket);
-    serverSocket = await serverSocketPromise;
   });
 
-  it('should resolve promises in correct order', async () => {
-    const expectedString1 = new String('String 1');
-    const expectedString2 = new String('String 2');
-    const testRequest1 = new TestRequestV1337(
-      new RequestHeaderV2(new Int16(99), new Int16(1337), new NullableString('client'), new TagSection()),
-      expectedString1
-    );
-    const sentData1 = connection.send(testRequest1);
-    const testRequest2 = new TestRequestV1337(
-      new RequestHeaderV2(new Int16(99), new Int16(1337), new NullableString('client'), new TagSection()),
-      expectedString2
-    );
-    const sentData2 = connection.send(testRequest2);
+  it('should be able to wait for all parts of data', async () => {
+    const request = new RequestMock().withDeserializeData({});
+    const result = connection.send(request.mock);
+    const spy = jest.spyOn(request.mock.ExpectedResponseHeaderClass, 'deserialize');
 
-    serverSocket.write(await createResponseMessage(expectedString1, testRequest1.header.correlationId.value));
-    serverSocket.write(await createResponseMessage(expectedString2, testRequest2.header.correlationId.value));
+    //the payload length indicator is received in two parts
+    setImmediate(() => clientSocket.emit('data', Buffer.from([0x00, 0x00])));
+    setTimeout(() => clientSocket.emit('data', Buffer.from([0x00, 0x05])), 25);
 
-    const receivedData1 = await sentData1;
-    const receivedData2 = await sentData2;
+    //the payload is received in three parts
+    setTimeout(() => clientSocket.emit('data', Buffer.from([0x01, 0x02])), 50);
+    setTimeout(() => clientSocket.emit('data', Buffer.from([0x03, 0x04])), 75);
+    setTimeout(() => clientSocket.emit('data', Buffer.from([0x05])), 100);
 
-    expect(receivedData1).toBeInstanceOf(TestResponseData);
-    expect(receivedData1.test.value).toEqual(expectedString1.value);
-    expect(receivedData2).toBeInstanceOf(TestResponseData);
-    expect(receivedData2.test.value).toEqual(expectedString2.value);
+    //the result should be complete and consolidated
+    await expect(result).resolves.toBeDefined();
+    expect(spy).toHaveBeenCalledWith(new ReadBuffer(Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05])));
   });
 
-  it('should throw if there is correlationId mismatch', async () => {
-    const expectedString = new String('String 1');
-    const testRequest = new TestRequestV1337(
-      new RequestHeaderV2(new Int16(99), new Int16(1337), new NullableString('client'), new TagSection()),
-      expectedString
-    );
-    const sentData = connection.send(testRequest);
+  it('should correctly handle the empty payloads', async () => {
+    const request = new RequestMock().withDeserializeData({});
+    const result = connection.send(request.mock);
+    const spy = jest.spyOn(request.mock.ExpectedResponseHeaderClass, 'deserialize');
 
-    serverSocket.write(await createResponseMessage(expectedString, testRequest.header.correlationId.value + 1));
+    setImmediate(() => clientSocket.emit('data', Buffer.from([0x00, 0x00, 0x00, 0x00])));
 
-    await expect(sentData).rejects.toThrowError(CorrelationIdMismatchError);
+    await expect(result).resolves.toBeDefined();
+    expect(clientSocket.dataSent).toEqual(Buffer.from([0x00, 0x00, 0x00, 0x00]));
+    expect(spy).toHaveBeenCalledWith(new ReadBuffer(Buffer.from([])));
   });
 
-  it('should receive full response', async () => {
-    const expectedString = new String("I'll be blazingly fast!");
-    const testRequest = new TestRequestV1337(
-      new RequestHeaderV2(new Int16(99), new Int16(1337), new NullableString('client'), new TagSection()),
-      expectedString
-    );
-    const sentData = connection.send(testRequest);
+  it('should send data and resolve promises in correct order', async () => {
+    const request1 = new RequestMock(133).withSerialize(Buffer.from([0xfa])).withDeserializeData('response1');
+    const result1 = connection.send(request1.mock);
+    const spy1 = jest.spyOn(request1.mock.ExpectedResponseHeaderClass, 'deserialize');
+    setTimeout(() => clientSocket.emit('data', Buffer.from([0x00, 0x00, 0x00, 0x01, 0xf1])), 25);
 
-    serverSocket.write(await createResponseMessage(expectedString, testRequest.header.correlationId.value));
+    const request2 = new RequestMock(213).withSerialize(Buffer.from([0xfb])).withDeserializeData('response2');
+    const result2 = connection.send(request2.mock);
+    const spy2 = jest.spyOn(request2.mock.ExpectedResponseHeaderClass, 'deserialize');
+    setTimeout(() => clientSocket.emit('data', Buffer.from([0x00, 0x00, 0x00, 0x02, 0xf2, 0xf2])), 50);
 
-    const receivedData = await sentData;
+    await expect(result1).resolves.toEqual('response1');
+    await expect(result2).resolves.toEqual('response2');
+    expect(spy1).toHaveBeenCalledWith(new ReadBuffer(Buffer.from([0xf1])));
+    expect(spy2).toHaveBeenCalledWith(new ReadBuffer(Buffer.from([0xf2, 0xf2])));
 
-    expect(receivedData).toBeInstanceOf(TestResponseData);
-    expect(receivedData.test.value).toEqual(expectedString.value);
+    expect(clientSocket.dataSent).toEqual(Buffer.from([0x00, 0x00, 0x00, 0x01, 0xfa, 0x00, 0x00, 0x00, 0x01, 0xfb]));
+  });
+
+  it("should throw an error if response correlationId doesn't match", async () => {
+    const request = new RequestMock(10)
+      .withDeserializeHeader({ correlationId: new Int32(50) } as RequestHeader)
+      .withDeserializeData({});
+    const result = connection.send(request.mock);
+
+    setImmediate(() => clientSocket.emit('data', Buffer.from([0x00, 0x00, 0x00, 0x01, 0xf1])));
+
+    await expect(result).rejects.toThrow('Received response with unexpected correlation ID');
   });
 });
 
-async function createResponseMessage(data: Serializable, id: number): Promise<Buffer> {
-  const wb = new WriteBuffer();
-  await data.serialize(wb);
-  const dataBuffer = wb.toBuffer();
+class MockedSocket extends Socket {
+  public dataSent: Buffer = Buffer.alloc(0);
 
-  const length = new Int32(dataBuffer.length + 4);
-  const correlationId = new Int32(id);
+  public override write(data: Uint8Array | string): boolean {
+    this.dataSent = Buffer.concat([this.dataSent, Buffer.from(data)]);
 
-  const buffer = new WriteBuffer();
-
-  await length.serialize(buffer);
-  await correlationId.serialize(buffer);
-  buffer.writeBuffer(dataBuffer);
-
-  return buffer.toBuffer();
-}
-
-class TestResponseData {
-  constructor(public readonly test: String) {}
-
-  public static deserialize(buffer: ReadBuffer): TestResponseData {
-    return new TestResponseData(String.deserialize(buffer));
+    return true;
   }
 }
 
-class TestRequestV1337 implements Request<TestResponseData> {
-  public readonly ExpectedResponseDataClass = TestResponseData;
-  public readonly ExpectedResponseHeaderClass = ResponseHeaderV0;
+class RequestMock {
+  public readonly mock: DeepMocked<Request<any>>;
 
-  constructor(
-    public readonly header: RequestHeaderV2,
-    public readonly test: String
-  ) {}
+  constructor(private readonly correlationId: number = 0) {
+    this.mock = createMock<Request<any>>({ header: { correlationId: new Int32(this.correlationId) } });
+    this.withDeserializeHeader();
+    this.withDeserializeData();
+  }
 
-  public async serialize(buffer: WriteBuffer): Promise<void> {
-    await this.header.serialize(buffer);
-    await this.test.serialize(buffer);
+  public withSerialize(toSerialize?: Buffer): this {
+    this.mock.serialize.mockImplementation(async (buffer) => {
+      if (toSerialize !== undefined) {
+        buffer.writeBuffer(toSerialize);
+      }
+    });
+
+    return this;
+  }
+
+  public withDeserializeHeader(header?: RequestHeader): this {
+    this.mock.ExpectedResponseHeaderClass.deserialize = jest
+      .fn()
+      .mockReturnValue(header ?? { correlationId: new Int32(this.correlationId) });
+
+    return this;
+  }
+
+  public withDeserializeData(data?: any): this {
+    this.mock.ExpectedResponseDataClass.deserialize = jest.fn().mockReturnValue(data);
+
+    return this;
   }
 }
