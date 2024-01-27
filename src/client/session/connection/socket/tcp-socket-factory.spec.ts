@@ -1,7 +1,7 @@
 import net, { Socket } from 'net';
 import { TcpSocketFactory } from './tcp-socket-factory';
 
-describe('tcp client socket factory', () => {
+describe('TcpSocketFactory', () => {
   let socketMock: SocketMock;
 
   beforeEach(() => {

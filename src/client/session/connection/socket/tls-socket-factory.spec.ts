@@ -2,7 +2,7 @@ import { Socket } from 'net';
 import tls, { TLSSocket } from 'tls';
 import { TlsSocketFactory } from './tls-socket-factory';
 
-describe('tls client socket factory', () => {
+describe('TlsSocketFactory', () => {
   let socketMock: SocketMock;
 
   beforeEach(() => {

@@ -6,7 +6,7 @@ import { type RequestHeader, type Request } from '../../../protocol/requests';
 import { Connection } from './connection';
 import { ReadBuffer } from '../../../protocol/serialization';
 
-describe('connection', () => {
+describe('Connection', () => {
   let clientSocket: MockedSocket;
   let connection: Connection;
 

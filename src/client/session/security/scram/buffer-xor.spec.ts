@@ -1,6 +1,6 @@
 import { xor } from './buffer-xor';
 
-describe('buffer xor', () => {
+describe('Buffer XOR', () => {
   it('should correctly xor two bytes in the right order', () => {
     const byteA = 0b0000110011000000;
     const byteB = 0b0000101010100000;

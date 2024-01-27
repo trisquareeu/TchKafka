@@ -1,6 +1,6 @@
 import { ScramCredentials } from './scram-credentials';
 
-describe('scram credentials', () => {
+describe('ScramCredentials', () => {
   it('should normalize username', () => {
     const inputString = '1234567890-=[];\'",./\\!@#$%^&*()_+';
     const credentials = new ScramCredentials(Buffer.from(inputString), Buffer.from(inputString));

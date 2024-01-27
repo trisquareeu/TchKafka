@@ -2,7 +2,7 @@ import { ReadBuffer, WriteBuffer } from '../serialization';
 import { Int16 } from './int16';
 import { NullableString } from './nullable-string';
 
-describe('nullable string', () => {
+describe('NullableString', () => {
   const cases = [
     { value: null },
     { value: '' },
