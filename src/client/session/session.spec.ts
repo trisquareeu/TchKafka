@@ -4,7 +4,7 @@ import { type Connection } from './connection';
 import { Session } from './session';
 import { type SupportedApiVersions } from './supported-api-versions';
 
-describe('session', () => {
+describe('Session', () => {
   let connection: DeepMocked<Connection>;
   let requestBuilder: DeepMocked<RequestBuilderTemplate<any>>;
 

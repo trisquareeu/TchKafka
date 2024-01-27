@@ -1,6 +1,6 @@
 import { ServerFirstMessage } from './server-first-message';
 
-describe('server first message', () => {
+describe('ServerFirstMessage', () => {
   it('should correctly parse formatted input', () => {
     const serverNonce = 'rOprNGfwEbeRWgbNEkqO%hvYDpWUa2RaTCAfuxFIlj)hNlF$k0';
     const salt = 'saltValue';

@@ -1,7 +1,7 @@
 import { checkValueIsInRange, toUnsigned } from './utils';
 import { IllegalArgumentError, ValueNotInAllowedRangeError } from '../exceptions';
 
-describe('utils', () => {
+describe('Utils', () => {
   describe('toUnsigned', () => {
     const cases = [
       { signedValue: -1 & 0xff, expected: 2 ** 8 - 1 },

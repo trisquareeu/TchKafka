@@ -3,7 +3,7 @@ import { ScramCredentials } from './scram-credentials';
 import { ScramSha512 } from './scram-mechanism';
 import { ServerFirstMessage } from './server-first-message';
 
-describe('scram authentication', () => {
+describe('ScramAuthentication', () => {
   it('should create unique nonce everytime authentication is created', async () => {
     const credentials = new ScramCredentials(Buffer.from('username'), Buffer.from('password'));
     const clientFirstMessages = new Set<string>();
