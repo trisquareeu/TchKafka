@@ -1,2 +1,1 @@
-export * from './scram';
-export * from './authenticator';
+export * from './authenticators';

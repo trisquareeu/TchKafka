@@ -1,6 +1,7 @@
 import { TagSection } from '../../commons';
 import { CompactString, Int16, NullableString } from '../../primitives';
 import { RequestHeaderV1, RequestHeaderV2 } from '../headers';
+import { type RequestResponseType } from '../request';
 import { RequestBuilderTemplate } from '../request-builder';
 import { ApiVersionsRequestV0 } from './api-versions-request-v0';
 import { ApiVersionsRequestV1 } from './api-versions-request-v1';
@@ -12,6 +13,8 @@ export type ApiVersionsRequest =
   | ApiVersionsRequestV1
   | ApiVersionsRequestV2
   | ApiVersionsRequestV3;
+
+export type ApiKey = NonNullable<RequestResponseType<ApiVersionsRequest>['apiVersions']['value']>[number];
 
 export class ApiVersionsRequestBuilder extends RequestBuilderTemplate<ApiVersionsRequest> {
   private static readonly apiKey = 18;
