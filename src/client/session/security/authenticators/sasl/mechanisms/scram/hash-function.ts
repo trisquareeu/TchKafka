@@ -7,20 +7,20 @@ const MINIMUM_ITERATIONS = 4096;
  *
  * @see https://kafka.apache.org/documentation/#security_sasl_scram_security
  */
-export type ScramMechanism = {
-  readonly name: string;
+export type HashFunction = {
   readonly hashLengthInBytes: number;
   readonly minimumIterations: number;
+  readonly digest: string;
 };
 
-export const ScramSha256: ScramMechanism = {
+export const Sha256: HashFunction = {
   hashLengthInBytes: 256 / 8,
   minimumIterations: MINIMUM_ITERATIONS,
-  name: 'sha256'
+  digest: 'sha256'
 };
 
-export const ScramSha512: ScramMechanism = {
+export const Sha512: HashFunction = {
   hashLengthInBytes: 512 / 8,
   minimumIterations: MINIMUM_ITERATIONS,
-  name: 'sha512'
+  digest: 'sha512'
 };

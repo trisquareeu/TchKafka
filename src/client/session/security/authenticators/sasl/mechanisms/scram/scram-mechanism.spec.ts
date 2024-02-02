@@ -1,7 +1,7 @@
-import { ScramAuthentication } from './scram-authentication';
 import { ScramCredentials } from './scram-credentials';
-import { ScramSha512 } from './scram-mechanism';
+import { Sha512 } from './hash-function';
 import { ServerFirstMessage } from './server-first-message';
+import { ScramMechanism } from './scram-mechanism';
 
 describe('ScramAuthentication', () => {
   it('should create unique nonce everytime authentication is created', async () => {
@@ -9,7 +9,7 @@ describe('ScramAuthentication', () => {
     const clientFirstMessages = new Set<string>();
 
     for (let i = 0; i < 10; i++) {
-      const auth = await ScramAuthentication.nextAuthentication(credentials, ScramSha512);
+      const auth = await ScramMechanism.next(credentials, Sha512);
       clientFirstMessages.add(auth.getClientFirstMessage());
     }
 
@@ -19,7 +19,7 @@ describe('ScramAuthentication', () => {
   it('should create client first message in correct format', async () => {
     const username = 'username';
     const credentials = new ScramCredentials(Buffer.from(username), Buffer.from('password'));
-    const auth = await ScramAuthentication.nextAuthentication(credentials, ScramSha512);
+    const auth = await ScramMechanism.next(credentials, Sha512);
     const clientFirstMessage = auth.getClientFirstMessage();
 
     expect(clientFirstMessage).toMatch(
@@ -30,7 +30,7 @@ describe('ScramAuthentication', () => {
   it('should return client final message in expected format', async () => {
     const username = 'username';
     const credentials = new ScramCredentials(Buffer.from(username), Buffer.from('password'));
-    const auth = await ScramAuthentication.nextAuthentication(credentials, ScramSha512);
+    const auth = await ScramMechanism.next(credentials, Sha512);
 
     const clientFirstMessage = auth.getClientFirstMessage();
     const clientNonce = clientFirstMessage.split('r=')[1];
@@ -48,7 +48,7 @@ describe('ScramAuthentication', () => {
   it('should throw when server requested less than 4096 iterations', async () => {
     const username = 'username';
     const credentials = new ScramCredentials(Buffer.from(username), Buffer.from('password'));
-    const auth = await ScramAuthentication.nextAuthentication(credentials, ScramSha512);
+    const auth = await ScramMechanism.next(credentials, Sha512);
 
     const clientFirstMessage = auth.getClientFirstMessage();
     const clientNonce = clientFirstMessage.split('r=')[1];
@@ -63,7 +63,7 @@ describe('ScramAuthentication', () => {
   it('should throw when server returned s-nonce not starting with c-nonce', async () => {
     const username = 'username';
     const credentials = new ScramCredentials(Buffer.from(username), Buffer.from('password'));
-    const auth = await ScramAuthentication.nextAuthentication(credentials, ScramSha512);
+    const auth = await ScramMechanism.next(credentials, Sha512);
 
     const clientFirstMessage = auth.getClientFirstMessage();
     const clientNonce = clientFirstMessage.split('r=')[1];

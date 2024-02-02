@@ -1,5 +1,5 @@
 import { type ScramCredentials } from './scram-credentials';
-import { type ScramMechanism } from './scram-mechanism';
+import { type HashFunction } from './hash-function';
 import { type ServerFirstMessage } from './server-first-message';
 import { createHash, createHmac, pbkdf2, randomBytes } from 'crypto';
 import { xor } from './buffer-xor';
@@ -8,20 +8,17 @@ import { promisify } from 'util';
 const asyncRandomBytes = promisify(randomBytes);
 const asyncPbkdf2 = promisify(pbkdf2);
 
-export class ScramAuthentication {
+export class ScramMechanism {
   private static readonly GS2_HEADER = 'n,,';
 
   private constructor(
     private readonly credentials: ScramCredentials,
-    private readonly mechanism: ScramMechanism,
+    private readonly hashFunction: HashFunction,
     private readonly clientNonce: string
   ) {}
 
-  public static async nextAuthentication(
-    credentials: ScramCredentials,
-    mechanism: ScramMechanism
-  ): Promise<ScramAuthentication> {
-    return new ScramAuthentication(credentials, mechanism, await ScramAuthentication.newNonce());
+  public static async next(credentials: ScramCredentials, mechanism: HashFunction): Promise<ScramMechanism> {
+    return new ScramMechanism(credentials, mechanism, await ScramMechanism.newNonce());
   }
 
   /**
@@ -41,7 +38,7 @@ export class ScramAuthentication {
    * @see https://datatracker.ietf.org/doc/html/rfc5802#section-7
    */
   public getClientFirstMessage(): string {
-    return `${ScramAuthentication.GS2_HEADER}${this.getClientFirstMessageBare()}`;
+    return `${ScramMechanism.GS2_HEADER}${this.getClientFirstMessageBare()}`;
   }
 
   /**
@@ -53,12 +50,12 @@ export class ScramAuthentication {
       throw new Error('Invalid server nonce: does not start with client nonce');
     }
     //ClientKey = HMAC(SaltedPassword, "Client Key")
-    const clientKey = createHmac(this.mechanism.name, await this.getSaltedPassword(serverFirstMessage))
+    const clientKey = createHmac(this.hashFunction.digest, await this.getSaltedPassword(serverFirstMessage))
       .update('Client Key')
       .digest();
 
     //StoredKey = H(ClientKey)
-    const storedKey = createHash(this.mechanism.name).update(clientKey).digest();
+    const storedKey = createHash(this.hashFunction.digest).update(clientKey).digest();
 
     //AuthMessage = client-first-message-bare + "," server-first-message + "," client-final-message-without-proof
     const clientFirstMessageBare = this.getClientFirstMessageBare();
@@ -66,7 +63,7 @@ export class ScramAuthentication {
     const authMessage = `${clientFirstMessageBare},${serverFirstMessage.original},${clientFinalMessageWithoutProof}`;
 
     //ClientSignature = HMAC(StoredKey, AuthMessage)
-    const clientSignature = createHmac(this.mechanism.name, storedKey).update(authMessage).digest();
+    const clientSignature = createHmac(this.hashFunction.digest, storedKey).update(authMessage).digest();
 
     //ClientProof = ClientKey XOR ClientSignature
     const clientProof = xor(clientKey, clientSignature).toString('base64');
@@ -78,7 +75,7 @@ export class ScramAuthentication {
    * @see https://datatracker.ietf.org/doc/html/rfc5802#section-7
    */
   private getClientFinalMessageWithoutProof(serverFirstMessage: ServerFirstMessage): string {
-    const channelBinding = `c=${Buffer.from(ScramAuthentication.GS2_HEADER).toString('base64')}`;
+    const channelBinding = `c=${Buffer.from(ScramMechanism.GS2_HEADER).toString('base64')}`;
 
     return `${channelBinding},r=${serverFirstMessage.serverNonce}`;
   }
@@ -96,9 +93,9 @@ export class ScramAuthentication {
    * @param serverFirstMessage
    */
   private async getSaltedPassword(serverFirstMessage: ServerFirstMessage): Promise<Buffer> {
-    if (serverFirstMessage.iterations < this.mechanism.minimumIterations) {
+    if (serverFirstMessage.iterations < this.hashFunction.minimumIterations) {
       throw new Error(
-        `Requested iterations ${serverFirstMessage.iterations} is less than the minimum ${this.mechanism.minimumIterations} for ${this.mechanism.name}`
+        `Requested iterations ${serverFirstMessage.iterations} is less than the minimum ${this.hashFunction.minimumIterations} for ${this.hashFunction.digest}`
       );
     }
 
@@ -106,8 +103,8 @@ export class ScramAuthentication {
       this.credentials.password,
       serverFirstMessage.salt,
       serverFirstMessage.iterations,
-      this.mechanism.hashLengthInBytes,
-      this.mechanism.name
+      this.hashFunction.hashLengthInBytes,
+      this.hashFunction.digest
     );
   }
 
