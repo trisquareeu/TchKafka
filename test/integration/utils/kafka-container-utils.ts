@@ -1,9 +1,9 @@
-import { type StartedKafkaContainer } from '@testcontainers/kafka';
 import { createConnection, type Socket } from 'net';
+import { type StartedTestContainer } from 'testcontainers';
 import { connect } from 'tls';
 
 export class KafkaContainerUtils {
-  constructor(private readonly kafkaContainer: StartedKafkaContainer) {}
+  constructor(private readonly kafkaContainer: StartedTestContainer) {}
 
   public async createTopic(topic: string, partitions = 1, replicationFactor = 1): Promise<string> {
     const result = await this.kafkaContainer.exec([
