@@ -1,4 +1,4 @@
-import { type Connection } from '../connection';
+import { type Connection } from '../../connection';
 
 export interface Authenticator {
   authenticate(connection: Connection): Promise<void>;
