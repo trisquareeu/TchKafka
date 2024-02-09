@@ -1,6 +1,6 @@
 import { KafkaContainer, type StartedKafkaContainer } from '@testcontainers/kafka';
-import { NoOpAuthenticator, SessionBuilder, type SessionOptions, TcpSocketFactory } from '../../../src/client/session';
-import { ApiVersionsRequestBuilder } from '../../../src/protocol/requests';
+import { NoOpAuthenticator, SessionBuilder, type SessionOptions, TcpSocketFactory } from '../../../../src/client/session';
+import { ApiVersionsRequestBuilder } from '../../../../src/protocol/requests';
 
 jest.setTimeout(120_000);
 
@@ -30,7 +30,6 @@ describe('Session', () => {
       const sessionBuilder = new SessionBuilder(socketFactory, new NoOpAuthenticator(), clientOptions);
       const session = await sessionBuilder.newSession(container.getMappedPort(port), container.getHost());
       expect(session).toBeDefined();
-      expect(session.isHealthy()).toBe(true);
     });
 
     it('should send a request and receive a response', async () => {

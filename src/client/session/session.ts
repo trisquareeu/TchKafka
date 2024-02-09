@@ -18,8 +18,4 @@ export class Session {
 
     return this.connection.send(request);
   }
-
-  public isHealthy(): boolean {
-    return this.connection.isHealthy();
-  }
 }

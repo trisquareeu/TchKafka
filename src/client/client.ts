@@ -13,12 +13,14 @@ export class Client {
   public async send<T extends RequestBuilderTemplate<any>>(requestBuilder: T): Promise<RequestBuilderResponseType<T>> {
     const session = await this.getOrCreateSession();
 
-    return session.send(requestBuilder);
+    return session.send(requestBuilder).catch((error) => {
+      this.session = null;
+      throw error;
+    });
   }
 
   private async getOrCreateSession(): Promise<Session> {
-    //todo: consider changing this condition
-    if (this.session === null || !this.session.isHealthy()) {
+    if (this.session === null) {
       this.session = await this.sessionBuilder.newSession(this.port, this.host);
     }
 
