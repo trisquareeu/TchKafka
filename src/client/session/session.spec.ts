@@ -23,17 +23,22 @@ describe('Session', () => {
 
       await expect(session.send(requestBuilder)).rejects.toThrow('API key not supported: 1');
     });
-  });
 
-  describe('isHealthy', () => {
-    it('should return the connection health', () => {
-      const connectionHealth = true;
+    it('should reject the promise if the connection throws an error', async () => {
+      const apiVersions = {
+        0: {
+          min: 0,
+          max: 1
+        }
+      } satisfies SupportedApiVersions;
 
-      connection.isHealthy.mockReturnValue(connectionHealth);
+      requestBuilder.getApiKey.mockReturnValue(0);
 
-      const session = new Session(connection, {} satisfies SupportedApiVersions);
+      connection.send.mockRejectedValue(new Error('Connection error'));
 
-      expect(session.isHealthy()).toBe(connectionHealth);
+      const session = new Session(connection, apiVersions);
+
+      await expect(session.send(requestBuilder)).rejects.toThrow('Connection error');
     });
   });
 });

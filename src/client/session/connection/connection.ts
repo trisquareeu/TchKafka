@@ -16,6 +16,8 @@ export class Connection {
   constructor(private readonly socket: Socket) {
     this.responseReader = new ResponseReader(this.resolveResponse.bind(this));
     socket.on('data', (stream) => this.responseReader.maybeReadResponse(stream));
+    socket.on('error', (error) => this.onError(error));
+    socket.on('error', (error) => this.onError(error));
   }
 
   public async send<T extends Request<any>>(request: T): Promise<RequestResponseType<T>> {
@@ -24,10 +26,6 @@ export class Connection {
     const response = await this.doSend(serializedRequest);
 
     return this.deserializeResponse(response, request);
-  }
-
-  public isHealthy(): boolean {
-    return this.socket.writable && this.socket.readable;
   }
 
   private async serializeRequest(request: Request<any>): Promise<Buffer> {
@@ -60,9 +58,17 @@ export class Connection {
   private resolveResponse(buffer: Buffer): void {
     const oldestRequest = this.inFlightRequests.shift();
     if (oldestRequest === undefined) {
-      // TODO: Close connection and cancel all inflight requests
-      throw new Error('Received response without a matching request');
+      this.onError(new Error('Received response without a matching request'));
+
+      return;
     }
     oldestRequest.resolve(buffer);
+  }
+
+  private onError(error: Error): void {
+    for (const request of this.inFlightRequests) {
+      request.reject(error);
+    }
+    this.socket.destroy(error);
   }
 }

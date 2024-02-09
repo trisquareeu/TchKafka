@@ -75,6 +75,50 @@ describe('Connection', () => {
 
     await expect(result).rejects.toThrow('Received response with unexpected correlation ID');
   });
+
+  it('should close the socket upon error', async () => {
+    const error = new Error('test error');
+    clientSocket.emit('error', error);
+
+    expect(clientSocket.destroyed).toBe(true);
+  });
+
+  it('should catch all errors and not let the application to crash', async () => {
+    try {
+      const request = new RequestMock().withDeserializeData({});
+      const result = connection.send(request.mock);
+
+      clientSocket.emit('error', new Error('test error'));
+
+      await expect(result).rejects.toThrow('test error');
+    } catch (error) {
+      expect(error).not.toBeDefined();
+    }
+  });
+
+  it('should reject all in-flight requests upon error', async () => {
+    const request1 = new RequestMock().withDeserializeData({});
+    const result1 = connection.send(request1.mock);
+    const request2 = new RequestMock().withDeserializeData({});
+    const result2 = connection.send(request2.mock);
+
+    clientSocket.emit('error', new Error('test error'));
+
+    await expect(result1).rejects.toThrow('test error');
+    await expect(result2).rejects.toThrow('test error');
+  });
+
+  it('should reject all in-flight requests upon missing request for response', async () => {
+    const request1 = new RequestMock().withDeserializeData({});
+    const result1 = connection.send(request1.mock);
+    const request2 = new RequestMock().withDeserializeData({});
+    const result2 = connection.send(request2.mock);
+
+    clientSocket.emit('data', Buffer.from([0x00, 0x00, 0x00, 0x01, 0xf1]));
+
+    await expect(result1).rejects.toThrow('Received response without a matching request');
+    await expect(result2).rejects.toThrow('Received response without a matching request');
+  });
 });
 
 class MockedSocket extends Socket {
