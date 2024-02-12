@@ -1,5 +1,10 @@
 import { KafkaContainer, type StartedKafkaContainer } from '@testcontainers/kafka';
-import { NoOpAuthenticator, SessionBuilder, type SessionOptions, TcpSocketFactory } from '../../../../src/client/session';
+import {
+  NoOpAuthenticator,
+  SessionBuilder,
+  type SessionOptions,
+  TcpSocketFactory
+} from '../../../../src/client/session';
 import { ApiVersionsRequestBuilder } from '../../../../src/protocol/requests';
 
 jest.setTimeout(120_000);
