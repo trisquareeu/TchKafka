@@ -8,7 +8,9 @@ export class Session {
     private readonly apiVersions: SupportedApiVersions
   ) {}
 
-  public async send<T extends RequestBuilderTemplate<any>>(requestBuilder: T): Promise<RequestBuilderResponseType<T>> {
+  public async send<T extends RequestBuilderTemplate<never>>(
+    requestBuilder: T
+  ): Promise<RequestBuilderResponseType<T>> {
     const apiVersions = this.apiVersions[requestBuilder.getApiKey()];
     if (apiVersions === undefined) {
       throw new Error(`API key not supported: ${requestBuilder.getApiKey()}`);
