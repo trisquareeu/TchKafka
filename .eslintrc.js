@@ -75,7 +75,13 @@ module.exports = {
     ],
     'newline-before-return': 'error',
     'no-throw-literal': 'error',
-    '@typescript-eslint/no-floating-promises': ['error']
+    '@typescript-eslint/no-floating-promises': ['error'],
+    '@typescript-eslint/member-ordering': [
+      'error',
+      {
+        default: ['private-static-field', 'protected-static-field', 'public-static-field']
+      }
+    ]
   },
   overrides: [
     {

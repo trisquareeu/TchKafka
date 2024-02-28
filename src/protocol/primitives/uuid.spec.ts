@@ -1,6 +1,7 @@
+import { type UUID } from 'crypto';
+import { IllegalArgumentError } from '../exceptions';
 import { ReadBuffer, WriteBuffer } from '../serialization';
 import { Uuid } from './uuid';
-import { IllegalArgumentError } from '../exceptions';
 
 describe('Uuid', () => {
   it('Should correctly deserialize 16 bytes from buffer', () => {
@@ -25,6 +26,18 @@ describe('Uuid', () => {
     await new Uuid(uuidBytes).serialize(writeBuffer);
 
     expect(writeBuffer.toBuffer()).toEqual(uuidBytes);
+  });
+
+  it('should create Uuid from UUID', () => {
+    const uuid: UUID = '00010203-0405-0607-0809-0a0b0c0d0e0f';
+
+    expect(Uuid.from(uuid).value).toEqual(
+      Buffer.from([0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f])
+    );
+  });
+
+  it('should return a zero Uuid', () => {
+    expect(Uuid.ZERO.value).toEqual(Buffer.allocUnsafe(16).fill(0));
   });
 
   const cases = [
