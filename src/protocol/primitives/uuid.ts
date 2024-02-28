@@ -1,5 +1,6 @@
 import type { ReadBuffer, Serializable, WriteBuffer } from '../serialization';
 import { IllegalArgumentError } from '../exceptions';
+import { type UUID } from 'crypto';
 
 /**
  * Represents a type 4 immutable universally unique identifier (Uuid).
@@ -16,8 +17,16 @@ export class Uuid implements Serializable {
     }
   }
 
+  public static get Zero(): Uuid {
+    return new Uuid(Buffer.alloc(Uuid.NUMBER_OF_BYTES));
+  }
+
   public get value(): Buffer {
     return this._value;
+  }
+
+  public static from(uuid: UUID): Uuid {
+    return new Uuid(Buffer.from(uuid.replace(/-/g, ''), 'hex'));
   }
 
   public static deserialize(buffer: ReadBuffer): Uuid {

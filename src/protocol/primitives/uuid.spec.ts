@@ -1,6 +1,7 @@
 import { ReadBuffer, WriteBuffer } from '../serialization';
 import { Uuid } from './uuid';
 import { IllegalArgumentError } from '../exceptions';
+import { randomUUID } from 'crypto';
 
 describe('Uuid', () => {
   it('Should correctly deserialize 16 bytes from buffer', () => {
@@ -25,6 +26,13 @@ describe('Uuid', () => {
     await new Uuid(uuidBytes).serialize(writeBuffer);
 
     expect(writeBuffer.toBuffer()).toEqual(uuidBytes);
+  });
+
+  it('should create Uuid from UUID', () => {
+    const uuid = randomUUID();
+    const expectedUuid = Buffer.from(uuid.replace(/-/g, ''), 'hex');
+
+    expect(Uuid.from(uuid).value).toEqual(expectedUuid);
   });
 
   const cases = [
