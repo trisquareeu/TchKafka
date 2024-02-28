@@ -1,5 +1,6 @@
 import type { ReadBuffer, Serializable, WriteBuffer } from '../serialization';
 import { IllegalArgumentError } from '../exceptions';
+import { type UUID } from 'crypto';
 
 /**
  * Represents a type 4 immutable universally unique identifier (Uuid).
@@ -9,6 +10,7 @@ import { IllegalArgumentError } from '../exceptions';
  */
 export class Uuid implements Serializable {
   private static readonly NUMBER_OF_BYTES = 16;
+  private static readonly ZERO_BUFFER = Buffer.alloc(Uuid.NUMBER_OF_BYTES);
 
   constructor(private readonly _value: Buffer) {
     if (_value.length !== Uuid.NUMBER_OF_BYTES) {
@@ -16,8 +18,16 @@ export class Uuid implements Serializable {
     }
   }
 
+  public static get Zero(): Uuid {
+    return new Uuid(this.ZERO_BUFFER);
+  }
+
   public get value(): Buffer {
     return this._value;
+  }
+
+  public static from(uuid: UUID): Uuid {
+    return new Uuid(Buffer.from(uuid.replace(/-/g, ''), 'hex'));
   }
 
   public static deserialize(buffer: ReadBuffer): Uuid {
@@ -26,5 +36,9 @@ export class Uuid implements Serializable {
 
   public async serialize(buffer: WriteBuffer): Promise<void> {
     buffer.writeBuffer(this.value);
+  }
+
+  public toString(): UUID {
+    return this._value.toString('hex').replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, '$1-$2-$3-$4-$5') as UUID;
   }
 }
