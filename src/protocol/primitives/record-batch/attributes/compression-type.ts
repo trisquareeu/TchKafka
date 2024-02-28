@@ -12,12 +12,12 @@ import type { Int16 } from '../../int16';
  * @see https://kafka.apache.org/documentation/#messageformat
  */
 export class CompressionType {
+  private static readonly MASK = 0b00000000_00000111;
   public static readonly None = 0b00000000;
   public static readonly GZIP = 0b00000001;
   public static readonly Snappy = 0b00000010;
   public static readonly LZ4 = 0b00000011;
   public static readonly ZSTD = 0b00000100;
-  private static readonly MASK = 0b00000000_00000111;
 
   public static fromInt16({ value }: Int16): CompressionTypeValue {
     const compression = value & this.MASK;
