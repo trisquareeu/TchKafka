@@ -21,6 +21,8 @@ import {
 import { CompressorDeterminer } from './attributes/compressor-determiner';
 import { CompressedRecords } from './compressed-records';
 import { type Record } from './record';
+import { UInt32 } from '../uint32';
+import { toUnsigned } from '../utils';
 
 type RecordBatchParams = {
   baseOffset: Int64;
@@ -185,13 +187,11 @@ export class RecordBatch implements Serializable {
     const batch = new WriteBuffer();
     await this.partitionLeaderEpoch.serialize(batch);
     await this.magic.serialize(batch);
-    await new Int32(crc32c(body.toBuffer())).serialize(batch);
+    await new UInt32(toUnsigned(crc32c(body.toBuffer()))).serialize(batch);
     batch.writeBuffer(body.toBuffer());
 
-    const batchBuffer = batch.toBuffer();
-
     await this.baseOffset.serialize(buffer);
-    await new Int32(batchBuffer.length).serialize(buffer);
-    buffer.writeBuffer(batchBuffer);
+    await new Int32(batch.getOffset()).serialize(buffer);
+    buffer.writeBuffer(batch.toBuffer());
   }
 }
