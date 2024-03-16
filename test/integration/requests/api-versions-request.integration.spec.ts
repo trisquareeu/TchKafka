@@ -22,7 +22,7 @@ describe('ApiVersionsRequest', () => {
   let kafkaContainerUtils: KafkaContainerUtils;
 
   beforeAll(async () => {
-    container = await new KafkaContainer('confluentinc/cp-kafka:7.3.2').withExposedPorts(port).withReuse().start();
+    container = await new KafkaContainer('confluentinc/cp-kafka:7.3.2').withExposedPorts(port).start();
     kafkaContainerUtils = new KafkaContainerUtils(container);
   });
 

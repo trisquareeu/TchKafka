@@ -20,14 +20,15 @@ export class Connection {
     socket.on('error', (error) => this.onError(error));
   }
 
-  public async send<T extends Request<any>>(request: T): Promise<RequestResponseType<T>>;
+  public async send<T extends Request<any>>(request: T, expectResponse?: true): Promise<RequestResponseType<T>>;
+  public async send<T extends Request<any>>(request: T, expectResponse: false): Promise<undefined>;
   public async send<T extends Request<any>>(
     request: T,
     expectResponse: boolean
   ): Promise<RequestResponseType<T> | undefined>;
   public async send<T extends Request<any>>(
     request: T,
-    expectResponse: boolean = true
+    expectResponse = true
   ): Promise<RequestResponseType<T> | undefined> {
     const serializedRequest = await this.serializeRequest(request);
 
