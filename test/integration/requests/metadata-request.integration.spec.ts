@@ -35,7 +35,7 @@ describe('MetadataRequest', () => {
   let topic: SimpleTopic;
 
   beforeAll(async () => {
-    container = await new KafkaContainer('confluentinc/cp-kafka:7.6.0').withExposedPorts(port).withReuse().start();
+    container = await new KafkaContainer('confluentinc/cp-kafka:7.6.0').withExposedPorts(port).start();
     kafkaContainerUtils = new KafkaContainerUtils(container);
   });
 

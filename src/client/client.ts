@@ -11,26 +11,28 @@ export class Client {
     public readonly sessionBuilder: SessionBuilder
   ) {}
 
-  public async sendWithoutResponse<T extends Request<any>>(
-    requestBuilder: RequestBuilderTemplate<T>
+  public async send<T extends Request<any>>(
+    requestBuilder: RequestBuilderTemplate<T>,
+    expectResponse?: true
+  ): Promise<RequestBuilderResponseType<typeof requestBuilder>>;
+  public async send<T extends Request<any>>(
+    requestBuilder: RequestBuilderTemplate<T>,
+    expectResponse: false
+  ): Promise<undefined>;
+  public async send<T extends Request<any>>(
+    requestBuilder: RequestBuilderTemplate<T>,
+    expectResponse: boolean
+  ): Promise<RequestBuilderResponseType<typeof requestBuilder> | undefined>;
+  public async send<T extends Request<any>>(
+    requestBuilder: RequestBuilderTemplate<T>,
+    expectResponse = true
   ): Promise<RequestBuilderResponseType<typeof requestBuilder> | undefined> {
     const session = await this.getOrCreateSession();
 
-    return session.send(requestBuilder).catch((error) => {
+    return session.send(requestBuilder, expectResponse as never).catch((error) => {
       this.session = null;
       throw error;
     });
-  }
-
-  public async send<T extends Request<any>>(
-    requestBuilder: RequestBuilderTemplate<T>
-  ): Promise<RequestBuilderResponseType<typeof requestBuilder>> {
-    const response = await this.sendWithoutResponse(requestBuilder);
-    if (response === undefined) {
-      throw new Error('Response is undefined');
-    }
-
-    return response;
   }
 
   private async getOrCreateSession(): Promise<Session> {

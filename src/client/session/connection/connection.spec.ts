@@ -1,10 +1,10 @@
-import { type DeepMocked, createMock } from '@golevelup/ts-jest';
+import { createMock, type DeepMocked } from '@golevelup/ts-jest';
 import { Buffer } from 'buffer';
 import { Socket } from 'net';
 import { Int32 } from '../../../protocol/primitives';
-import { type RequestHeader, type Request } from '../../../protocol/requests';
-import { Connection } from './connection';
+import { type Request, type RequestHeader } from '../../../protocol/requests';
 import { ReadBuffer } from '../../../protocol/serialization';
+import { Connection } from './connection';
 
 describe('Connection', () => {
   let clientSocket: MockedSocket;

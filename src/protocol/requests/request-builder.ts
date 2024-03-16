@@ -16,10 +16,6 @@ export abstract class RequestBuilderTemplate<T extends Request<any>> {
     return this.apiKey;
   }
 
-  public expectResponse(): boolean {
-    return true;
-  }
-
   public build(minVersion: number, maxVersion: number): T {
     this.validateVersionIsNotNegative(minVersion, maxVersion);
     this.validateVersionOverlap(minVersion, maxVersion);

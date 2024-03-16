@@ -10,7 +10,20 @@ export class Session {
   ) {}
 
   public async send<T extends Request<any>>(
-    requestBuilder: RequestBuilderTemplate<T>
+    requestBuilder: RequestBuilderTemplate<T>,
+    expectResponse?: true
+  ): Promise<RequestBuilderResponseType<typeof requestBuilder>>;
+  public async send<T extends Request<any>>(
+    requestBuilder: RequestBuilderTemplate<T>,
+    expectResponse: false
+  ): Promise<undefined>;
+  public async send<T extends Request<any>>(
+    requestBuilder: RequestBuilderTemplate<T>,
+    expectResponse: boolean
+  ): Promise<RequestBuilderResponseType<typeof requestBuilder> | undefined>;
+  public async send<T extends Request<any>>(
+    requestBuilder: RequestBuilderTemplate<T>,
+    expectResponse = true
   ): Promise<RequestBuilderResponseType<typeof requestBuilder> | undefined> {
     const apiVersions = this.apiVersions[requestBuilder.getApiKey()];
     if (apiVersions === undefined) {
@@ -19,6 +32,6 @@ export class Session {
 
     const request = requestBuilder.build(apiVersions.min, apiVersions.max);
 
-    return this.connection.send(request, requestBuilder.expectResponse());
+    return this.connection.send(request, expectResponse);
   }
 }

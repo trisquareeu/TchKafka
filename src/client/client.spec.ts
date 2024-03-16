@@ -22,7 +22,7 @@ describe('Client', () => {
 
       const client = new Client('localhost', 1234, sessionBuilder);
 
-      await expect(client.sendWithoutResponse(requestBuilder)).rejects.toThrow(error);
+      await expect(client.send(requestBuilder)).rejects.toThrow(error);
     });
   });
 });
