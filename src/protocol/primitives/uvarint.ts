@@ -11,9 +11,9 @@ import { checkValueIsInRange, toUnsigned } from './utils';
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
 export class UVarInt implements Serializable {
+  private static readonly MAX_BYTES_TO_DECODE = 5;
   public static readonly MAX_VALUE = 4294967295;
   public static readonly MIN_VALUE = 0;
-  private static readonly MAX_BYTES_TO_DECODE = 5;
 
   constructor(private readonly _value: number) {
     checkValueIsInRange(_value, UVarInt.MIN_VALUE, UVarInt.MAX_VALUE);

@@ -9,9 +9,9 @@ import { checkValueIsInRange } from './utils';
  * @see https://kafka.apache.org/protocol.html#protocol_types
  */
 export class VarLong implements Serializable {
+  private static readonly MAX_BYTES_TO_DECODE = 10;
   public static readonly MIN_VALUE = BigInt('-9223372036854775808');
   public static readonly MAX_VALUE = BigInt('9223372036854775807');
-  private static readonly MAX_BYTES_TO_DECODE = 10;
 
   constructor(private readonly _value: bigint) {
     checkValueIsInRange(_value, VarLong.MIN_VALUE, VarLong.MAX_VALUE);
