@@ -12,6 +12,10 @@ export class SessionBuilder {
     private readonly clientOptions: SessionOptions
   ) {}
 
+  public getClientId(): string | null {
+    return this.clientOptions.clientId;
+  }
+
   public async newSession(port: number, host: string): Promise<Session> {
     const socket = await this.socketFactory.connect(port, host, this.clientOptions.connectionTimeout);
     const connection = new Connection(socket);
