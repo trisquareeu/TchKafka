@@ -49,8 +49,8 @@ describe('Session', () => {
       const response = await session.send(requestBuilder);
 
       expect(response).toBeDefined();
-      expect(response.errorCode.value).toBe(0);
-      expect(response.apiVersions.value?.length).toBeGreaterThan(0);
+      expect(response!.errorCode.value).toBe(0);
+      expect(response!.apiVersions.value?.length).toBeGreaterThan(0);
     });
   });
 });
