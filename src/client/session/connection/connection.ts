@@ -20,12 +20,26 @@ export class Connection {
     socket.on('error', (error) => this.onError(error));
   }
 
-  public async send<T extends Request<any>>(request: T): Promise<RequestResponseType<T>> {
+  public async send<T extends Request<any>>(request: T): Promise<RequestResponseType<T>>;
+  public async send<T extends Request<any>>(
+    request: T,
+    expectResponse: boolean
+  ): Promise<RequestResponseType<T> | undefined>;
+  public async send<T extends Request<any>>(
+    request: T,
+    expectResponse: boolean = true
+  ): Promise<RequestResponseType<T> | undefined> {
     const serializedRequest = await this.serializeRequest(request);
 
-    const response = await this.doSend(serializedRequest);
+    this.doSend(serializedRequest);
 
-    return this.deserializeResponse(response, request);
+    if (expectResponse) {
+      const response = await this.expectResponse();
+
+      return this.deserializeResponse(response, request);
+    }
+
+    return undefined;
   }
 
   private async serializeRequest(request: Request<any>): Promise<Buffer> {
@@ -45,11 +59,13 @@ export class Connection {
     return request.ExpectedResponseDataClass.deserialize(readBuffer);
   }
 
-  private async doSend(data: Buffer): Promise<Buffer> {
+  private doSend(data: Buffer): void {
     const header = Buffer.alloc(4);
     header.writeInt32BE(data.length);
     this.socket.write(Buffer.concat([header, data]));
+  }
 
+  private async expectResponse(): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       this.inFlightRequests.push({ resolve, reject });
     });
