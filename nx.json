@@ -1,0 +1,18 @@
+{
+    "namedInputs": {
+      "default": ["{projectRoot}/**/*"],
+      "prod": ["!{projectRoot}/**/*.spec.tsx", "!{projectRoot}/**/*.spec.ts"]
+    },
+    "targetDefaults": {
+      "build": {
+        "dependsOn": ["prebuild", "^build"],
+        "inputs": ["prod", "^prod"],
+        "outputs": ["{projectRoot}/dist"],
+        "cache": true
+      },
+      "test": {
+        "inputs": ["default", "^prod", "{workspaceRoot}/jest.config.ts"],
+        "cache": true
+      }
+    }
+  }
