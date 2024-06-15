@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
-  "version": "0.0.14",
+  "version": "0.1.0",
   "packages": [
     "packages/*"
   ],
@@ -11,5 +11,7 @@
       "message": "chore(release): publish version %s"
     }
   },
-  "ignoreChanges": ["**/*.spec.ts"]
+  "ignoreChanges": [
+    "**/*.spec.ts"
+  ]
 }
