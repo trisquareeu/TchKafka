@@ -49,6 +49,7 @@ jobs:
           config: |
             paths-ignore:
               - '**/*.spec.ts'
+              - 'packages/*/test/**/*'
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
