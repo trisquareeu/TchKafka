@@ -22,7 +22,8 @@
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
     "build": "tsc -p .",
-    "test": "jest --coverage",
+    "test": "jest --coverage --config ./jest-unit.config.ts",
+    "test:integration": "jest --coverage --config ./jest-integration.config.ts --runInBand",
     "lint": "prettier --check \"{src,tests}/**/*.{ts,json}\" && eslint \"{src,tests}/**/*.{ts,json}\"",
     "lint:fix": "prettier --check \"{src,tests}/**/*.{ts,json}\" --write && eslint \"{src,tests}/**/*.{ts,json}\" --fix"
   },
@@ -34,7 +35,6 @@
     "@tsconfig/node22": "22.0.0",
     "@types/jest": "29.5.12",
     "@types/lz4": "0.6.4",
-    "@types/mitm": "1.3.8",
     "@types/node": "20.14.2",
     "@typescript-eslint/eslint-plugin": "7.13.0",
     "@typescript-eslint/parser": "7.13.0",

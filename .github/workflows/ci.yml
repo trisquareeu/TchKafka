@@ -6,9 +6,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the "master" branch
   push:
-    branches: ["master"]
+    branches: ['master']
   pull_request:
-    branches: ["master"]
+    branches: ['master']
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -50,6 +50,9 @@ jobs:
       - name: Unit Tests
         run: npm run test
 
+      - name: Integration Tests
+        run: npm run test:integration
+
       - name: SonarCloud Scan
         if: github.actor != 'dependabot[bot]' && matrix.node-version == '20.x'
         uses: SonarSource/sonarcloud-github-action@master
@@ -68,7 +71,7 @@ jobs:
         id: metadata
         uses: dependabot/fetch-metadata@v1
         with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          github-token: '${{ secrets.GITHUB_TOKEN }}'
       # Automerge dependabot pr if it's not major update
       - name: Automerge Dependabot PRs
         if: ${{ steps.metadata.outputs.update-type != 'version-update:major' }}

@@ -12,6 +12,7 @@
     "prepare": "husky",
     "build": "lerna run build",
     "test": "lerna run test",
+    "test:integration": "lerna run test:integration --concurrency 1",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint:fix"
   }
