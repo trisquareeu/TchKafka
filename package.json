@@ -11,7 +11,9 @@
   "scripts": {
     "prepare": "husky",
     "build": "lerna run build",
-    "test": "lerna run test",
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "lerna run test:unit",
+    "test:integration": "lerna run test:integration --concurrency 1",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint:fix"
   }

@@ -22,7 +22,8 @@
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
     "build": "tsc -p .",
-    "test": "jest --coverage",
+    "test": "npm run test:unit",
+    "test:unit": "jest --coverage",
     "lint": "prettier --check \"{src,tests}/**/*.{ts,json}\" && eslint \"{src,tests}/**/*.{ts,json}\"",
     "lint:fix": "prettier --check \"{src,tests}/**/*.{ts,json}\" --write && eslint \"{src,tests}/**/*.{ts,json}\" --fix"
   },
