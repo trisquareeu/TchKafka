@@ -197,7 +197,7 @@ describe('ProduceRequest', () => {
     });
   });
 
-  describe.only('v9', () => {
+  describe('v9', () => {
     it.each(allAcks)('should send the request and properly parse the response for acks: %d', async (acks) => {
       const produceRequestBuilder = createProduceRequestBuilder(acks);
       const request = produceRequestBuilder.build(9, 9);

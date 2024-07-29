@@ -14,7 +14,7 @@ import { KafkaContainerUtils } from '../../utils/kafka-container-utils';
 
 jest.setTimeout(120_000);
 
-describe.only('Session', () => {
+describe('Authenticator', () => {
   let container: StartedTestContainer;
   let kafkaContainerUtils: KafkaContainerUtils;
 
