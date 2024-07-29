@@ -19,7 +19,7 @@ export class Int64 implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): Int64 {
+  public static async deserialize(buffer: ReadBuffer): Promise<Int64> {
     return new Int64(buffer.readInt64());
   }
 

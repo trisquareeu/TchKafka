@@ -4,15 +4,16 @@ import { ReadBuffer, WriteBuffer } from '../serialization';
 import { Uuid } from './uuid';
 
 describe('Uuid', () => {
-  it('Should correctly deserialize 16 bytes from buffer', () => {
+  it('Should correctly deserialize 16 bytes from buffer', async () => {
     const buffer = new ReadBuffer(
       Buffer.from([
         //17 bytes
         0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10
       ])
     );
+    const uuid = await Uuid.deserialize(buffer);
 
-    expect(Uuid.deserialize(buffer).value).toEqual(
+    expect(uuid.value).toEqual(
       Buffer.from([
         //first 16 bytes from above
         0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f

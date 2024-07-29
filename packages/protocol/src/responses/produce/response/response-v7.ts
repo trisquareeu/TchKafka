@@ -8,7 +8,10 @@ export class ResponseV7 {
     public readonly partitionResponses: Array<PartitionResponseV7>
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): ResponseV7 {
-    return new ResponseV7(String.deserialize(buffer), Array.deserialize(buffer, PartitionResponseV7.deserialize));
+  public static async deserialize(buffer: ReadBuffer): Promise<ResponseV7> {
+    return new ResponseV7(
+      await String.deserialize(buffer),
+      await Array.deserialize(buffer, PartitionResponseV7.deserialize)
+    );
   }
 }

@@ -13,15 +13,15 @@ export class PartitionResponseV8 {
     public readonly errorMessage: NullableString
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): PartitionResponseV8 {
+  public static async deserialize(buffer: ReadBuffer): Promise<PartitionResponseV8> {
     return new PartitionResponseV8(
-      Int32.deserialize(buffer),
-      Int16.deserialize(buffer),
-      Int64.deserialize(buffer),
-      Int64.deserialize(buffer),
-      Int64.deserialize(buffer),
-      Array.deserialize(buffer, RecordErrorV8.deserialize),
-      NullableString.deserialize(buffer)
+      await Int32.deserialize(buffer),
+      await Int16.deserialize(buffer),
+      await Int64.deserialize(buffer),
+      await Int64.deserialize(buffer),
+      await Int64.deserialize(buffer),
+      await Array.deserialize(buffer, RecordErrorV8.deserialize),
+      await NullableString.deserialize(buffer)
     );
   }
 }

@@ -19,9 +19,9 @@ describe('Int16', () => {
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
-  it.each(cases)('byte array should be correctly deserialized to Int16', ({ value, buffer }) => {
+  it.each(cases)('byte array should be correctly deserialized to Int16', async ({ value, buffer }) => {
     const readBuffer = new ReadBuffer(buffer);
-    const int16 = Int16.deserialize(readBuffer);
+    const int16 = await Int16.deserialize(readBuffer);
     expect(int16.value).toEqual(value);
   });
 
@@ -33,7 +33,7 @@ describe('Int16', () => {
     await int16.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-    const deserializedInt16 = Int16.deserialize(readBuffer);
+    const deserializedInt16 = await Int16.deserialize(readBuffer);
     expect(deserializedInt16.value).toEqual(value);
   });
 

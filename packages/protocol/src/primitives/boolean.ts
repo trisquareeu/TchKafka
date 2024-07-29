@@ -13,7 +13,7 @@ export class Boolean implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): Boolean {
+  public static async deserialize(buffer: ReadBuffer): Promise<Boolean> {
     return new Boolean(buffer.readUInt8() !== 0);
   }
 

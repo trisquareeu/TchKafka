@@ -19,7 +19,7 @@ export class Int16 implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): Int16 {
+  public static async deserialize(buffer: ReadBuffer): Promise<Int16> {
     return new Int16(buffer.readInt16());
   }
 

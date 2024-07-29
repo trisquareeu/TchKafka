@@ -14,16 +14,16 @@ export class PartitionV11 {
     public readonly tags: TagSection
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): PartitionV11 {
+  public static async deserialize(buffer: ReadBuffer): Promise<PartitionV11> {
     return new PartitionV11(
-      Int16.deserialize(buffer),
-      Int32.deserialize(buffer),
-      Int32.deserialize(buffer),
-      Int32.deserialize(buffer),
-      CompactArray.deserialize(buffer, Int32.deserialize),
-      CompactArray.deserialize(buffer, Int32.deserialize),
-      CompactArray.deserialize(buffer, Int32.deserialize),
-      TagSection.deserialize(buffer)
+      await Int16.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await CompactArray.deserialize(buffer, Int32.deserialize),
+      await CompactArray.deserialize(buffer, Int32.deserialize),
+      await CompactArray.deserialize(buffer, Int32.deserialize),
+      await TagSection.deserialize(buffer)
     );
   }
 }

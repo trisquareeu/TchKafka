@@ -15,9 +15,9 @@ export class ResponseHeaderV1 implements ResponseHeader {
     public readonly tagBuffer: TagSection
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): ResponseHeaderV1 {
-    const correlationId = Int32.deserialize(buffer);
-    const tagBuffer = TagSection.deserialize(buffer);
+  public static async deserialize(buffer: ReadBuffer): Promise<ResponseHeaderV1> {
+    const correlationId = await Int32.deserialize(buffer);
+    const tagBuffer = await TagSection.deserialize(buffer);
 
     return new ResponseHeaderV1(correlationId, tagBuffer);
   }

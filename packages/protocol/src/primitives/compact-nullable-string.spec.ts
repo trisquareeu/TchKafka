@@ -19,7 +19,7 @@ describe('CompactNullableString', () => {
 
     const buffer = writeBuffer.toBuffer();
     const readBuffer = new ReadBuffer(buffer);
-    const deserializedString = CompactNullableString.deserialize(readBuffer);
+    const deserializedString = await CompactNullableString.deserialize(readBuffer);
 
     expect(deserializedString.value).toEqual(value);
   });

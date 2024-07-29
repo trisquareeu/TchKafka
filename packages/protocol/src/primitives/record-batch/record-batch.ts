@@ -114,14 +114,14 @@ export class RecordBatch implements Serializable {
   }
 
   public static async deserialize(buffer: ReadBuffer): Promise<RecordBatch> {
-    const baseOffset = Int64.deserialize(buffer);
-    const length = Int32.deserialize(buffer).value;
-    const temporary = new ReadBuffer(buffer.readBuffer(length));
+    const baseOffset = await Int64.deserialize(buffer);
+    const length = await Int32.deserialize(buffer);
+    const temporary = new ReadBuffer(buffer.readBuffer(length.value));
 
-    const partitionLeaderEpoch = Int32.deserialize(temporary);
-    Int8.deserialize(temporary); // magic
+    const partitionLeaderEpoch = await Int32.deserialize(temporary);
+    await Int8.deserialize(temporary); // magic
 
-    const expectedCrc32 = Int32.deserialize(temporary);
+    const expectedCrc32 = await Int32.deserialize(temporary);
     const calculatedCrc32c = crc32c(temporary.toBuffer(temporary.getOffset()));
     if (calculatedCrc32c !== expectedCrc32.value) {
       throw new InvalidRecordBatchError(
@@ -129,13 +129,13 @@ export class RecordBatch implements Serializable {
       );
     }
 
-    const attributes = Int16.deserialize(temporary);
-    const lastOffsetDelta = Int32.deserialize(temporary);
-    const baseTimestamp = Int64.deserialize(temporary);
-    const maxTimestamp = Int64.deserialize(temporary);
-    const producerId = Int64.deserialize(temporary);
-    const producerEpoch = Int16.deserialize(temporary);
-    const baseSequence = Int32.deserialize(temporary);
+    const attributes = await Int16.deserialize(temporary);
+    const lastOffsetDelta = await Int32.deserialize(temporary);
+    const baseTimestamp = await Int64.deserialize(temporary);
+    const maxTimestamp = await Int64.deserialize(temporary);
+    const producerId = await Int64.deserialize(temporary);
+    const producerEpoch = await Int16.deserialize(temporary);
+    const baseSequence = await Int32.deserialize(temporary);
 
     const compressionType = CompressionType.fromInt16(attributes);
     const compressor = CompressorDeterminer.fromValue(compressionType);

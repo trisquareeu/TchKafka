@@ -15,15 +15,15 @@ export class MetadataResponseV9Data {
     public readonly tags: TagSection
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): MetadataResponseV9Data {
+  public static async deserialize(buffer: ReadBuffer): Promise<MetadataResponseV9Data> {
     return new MetadataResponseV9Data(
-      Int32.deserialize(buffer),
-      CompactArray.deserialize(buffer, BrokerV9.deserialize),
-      CompactNullableString.deserialize(buffer),
-      Int32.deserialize(buffer),
-      CompactArray.deserialize(buffer, TopicV9.deserialize),
-      Int32.deserialize(buffer),
-      TagSection.deserialize(buffer)
+      await Int32.deserialize(buffer),
+      await CompactArray.deserialize(buffer, BrokerV9.deserialize),
+      await CompactNullableString.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await CompactArray.deserialize(buffer, TopicV9.deserialize),
+      await Int32.deserialize(buffer),
+      await TagSection.deserialize(buffer)
     );
   }
 }

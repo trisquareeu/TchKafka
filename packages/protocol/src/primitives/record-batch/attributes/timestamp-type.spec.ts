@@ -16,7 +16,7 @@ describe('TimestampType', () => {
     { buffer: Buffer.from([0b11010111, 0b00101100]), expected: TimestampType.LogAppendTime }
   ];
 
-  it.each(cases)('should return proper timestamp type from Int16', ({ buffer, expected }) => {
-    expect(TimestampType.fromInt16(Int16.deserialize(new ReadBuffer(buffer)))).toEqual(expected);
+  it.each(cases)('should return proper timestamp type from Int16', async ({ buffer, expected }) => {
+    expect(TimestampType.fromInt16(await Int16.deserialize(new ReadBuffer(buffer)))).toEqual(expected);
   });
 });

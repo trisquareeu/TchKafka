@@ -19,9 +19,10 @@ describe('Bytes', () => {
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
-  it.each(cases)('should correctly deserialize from byte array', ({ value, buffer }) => {
+  it.each(cases)('should correctly deserialize from byte array', async ({ value, buffer }) => {
     const readBuffer = new ReadBuffer(buffer);
-    expect(Bytes.deserialize(readBuffer).value).toEqual(value);
+    const bytes = await Bytes.deserialize(readBuffer);
+    expect(bytes.value).toEqual(value);
   });
 
   it('should throw if Bytes length is greater than Int16.MAX_VALUE', async () => {
@@ -30,8 +31,8 @@ describe('Bytes', () => {
     await expect(() => bytes.serialize(writeBuffer)).rejects.toThrow();
   });
 
-  it('should throw when attempted to deserialize illegal length', () => {
+  it('should throw when attempted to deserialize illegal length', async () => {
     const readBuffer = new ReadBuffer(Buffer.from([0xff, 0xff, 0xff, 0xff]));
-    expect(() => Bytes.deserialize(readBuffer)).toThrow(NullInNonNullableFieldError);
+    await expect(Bytes.deserialize(readBuffer)).rejects.toThrow(NullInNonNullableFieldError);
   });
 });

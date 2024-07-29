@@ -20,8 +20,8 @@ export class Bytes extends NullableBytes implements Serializable {
     return super.value as Buffer;
   }
 
-  public static override deserialize(buffer: ReadBuffer): Bytes {
-    const nullableBytes = super.deserialize(buffer);
+  public static override async deserialize(buffer: ReadBuffer): Promise<Bytes> {
+    const nullableBytes = await super.deserialize(buffer);
     if (nullableBytes.value === null) {
       throw new NullInNonNullableFieldError('Bytes cannot be null');
     }

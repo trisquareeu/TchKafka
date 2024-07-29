@@ -11,13 +11,13 @@ export class BrokerV10 {
     public readonly tags: TagSection
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): BrokerV10 {
+  public static async deserialize(buffer: ReadBuffer): Promise<BrokerV10> {
     return new BrokerV10(
-      Int32.deserialize(buffer),
-      CompactString.deserialize(buffer),
-      Int32.deserialize(buffer),
-      CompactNullableString.deserialize(buffer),
-      TagSection.deserialize(buffer)
+      await Int32.deserialize(buffer),
+      await CompactString.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await CompactNullableString.deserialize(buffer),
+      await TagSection.deserialize(buffer)
     );
   }
 }

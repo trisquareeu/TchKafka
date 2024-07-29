@@ -19,15 +19,15 @@ export class CompactArray<T> implements Serializable {
     return this._value;
   }
 
-  public static deserialize<T>(buffer: ReadBuffer, deserialize: ArrayDeserializer<T>): CompactArray<T> {
-    const length = UVarInt.deserialize(buffer);
+  public static async deserialize<T>(buffer: ReadBuffer, deserialize: ArrayDeserializer<T>): Promise<CompactArray<T>> {
+    const length = await UVarInt.deserialize(buffer);
     if (length.value === 0) {
       return new CompactArray(null);
     }
 
     const value: T[] = [];
     for (let i = 0; i < length.value - 1; i++) {
-      value.push(deserialize(buffer));
+      value.push(await deserialize(buffer));
     }
 
     return new CompactArray(value);

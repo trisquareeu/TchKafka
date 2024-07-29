@@ -19,8 +19,8 @@ export class String extends NullableString implements Serializable {
     return super.value as string;
   }
 
-  public static override deserialize(buffer: ReadBuffer): String {
-    const nullableString = super.deserialize(buffer);
+  public static override async deserialize(buffer: ReadBuffer): Promise<String> {
+    const nullableString = await super.deserialize(buffer);
     if (nullableString.value === null) {
       throw new NullInNonNullableFieldError('String cannot be null');
     }

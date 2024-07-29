@@ -20,9 +20,9 @@ describe('UVarInt', () => {
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
-  it.each(cases)('bytes should be correctly deserialized to UVarInt', ({ value, buffer }) => {
+  it.each(cases)('bytes should be correctly deserialized to UVarInt', async ({ value, buffer }) => {
     const readBuffer = new ReadBuffer(buffer);
-    const uVarInt = UVarInt.deserialize(readBuffer);
+    const uVarInt = await UVarInt.deserialize(readBuffer);
     expect(uVarInt.value).toEqual(value);
   });
 
@@ -40,7 +40,7 @@ describe('UVarInt', () => {
     await uvarint.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-    const deserializedUVarInt = UVarInt.deserialize(readBuffer);
+    const deserializedUVarInt = await UVarInt.deserialize(readBuffer);
     expect(deserializedUVarInt.value).toEqual(value);
   });
 });

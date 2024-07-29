@@ -8,7 +8,10 @@ export class ProduceResponseV3Data {
     public readonly throttleTimeMs: Int32
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): ProduceResponseV3Data {
-    return new ProduceResponseV3Data(Array.deserialize(buffer, ResponseV3.deserialize), Int32.deserialize(buffer));
+  public static async deserialize(buffer: ReadBuffer): Promise<ProduceResponseV3Data> {
+    return new ProduceResponseV3Data(
+      await Array.deserialize(buffer, ResponseV3.deserialize),
+      await Int32.deserialize(buffer)
+    );
   }
 }

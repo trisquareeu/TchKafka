@@ -18,9 +18,9 @@ export class RecordHeader implements Serializable {
     public readonly value: VarIntBytes
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): RecordHeader {
-    const key = RecordHeaderKey.deserialize(buffer);
-    const value = VarIntBytes.deserialize(buffer);
+  public static async deserialize(buffer: ReadBuffer): Promise<RecordHeader> {
+    const key = await RecordHeaderKey.deserialize(buffer);
+    const value = await VarIntBytes.deserialize(buffer);
 
     return new RecordHeader(key, value);
   }
@@ -38,12 +38,12 @@ export class RecordHeaderArray implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): RecordHeaderArray {
-    const length = VarInt.deserialize(buffer);
+  public static async deserialize(buffer: ReadBuffer): Promise<RecordHeaderArray> {
+    const length = await VarInt.deserialize(buffer);
 
     const value: RecordHeader[] = [];
     for (let i = 0; i < length.value; i++) {
-      value.push(RecordHeader.deserialize(buffer));
+      value.push(await RecordHeader.deserialize(buffer));
     }
 
     return new RecordHeaderArray(value);
@@ -99,16 +99,16 @@ export class Record implements Serializable {
     this.headers = params.headers;
   }
 
-  public static deserialize(buffer: ReadBuffer): Record {
-    const length = VarInt.deserialize(buffer).value;
-    const temporary = new ReadBuffer(buffer.readBuffer(length));
+  public static async deserialize(buffer: ReadBuffer): Promise<Record> {
+    const length = await VarInt.deserialize(buffer);
+    const temporary = new ReadBuffer(buffer.readBuffer(length.value));
 
-    const attributes = Int8.deserialize(temporary);
-    const timestampDelta = VarLong.deserialize(temporary);
-    const offsetDelta = VarInt.deserialize(temporary);
-    const key = VarIntBytes.deserialize(temporary);
-    const value = VarIntBytes.deserialize(temporary);
-    const headers = RecordHeaderArray.deserialize(temporary);
+    const attributes = await Int8.deserialize(temporary);
+    const timestampDelta = await VarLong.deserialize(temporary);
+    const offsetDelta = await VarInt.deserialize(temporary);
+    const key = await VarIntBytes.deserialize(temporary);
+    const value = await VarIntBytes.deserialize(temporary);
+    const headers = await RecordHeaderArray.deserialize(temporary);
 
     return new Record({
       attributes,
@@ -144,8 +144,8 @@ export class VarIntBytes implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): VarIntBytes {
-    const length = VarInt.deserialize(buffer);
+  public static async deserialize(buffer: ReadBuffer): Promise<VarIntBytes> {
+    const length = await VarInt.deserialize(buffer);
     if (length.value < 0) {
       return new VarIntBytes(null);
     }
@@ -172,8 +172,8 @@ export class RecordHeaderKey implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): RecordHeaderKey {
-    const varIntBytes = VarIntBytes.deserialize(buffer);
+  public static async deserialize(buffer: ReadBuffer): Promise<RecordHeaderKey> {
+    const varIntBytes = await VarIntBytes.deserialize(buffer);
     if (varIntBytes.value === null) {
       throw new NullInNonNullableFieldError('RecordHeaderKey cannot be null');
     }

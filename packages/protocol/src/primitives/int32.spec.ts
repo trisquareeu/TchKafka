@@ -21,9 +21,9 @@ describe('Int32', () => {
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
-  it.each(cases)('byte array should be correctly deserialized to Int32', ({ value, buffer }) => {
+  it.each(cases)('byte array should be correctly deserialized to Int32', async ({ value, buffer }) => {
     const readBuffer = new ReadBuffer(buffer);
-    const int32 = Int32.deserialize(readBuffer);
+    const int32 = await Int32.deserialize(readBuffer);
     expect(int32.value).toEqual(value);
   });
 
@@ -35,7 +35,7 @@ describe('Int32', () => {
     await int32.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-    const deserializedInt32 = Int32.deserialize(readBuffer);
+    const deserializedInt32 = await Int32.deserialize(readBuffer);
     expect(deserializedInt32.value).toEqual(value);
   });
 

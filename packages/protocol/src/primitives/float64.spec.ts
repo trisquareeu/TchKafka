@@ -18,9 +18,9 @@ describe('Float64', () => {
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
-  it.each(cases)('byte array should be correctly deserialized to Float64', ({ value, buffer }) => {
+  it.each(cases)('byte array should be correctly deserialized to Float64', async ({ value, buffer }) => {
     const readBuffer = new ReadBuffer(buffer);
-    const float64 = Float64.deserialize(readBuffer);
+    const float64 = await Float64.deserialize(readBuffer);
     expect(float64.value).toEqual(value);
   });
 
@@ -34,7 +34,7 @@ describe('Float64', () => {
       await float64.serialize(writeBuffer);
 
       const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-      const deserializedFloat64 = Float64.deserialize(readBuffer);
+      const deserializedFloat64 = await Float64.deserialize(readBuffer);
       expect(deserializedFloat64.value).toEqual(value);
     }
   );

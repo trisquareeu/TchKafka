@@ -9,11 +9,11 @@ export class ApiVersionsResponseV1Data {
     public readonly maxThrottleTime: Int32
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): ApiVersionsResponseV1Data {
+  public static async deserialize(buffer: ReadBuffer): Promise<ApiVersionsResponseV1Data> {
     return new ApiVersionsResponseV1Data(
-      Int16.deserialize(buffer),
-      NonNullableArray.deserialize(buffer, ApiKeyV0.deserialize),
-      Int32.deserialize(buffer)
+      await Int16.deserialize(buffer),
+      await NonNullableArray.deserialize(buffer, ApiKeyV0.deserialize),
+      await Int32.deserialize(buffer)
     );
   }
 }

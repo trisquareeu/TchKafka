@@ -17,9 +17,9 @@ describe('CompactNullableBytes', () => {
     expect(buffer.toBuffer()).toEqual(serialized);
   });
 
-  it.each(cases)('should deserialize properly', ({ value, serialized }) => {
+  it.each(cases)('should deserialize properly', async ({ value, serialized }) => {
     const buffer = new ReadBuffer(serialized);
-    const compactNullableBytes = CompactNullableBytes.deserialize(buffer);
+    const compactNullableBytes = await CompactNullableBytes.deserialize(buffer);
     expect(compactNullableBytes.value).toEqual(value);
   });
 
@@ -27,7 +27,7 @@ describe('CompactNullableBytes', () => {
     const compactNullableBytes = new CompactNullableBytes(value);
     const buffer = new WriteBuffer();
     await compactNullableBytes.serialize(buffer);
-    const deserializedCompactNullableBytes = CompactNullableBytes.deserialize(new ReadBuffer(buffer.toBuffer()));
+    const deserializedCompactNullableBytes = await CompactNullableBytes.deserialize(new ReadBuffer(buffer.toBuffer()));
     expect(deserializedCompactNullableBytes.value).toEqual(compactNullableBytes.value);
   });
 });

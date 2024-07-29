@@ -15,11 +15,11 @@ describe('NonNullableArray', () => {
     await array.serialize(writeBuffer);
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
 
-    expect(() =>
-      NonNullableArray.deserialize(readBuffer, () => {
+    await expect(
+      NonNullableArray.deserialize(readBuffer, async () => {
         // no-op
       })
-    ).toThrowError(NullInNonNullableFieldError);
+    ).rejects.toThrow(NullInNonNullableFieldError);
   });
 
   it('should deserialize serialized array', async () => {
@@ -29,7 +29,7 @@ describe('NonNullableArray', () => {
     await array.serialize(writeBuffer);
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
 
-    const deserialized = NonNullableArray.deserialize(readBuffer, (buffer) => Int8.deserialize(buffer));
+    const deserialized = await NonNullableArray.deserialize(readBuffer, (buffer) => Int8.deserialize(buffer));
     expect(deserialized.value).toEqual(array.value);
   });
 });

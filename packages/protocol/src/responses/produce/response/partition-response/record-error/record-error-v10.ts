@@ -9,11 +9,11 @@ export class RecordErrorV10 {
     public readonly tags: TagSection
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): RecordErrorV10 {
+  public static async deserialize(buffer: ReadBuffer): Promise<RecordErrorV10> {
     return new RecordErrorV10(
-      Int32.deserialize(buffer),
-      CompactNullableString.deserialize(buffer),
-      TagSection.deserialize(buffer)
+      await Int32.deserialize(buffer),
+      await CompactNullableString.deserialize(buffer),
+      await TagSection.deserialize(buffer)
     );
   }
 }

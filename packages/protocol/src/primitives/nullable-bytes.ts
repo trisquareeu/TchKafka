@@ -19,8 +19,8 @@ export class NullableBytes implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): NullableBytes {
-    const length = Int32.deserialize(buffer);
+  public static async deserialize(buffer: ReadBuffer): Promise<NullableBytes> {
+    const length = await Int32.deserialize(buffer);
     if (length.value < 0) {
       return new NullableBytes(null);
     }

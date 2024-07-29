@@ -28,8 +28,10 @@ export class VarInt implements Serializable {
     return (value >>> 1) ^ -(value & 1);
   }
 
-  public static deserialize(buffer: ReadBuffer): VarInt {
-    return new VarInt(VarInt.decodeZigZag(UVarInt.deserialize(buffer).value));
+  public static async deserialize(buffer: ReadBuffer): Promise<VarInt> {
+    const uVarInt = await UVarInt.deserialize(buffer);
+
+    return new VarInt(VarInt.decodeZigZag(uVarInt.value));
   }
 
   public async serialize(buffer: WriteBuffer): Promise<void> {

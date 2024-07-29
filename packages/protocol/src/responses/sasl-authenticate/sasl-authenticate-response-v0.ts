@@ -8,10 +8,10 @@ export class SaslAuthenticateResponseV0 {
     public readonly authBytes: Bytes
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): SaslAuthenticateResponseV0 {
-    const errorCode = Int16.deserialize(buffer);
-    const errorMessage = NullableString.deserialize(buffer);
-    const authBytes = Bytes.deserialize(buffer);
+  public static async deserialize(buffer: ReadBuffer): Promise<SaslAuthenticateResponseV0> {
+    const errorCode = await Int16.deserialize(buffer);
+    const errorMessage = await NullableString.deserialize(buffer);
+    const authBytes = await Bytes.deserialize(buffer);
 
     return new SaslAuthenticateResponseV0(errorCode, errorMessage, authBytes);
   }

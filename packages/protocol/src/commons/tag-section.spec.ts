@@ -15,9 +15,9 @@ describe('TagSection', () => {
     expect(buffer.toBuffer()).toEqual(Buffer.from([0x02, 0x02, 0x03, 0x01, 0x02, 0x03, 0x05, 0x02, 0x04, 0x05]));
   });
 
-  it('should correctly deserialize non-empty TagSection', () => {
+  it('should correctly deserialize non-empty TagSection', async () => {
     const readBuffer = new ReadBuffer(Buffer.from([0x02, 0x02, 0x03, 0x01, 0x02, 0x03, 0x05, 0x02, 0x04, 0x05]));
-    const tagSection = TagSection.deserialize(readBuffer);
+    const tagSection = await TagSection.deserialize(readBuffer);
 
     expect(tagSection.fields.length).toEqual(2);
     expect(tagSection.fields[0]).toEqual(new TaggedField(new UVarInt(2), Buffer.from([0x01, 0x02, 0x03])));
@@ -51,9 +51,9 @@ describe('TagSection', () => {
     expect(tagSection.fields.length).toEqual(0);
   });
 
-  it('should throw error when trying to deserialize unordered fields', () => {
+  it('should throw error when trying to deserialize unordered fields', async () => {
     const buffer = new ReadBuffer(Buffer.from([0x03, 0x00, 0x00, 0x02, 0x00, 0x01, 0x00]));
 
-    expect(() => TagSection.deserialize(buffer)).toThrow('Invalid or out-of-order tag 1');
+    await expect(TagSection.deserialize(buffer)).rejects.toThrow('Invalid or out-of-order tag 1');
   });
 });

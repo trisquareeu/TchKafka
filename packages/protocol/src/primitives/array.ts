@@ -1,7 +1,7 @@
 import { type ReadBuffer, type Serializable, type WriteBuffer } from '../serialization';
 import { Int32 } from './int32';
 
-export type ArrayDeserializer<T> = (buffer: ReadBuffer) => T;
+export type ArrayDeserializer<T> = (buffer: ReadBuffer) => Promise<T>;
 export type ArraySerializer<T> = (item: T, buffer: WriteBuffer) => Promise<void>;
 /**
  * Represents a sequence of objects of a given type T. Type T can be either a primitive type (e.g. STRING) or a structure.
@@ -25,23 +25,23 @@ export class Array<T> implements Serializable {
     return this._value;
   }
 
-  public static deserialize<T>(buffer: ReadBuffer, deserializer: ArrayDeserializer<T>): Array<T> {
-    const length = Int32.deserialize(buffer);
+  public static async deserialize<T>(buffer: ReadBuffer, deserializer: ArrayDeserializer<T>): Promise<Array<T>> {
+    const length = await Int32.deserialize(buffer);
     if (length.value < 0) {
-      return new Array(null);
+      return Promise.resolve(new Array(null));
     }
 
     return this.deserializeEntries(buffer, length.value, deserializer);
   }
 
-  public static deserializeEntries<T>(
+  public static async deserializeEntries<T>(
     buffer: ReadBuffer,
     length: number,
     deserializer: ArrayDeserializer<T>
-  ): Array<T> {
+  ): Promise<Array<T>> {
     const value: T[] = [];
     for (let i = 0; i < length; i++) {
-      value.push(deserializer(buffer));
+      value.push(await deserializer(buffer));
     }
 
     return new Array(value);

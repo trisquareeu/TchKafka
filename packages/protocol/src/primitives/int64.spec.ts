@@ -21,9 +21,9 @@ describe('Int64', () => {
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
-  it.each(cases)('byte array should be correctly deserialized to Int64', ({ value, buffer }) => {
+  it.each(cases)('byte array should be correctly deserialized to Int64', async ({ value, buffer }) => {
     const readBuffer = new ReadBuffer(buffer);
-    const int64 = Int64.deserialize(readBuffer);
+    const int64 = await Int64.deserialize(readBuffer);
     expect(int64.value).toEqual(value);
   });
 
@@ -35,7 +35,7 @@ describe('Int64', () => {
     await int64.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-    const deserializedInt64 = Int64.deserialize(readBuffer);
+    const deserializedInt64 = await Int64.deserialize(readBuffer);
     expect(deserializedInt64.value).toEqual(value);
   });
 

@@ -13,14 +13,14 @@ export class MetadataResponseV8Data {
     public readonly clusterAuthorizedOperations: Int32
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): MetadataResponseV8Data {
+  public static async deserialize(buffer: ReadBuffer): Promise<MetadataResponseV8Data> {
     return new MetadataResponseV8Data(
-      Int32.deserialize(buffer),
-      Array.deserialize(buffer, BrokerV8.deserialize),
-      NullableString.deserialize(buffer),
-      Int32.deserialize(buffer),
-      Array.deserialize(buffer, TopicV8.deserialize),
-      Int32.deserialize(buffer)
+      await Int32.deserialize(buffer),
+      await Array.deserialize(buffer, BrokerV8.deserialize),
+      await NullableString.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await Array.deserialize(buffer, TopicV8.deserialize),
+      await Int32.deserialize(buffer)
     );
   }
 }

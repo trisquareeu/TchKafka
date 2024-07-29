@@ -14,15 +14,15 @@ export class TopicV12 {
     public readonly tags: TagSection
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): TopicV12 {
+  public static async deserialize(buffer: ReadBuffer): Promise<TopicV12> {
     return new TopicV12(
-      Int16.deserialize(buffer),
-      CompactNullableString.deserialize(buffer),
-      Uuid.deserialize(buffer),
-      Boolean.deserialize(buffer),
-      CompactArray.deserialize(buffer, PartitionV12.deserialize),
-      Int32.deserialize(buffer),
-      TagSection.deserialize(buffer)
+      await Int16.deserialize(buffer),
+      await CompactNullableString.deserialize(buffer),
+      await Uuid.deserialize(buffer),
+      await Boolean.deserialize(buffer),
+      await CompactArray.deserialize(buffer, PartitionV12.deserialize),
+      await Int32.deserialize(buffer),
+      await TagSection.deserialize(buffer)
     );
   }
 }

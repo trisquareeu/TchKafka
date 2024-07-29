@@ -16,9 +16,10 @@ describe('String', () => {
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
-  it.each(cases)('should correctly deserialize from byte array', ({ value, buffer }) => {
+  it.each(cases)('should correctly deserialize from byte array', async ({ value, buffer }) => {
     const readBuffer = new ReadBuffer(buffer);
-    expect(String.deserialize(readBuffer).value).toEqual(value);
+    const string = await String.deserialize(readBuffer);
+    expect(string.value).toEqual(value);
   });
 
   it('should throw if String length is greater than Int16.MAX_VALUE', async () => {
@@ -28,8 +29,8 @@ describe('String', () => {
     await expect(() => string.serialize(writeBuffer)).rejects.toThrow();
   });
 
-  it('should throw when attempted to deserialize illegal length', () => {
+  it('should throw when attempted to deserialize illegal length', async () => {
     const readBuffer = new ReadBuffer(Buffer.from([0xff, 0xff]));
-    expect(() => String.deserialize(readBuffer)).toThrow(NullInNonNullableFieldError);
+    await expect(String.deserialize(readBuffer)).rejects.toThrow(NullInNonNullableFieldError);
   });
 });

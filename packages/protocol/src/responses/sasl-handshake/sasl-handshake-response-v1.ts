@@ -7,9 +7,9 @@ export class SaslHandshakeResponseV1 {
     public readonly mechanisms: Array<String>
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): SaslHandshakeResponseV1 {
-    const errorCode = Int16.deserialize(buffer);
-    const mechanisms = Array.deserialize(buffer, String.deserialize);
+  public static async deserialize(buffer: ReadBuffer): Promise<SaslHandshakeResponseV1> {
+    const errorCode = await Int16.deserialize(buffer);
+    const mechanisms = await Array.deserialize(buffer, String.deserialize);
 
     return new SaslHandshakeResponseV1(errorCode, mechanisms);
   }

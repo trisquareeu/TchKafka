@@ -10,13 +10,13 @@ export class PartitionV0 {
     public readonly isrNodes: Array<Int32>
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): PartitionV0 {
+  public static async deserialize(buffer: ReadBuffer): Promise<PartitionV0> {
     return new PartitionV0(
-      Int16.deserialize(buffer),
-      Int32.deserialize(buffer),
-      Int32.deserialize(buffer),
-      Array.deserialize(buffer, Int32.deserialize),
-      Array.deserialize(buffer, Int32.deserialize)
+      await Int16.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await Array.deserialize(buffer, Int32.deserialize),
+      await Array.deserialize(buffer, Int32.deserialize)
     );
   }
 }

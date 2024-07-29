@@ -54,9 +54,9 @@ export class Connection {
     return serializedRequest.toBuffer();
   }
 
-  private deserializeResponse<T>(response: Buffer, request: Request<T>): T {
+  private async deserializeResponse<T>(response: Buffer, request: Request<T>): Promise<T> {
     const readBuffer = new ReadBuffer(response);
-    const { correlationId } = request.ExpectedResponseHeaderClass.deserialize(readBuffer);
+    const { correlationId } = await request.ExpectedResponseHeaderClass.deserialize(readBuffer);
     if (correlationId.value !== request.header.correlationId.value) {
       throw new CorrelationIdMismatchError('Received response with unexpected correlation ID');
     }

@@ -17,8 +17,8 @@ describe('NullableBytes', () => {
     expect(buffer.toBuffer()).toEqual(serialized);
   });
 
-  it.each(cases)('should deserialize properly', ({ value, serialized }) => {
-    const nullableBytes = NullableBytes.deserialize(new ReadBuffer(serialized));
+  it.each(cases)('should deserialize properly', async ({ value, serialized }) => {
+    const nullableBytes = await NullableBytes.deserialize(new ReadBuffer(serialized));
     expect(nullableBytes.value).toEqual(value);
   });
 
@@ -26,7 +26,7 @@ describe('NullableBytes', () => {
     const nullableBytes = new NullableBytes(value);
     const buffer = new WriteBuffer();
     await nullableBytes.serialize(buffer);
-    const deserializedNullableBytes = NullableBytes.deserialize(new ReadBuffer(buffer.toBuffer()));
+    const deserializedNullableBytes = await NullableBytes.deserialize(new ReadBuffer(buffer.toBuffer()));
     expect(deserializedNullableBytes.value).toEqual(nullableBytes.value);
   });
 });

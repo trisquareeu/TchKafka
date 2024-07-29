@@ -10,12 +10,12 @@ export class TopicV2 {
     public readonly partitions: Array<PartitionV2>
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): TopicV2 {
+  public static async deserialize(buffer: ReadBuffer): Promise<TopicV2> {
     return new TopicV2(
-      Int16.deserialize(buffer),
-      String.deserialize(buffer),
-      Boolean.deserialize(buffer),
-      Array.deserialize(buffer, PartitionV2.deserialize)
+      await Int16.deserialize(buffer),
+      await String.deserialize(buffer),
+      await Boolean.deserialize(buffer),
+      await Array.deserialize(buffer, PartitionV2.deserialize)
     );
   }
 }

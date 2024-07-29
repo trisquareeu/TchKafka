@@ -33,9 +33,9 @@ describe('VarInt', () => {
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
-  it.each(cases)('bytes should be correctly deserialized to varint', ({ value, buffer }) => {
+  it.each(cases)('bytes should be correctly deserialized to varint', async ({ value, buffer }) => {
     const readBuffer = new ReadBuffer(buffer);
-    const varint = VarInt.deserialize(readBuffer);
+    const varint = await VarInt.deserialize(readBuffer);
     expect(varint.value).toEqual(value);
   });
 
@@ -46,7 +46,7 @@ describe('VarInt', () => {
     await varint.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(buffer);
-    const deserialized = VarInt.deserialize(readBuffer);
+    const deserialized = await VarInt.deserialize(readBuffer);
 
     expect(varint.value).toEqual(deserialized.value);
   });

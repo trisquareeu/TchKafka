@@ -17,7 +17,7 @@ describe('IsControlBatch', () => {
     { buffer: Buffer.from([0b01111111, 0b11111111]), expected: IsControlBatch.Yes }
   ];
 
-  it.each(cases)('should return proper control batch value from Int16', ({ buffer, expected }) => {
-    expect(IsControlBatch.fromInt16(Int16.deserialize(new ReadBuffer(buffer)))).toEqual(expected);
+  it.each(cases)('should return proper control batch value from Int16', async ({ buffer, expected }) => {
+    expect(IsControlBatch.fromInt16(await Int16.deserialize(new ReadBuffer(buffer)))).toEqual(expected);
   });
 });

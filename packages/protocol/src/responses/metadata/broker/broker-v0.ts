@@ -8,7 +8,11 @@ export class BrokerV0 {
     public readonly port: Int32
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): BrokerV0 {
-    return new BrokerV0(Int32.deserialize(buffer), String.deserialize(buffer), Int32.deserialize(buffer));
+  public static async deserialize(buffer: ReadBuffer): Promise<BrokerV0> {
+    return new BrokerV0(
+      await Int32.deserialize(buffer),
+      await String.deserialize(buffer),
+      await Int32.deserialize(buffer)
+    );
   }
 }

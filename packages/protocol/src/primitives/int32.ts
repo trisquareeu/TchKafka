@@ -19,7 +19,7 @@ export class Int32 implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): Int32 {
+  public static async deserialize(buffer: ReadBuffer): Promise<Int32> {
     return new Int32(buffer.readInt32());
   }
 

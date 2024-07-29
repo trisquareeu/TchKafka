@@ -11,13 +11,13 @@ export class TopicV8 {
     public readonly topicAuthorizedOperations: Int32
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): TopicV8 {
+  public static async deserialize(buffer: ReadBuffer): Promise<TopicV8> {
     return new TopicV8(
-      Int16.deserialize(buffer),
-      String.deserialize(buffer),
-      Boolean.deserialize(buffer),
-      Array.deserialize(buffer, PartitionV8.deserialize),
-      Int32.deserialize(buffer)
+      await Int16.deserialize(buffer),
+      await String.deserialize(buffer),
+      await Boolean.deserialize(buffer),
+      await Array.deserialize(buffer, PartitionV8.deserialize),
+      await Int32.deserialize(buffer)
     );
   }
 }

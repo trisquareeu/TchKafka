@@ -9,11 +9,11 @@ export class TopicV0 {
     public readonly partitions: Array<PartitionV0>
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): TopicV0 {
+  public static async deserialize(buffer: ReadBuffer): Promise<TopicV0> {
     return new TopicV0(
-      Int16.deserialize(buffer),
-      String.deserialize(buffer),
-      Array.deserialize(buffer, PartitionV0.deserialize)
+      await Int16.deserialize(buffer),
+      await String.deserialize(buffer),
+      await Array.deserialize(buffer, PartitionV0.deserialize)
     );
   }
 }

@@ -9,12 +9,12 @@ export class BrokerV4 {
     public readonly rack: NullableString
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): BrokerV4 {
+  public static async deserialize(buffer: ReadBuffer): Promise<BrokerV4> {
     return new BrokerV4(
-      Int32.deserialize(buffer),
-      String.deserialize(buffer),
-      Int32.deserialize(buffer),
-      NullableString.deserialize(buffer)
+      await Int32.deserialize(buffer),
+      await String.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await NullableString.deserialize(buffer)
     );
   }
 }

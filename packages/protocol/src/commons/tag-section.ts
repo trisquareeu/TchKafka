@@ -33,11 +33,11 @@ export class TagSection implements Serializable {
     this.fields = [...fields];
   }
 
-  public static deserialize(buffer: ReadBuffer): TagSection {
-    const numberOfTaggedFields = UVarInt.deserialize(buffer).value;
+  public static async deserialize(buffer: ReadBuffer): Promise<TagSection> {
+    const numberOfTaggedFields = await UVarInt.deserialize(buffer);
     const taggedFields: TaggedField[] = [];
-    for (let i = 0; i < numberOfTaggedFields; i++) {
-      taggedFields.push(TaggedField.deserialize(buffer));
+    for (let i = 0; i < numberOfTaggedFields.value; i++) {
+      taggedFields.push(await TaggedField.deserialize(buffer));
     }
 
     return new TagSection(taggedFields);

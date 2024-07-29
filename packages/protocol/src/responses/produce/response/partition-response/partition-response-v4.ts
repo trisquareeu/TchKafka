@@ -9,12 +9,12 @@ export class PartitionResponseV4 {
     public readonly logAppendTime: Int64
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): PartitionResponseV4 {
+  public static async deserialize(buffer: ReadBuffer): Promise<PartitionResponseV4> {
     return new PartitionResponseV4(
-      Int32.deserialize(buffer),
-      Int16.deserialize(buffer),
-      Int64.deserialize(buffer),
-      Int64.deserialize(buffer)
+      await Int32.deserialize(buffer),
+      await Int16.deserialize(buffer),
+      await Int64.deserialize(buffer),
+      await Int64.deserialize(buffer)
     );
   }
 }

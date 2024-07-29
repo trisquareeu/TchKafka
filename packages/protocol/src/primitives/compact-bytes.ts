@@ -17,8 +17,8 @@ export class CompactBytes extends CompactNullableBytes implements Serializable {
     return super.value as Buffer;
   }
 
-  public static override deserialize(buffer: ReadBuffer): CompactBytes {
-    const compactNullableBytes = super.deserialize(buffer);
+  public static override async deserialize(buffer: ReadBuffer): Promise<CompactBytes> {
+    const compactNullableBytes = await super.deserialize(buffer);
     if (compactNullableBytes.value === null) {
       throw new NullInNonNullableFieldError('CompactBytes cannot be null');
     }

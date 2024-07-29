@@ -58,9 +58,9 @@ describe('VarLong', () => {
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
-  it.each(cases)('should deserialize value correctly', ({ value, buffer }) => {
+  it.each(cases)('should deserialize value correctly', async ({ value, buffer }) => {
     const readBuffer = new ReadBuffer(buffer);
-    const varlong = VarLong.deserialize(readBuffer);
+    const varlong = await VarLong.deserialize(readBuffer);
     expect(varlong.value).toEqual(value);
   });
 
@@ -71,7 +71,7 @@ describe('VarLong', () => {
     await varlong.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(buffer);
-    const deserialized = VarLong.deserialize(readBuffer);
+    const deserialized = await VarLong.deserialize(readBuffer);
 
     expect(varlong.value).toEqual(deserialized.value);
   });

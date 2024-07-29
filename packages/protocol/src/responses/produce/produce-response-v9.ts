@@ -10,11 +10,11 @@ export class ProduceResponseV9Data {
     public readonly tags: TagSection
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): ProduceResponseV9Data {
+  public static async deserialize(buffer: ReadBuffer): Promise<ProduceResponseV9Data> {
     return new ProduceResponseV9Data(
-      CompactArray.deserialize(buffer, ResponseV9.deserialize),
-      Int32.deserialize(buffer),
-      TagSection.deserialize(buffer)
+      await CompactArray.deserialize(buffer, ResponseV9.deserialize),
+      await Int32.deserialize(buffer),
+      await TagSection.deserialize(buffer)
     );
   }
 }

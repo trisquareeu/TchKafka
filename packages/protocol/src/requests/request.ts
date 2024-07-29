@@ -3,7 +3,7 @@ import type { ReadBuffer, Serializable } from '../serialization';
 import { type RequestHeader } from './headers';
 
 type Deserializable<T> = {
-  deserialize: (buffer: ReadBuffer) => T;
+  deserialize: (buffer: ReadBuffer) => Promise<T>;
   new (...args: any[]): T;
 };
 

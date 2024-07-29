@@ -19,7 +19,7 @@ export class UInt32 implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): UInt32 {
+  public static async deserialize(buffer: ReadBuffer): Promise<UInt32> {
     return new UInt32(buffer.readUInt32());
   }
 

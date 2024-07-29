@@ -11,12 +11,12 @@ export class ApiVersionsResponseV3Data {
     public readonly tagSection: TagSection
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): ApiVersionsResponseV3Data {
+  public static async deserialize(buffer: ReadBuffer): Promise<ApiVersionsResponseV3Data> {
     return new ApiVersionsResponseV3Data(
-      Int16.deserialize(buffer),
-      CompactArray.deserialize(buffer, ApiKeyV1.deserialize),
-      Int32.deserialize(buffer),
-      TagSection.deserialize(buffer)
+      await Int16.deserialize(buffer),
+      await CompactArray.deserialize(buffer, ApiKeyV1.deserialize),
+      await Int32.deserialize(buffer),
+      await TagSection.deserialize(buffer)
     );
   }
 }

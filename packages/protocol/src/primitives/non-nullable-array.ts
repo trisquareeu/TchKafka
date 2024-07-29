@@ -11,8 +11,11 @@ export class NonNullableArray<T> extends Array<T> {
     return super.value!;
   }
 
-  public static override deserialize<T>(buffer: ReadBuffer, deserializer: ArrayDeserializer<T>): NonNullableArray<T> {
-    const array = super.deserialize(buffer, deserializer);
+  public static override async deserialize<T>(
+    buffer: ReadBuffer,
+    deserializer: ArrayDeserializer<T>
+  ): Promise<NonNullableArray<T>> {
+    const array = await super.deserialize(buffer, deserializer);
     if (array.value === null) {
       throw new NullInNonNullableFieldError('Expected non-nullable array');
     }
@@ -20,12 +23,12 @@ export class NonNullableArray<T> extends Array<T> {
     return new NonNullableArray(array.value);
   }
 
-  public static override deserializeEntries<T>(
+  public static override async deserializeEntries<T>(
     buffer: ReadBuffer,
     length: number,
     deserializer: ArrayDeserializer<T>
-  ): NonNullableArray<T> {
-    const array = super.deserializeEntries(buffer, length, deserializer);
+  ): Promise<NonNullableArray<T>> {
+    const array = await super.deserializeEntries(buffer, length, deserializer);
     if (array.value === null) {
       throw new NullInNonNullableFieldError('Expected non-nullable array');
     }

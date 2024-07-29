@@ -9,10 +9,10 @@ export class MetadataResponseV0Data {
     public readonly topics: Array<TopicV0>
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): MetadataResponseV0Data {
+  public static async deserialize(buffer: ReadBuffer): Promise<MetadataResponseV0Data> {
     return new MetadataResponseV0Data(
-      Array.deserialize(buffer, BrokerV0.deserialize),
-      Array.deserialize(buffer, TopicV0.deserialize)
+      await Array.deserialize(buffer, BrokerV0.deserialize),
+      await Array.deserialize(buffer, TopicV0.deserialize)
     );
   }
 }

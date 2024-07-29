@@ -11,14 +11,14 @@ export class PartitionV7 {
     public readonly offlineReplicas: Array<Int32>
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): PartitionV7 {
+  public static async deserialize(buffer: ReadBuffer): Promise<PartitionV7> {
     return new PartitionV7(
-      Int16.deserialize(buffer),
-      Int32.deserialize(buffer),
-      Int32.deserialize(buffer),
-      Array.deserialize(buffer, Int32.deserialize),
-      Array.deserialize(buffer, Int32.deserialize),
-      Array.deserialize(buffer, Int32.deserialize)
+      await Int16.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await Array.deserialize(buffer, Int32.deserialize),
+      await Array.deserialize(buffer, Int32.deserialize),
+      await Array.deserialize(buffer, Int32.deserialize)
     );
   }
 }

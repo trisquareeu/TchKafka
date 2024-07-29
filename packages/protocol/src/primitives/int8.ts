@@ -18,7 +18,7 @@ export class Int8 implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): Int8 {
+  public static async deserialize(buffer: ReadBuffer): Promise<Int8> {
     return new Int8(buffer.readInt8());
   }
 

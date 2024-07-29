@@ -18,8 +18,8 @@ export class CompactString extends CompactNullableString implements Serializable
     return super.value as string;
   }
 
-  public static override deserialize(buffer: ReadBuffer): CompactString {
-    const compactNullableString = super.deserialize(buffer);
+  public static override async deserialize(buffer: ReadBuffer): Promise<CompactString> {
+    const compactNullableString = await super.deserialize(buffer);
     if (compactNullableString.value === null) {
       throw new NullInNonNullableFieldError('CompactString cannot be null');
     }

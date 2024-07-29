@@ -10,13 +10,13 @@ export class PartitionResponseV5 {
     public readonly logStartOffset: Int64
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): PartitionResponseV5 {
+  public static async deserialize(buffer: ReadBuffer): Promise<PartitionResponseV5> {
     return new PartitionResponseV5(
-      Int32.deserialize(buffer),
-      Int16.deserialize(buffer),
-      Int64.deserialize(buffer),
-      Int64.deserialize(buffer),
-      Int64.deserialize(buffer)
+      await Int32.deserialize(buffer),
+      await Int16.deserialize(buffer),
+      await Int64.deserialize(buffer),
+      await Int64.deserialize(buffer),
+      await Int64.deserialize(buffer)
     );
   }
 }

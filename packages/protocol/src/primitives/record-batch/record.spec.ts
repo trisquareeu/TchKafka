@@ -89,7 +89,7 @@ describe('Record', () => {
     await record.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-    const deserialized = Record.deserialize(readBuffer);
+    const deserialized = await Record.deserialize(readBuffer);
     expect(deserialized.attributes.value).toEqual(record.attributes.value);
     expect(deserialized.timestampDelta.value).toEqual(record.timestampDelta.value);
     expect(deserialized.offsetDelta.value).toEqual(record.offsetDelta.value);
@@ -98,10 +98,10 @@ describe('Record', () => {
     expect(deserialized.headers.value).toEqual(record.headers.value);
   });
 
-  it('should throw if message size is too small', () => {
+  it('should throw if message size is too small', async () => {
     const readBuffer = new ReadBuffer(Buffer.from([0x00, 0x00, 0x00, 0x0a, 0x00, 0x01]));
 
-    expect(() => Record.deserialize(readBuffer)).toThrowError(BufferUnderflowError);
+    await expect(Record.deserialize(readBuffer)).rejects.toThrow(BufferUnderflowError);
   });
 
   it('should throw if there is no enough headers', async () => {
@@ -124,6 +124,6 @@ describe('Record', () => {
     const buffer = writeBuffer.toBuffer();
     const readBuffer = new ReadBuffer(buffer.subarray(0, buffer.length - headerBuffer.toBuffer().length));
 
-    expect(() => Record.deserialize(readBuffer)).toThrowError(BufferUnderflowError);
+    await expect(Record.deserialize(readBuffer)).rejects.toThrow(BufferUnderflowError);
   });
 });

@@ -13,7 +13,7 @@ export class Float64 implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): Float64 {
+  public static async deserialize(buffer: ReadBuffer): Promise<Float64> {
     return new Float64(buffer.readDouble());
   }
 

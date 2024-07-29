@@ -12,13 +12,13 @@ export class MetadataResponseV4Data {
     public readonly topics: Array<TopicV4>
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): MetadataResponseV4Data {
+  public static async deserialize(buffer: ReadBuffer): Promise<MetadataResponseV4Data> {
     return new MetadataResponseV4Data(
-      Int32.deserialize(buffer),
-      Array.deserialize(buffer, BrokerV4.deserialize),
-      NullableString.deserialize(buffer),
-      Int32.deserialize(buffer),
-      Array.deserialize(buffer, TopicV4.deserialize)
+      await Int32.deserialize(buffer),
+      await Array.deserialize(buffer, BrokerV4.deserialize),
+      await NullableString.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await Array.deserialize(buffer, TopicV4.deserialize)
     );
   }
 }

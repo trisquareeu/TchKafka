@@ -8,7 +8,11 @@ export class ApiKeyV0 {
     public readonly maxVersion: Int16
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): ApiKeyV0 {
-    return new ApiKeyV0(Int16.deserialize(buffer), Int16.deserialize(buffer), Int16.deserialize(buffer));
+  public static async deserialize(buffer: ReadBuffer): Promise<ApiKeyV0> {
+    return new ApiKeyV0(
+      await Int16.deserialize(buffer),
+      await Int16.deserialize(buffer),
+      await Int16.deserialize(buffer)
+    );
   }
 }

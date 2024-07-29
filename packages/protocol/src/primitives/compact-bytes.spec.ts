@@ -21,9 +21,9 @@ describe('CompactBytes', () => {
     expect(buffer.toBuffer()).toEqual(serialized);
   });
 
-  it.each(cases)('should deserialize properly', ({ value, serialized }) => {
+  it.each(cases)('should deserialize properly', async ({ value, serialized }) => {
     const buffer = new ReadBuffer(serialized);
-    const compactBytes = CompactBytes.deserialize(buffer);
+    const compactBytes = await CompactBytes.deserialize(buffer);
     expect(compactBytes.value).toEqual(value);
   });
 
@@ -31,12 +31,12 @@ describe('CompactBytes', () => {
     const compactBytes = new CompactBytes(Buffer.from(value));
     const buffer = new WriteBuffer();
     await compactBytes.serialize(buffer);
-    const deserializedCompactBytes = CompactBytes.deserialize(new ReadBuffer(buffer.toBuffer()));
+    const deserializedCompactBytes = await CompactBytes.deserialize(new ReadBuffer(buffer.toBuffer()));
     expect(deserializedCompactBytes.value).toEqual(compactBytes.value);
   });
 
-  it('should throw when deserializing null', () => {
+  it('should throw when deserializing null', async () => {
     const buffer = new ReadBuffer(Buffer.from([0x00]));
-    expect(() => CompactBytes.deserialize(buffer)).toThrowError();
+    await expect(CompactBytes.deserialize(buffer)).rejects.toThrow();
   });
 });

@@ -8,10 +8,10 @@ export class ApiVersionsResponseV0Data {
     public readonly apiVersions: NonNullableArray<ApiKeyV0>
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): ApiVersionsResponseV0Data {
+  public static async deserialize(buffer: ReadBuffer): Promise<ApiVersionsResponseV0Data> {
     return new ApiVersionsResponseV0Data(
-      Int16.deserialize(buffer),
-      NonNullableArray.deserialize(buffer, ApiKeyV0.deserialize)
+      await Int16.deserialize(buffer),
+      await NonNullableArray.deserialize(buffer, ApiKeyV0.deserialize)
     );
   }
 }

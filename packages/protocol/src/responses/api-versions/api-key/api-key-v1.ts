@@ -10,12 +10,12 @@ export class ApiKeyV1 {
     public readonly tagSection: TagSection
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): ApiKeyV1 {
+  public static async deserialize(buffer: ReadBuffer): Promise<ApiKeyV1> {
     return new ApiKeyV1(
-      Int16.deserialize(buffer),
-      Int16.deserialize(buffer),
-      Int16.deserialize(buffer),
-      TagSection.deserialize(buffer)
+      await Int16.deserialize(buffer),
+      await Int16.deserialize(buffer),
+      await Int16.deserialize(buffer),
+      await TagSection.deserialize(buffer)
     );
   }
 }

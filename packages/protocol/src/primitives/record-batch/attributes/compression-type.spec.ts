@@ -22,8 +22,8 @@ describe('CompressionType', () => {
     { buffer: Buffer.from([0b11010111, 0b00101100]), expected: CompressionType.ZSTD }
   ];
 
-  it.each(cases)('should return proper compression from Int16', ({ buffer, expected }) => {
-    expect(CompressionType.fromInt16(Int16.deserialize(new ReadBuffer(buffer)))).toEqual(expected);
+  it.each(cases)('should return proper compression from Int16', async ({ buffer, expected }) => {
+    expect(CompressionType.fromInt16(await Int16.deserialize(new ReadBuffer(buffer)))).toEqual(expected);
   });
 
   const invalidCases = [
@@ -46,9 +46,9 @@ describe('CompressionType', () => {
     Buffer.from([0b11110111, 0b00101110])
   ];
 
-  it.each(invalidCases)('should throw an error when compression value is invalid', (buffer) => {
-    expect(() => CompressionType.fromInt16(Int16.deserialize(new ReadBuffer(buffer)))).toThrowError(
-      IllegalArgumentError
-    );
+  it.each(invalidCases)('should throw an error when compression value is invalid', async (buffer) => {
+    const compressionType = await Int16.deserialize(new ReadBuffer(buffer));
+
+    expect(() => CompressionType.fromInt16(compressionType)).toThrow(IllegalArgumentError);
   });
 });

@@ -15,9 +15,10 @@ describe('Boolean', () => {
     { value: true, buffer: Buffer.from([0x01]) }
   ];
 
-  it.each(deserializationCases)('should correctly deserialize bytes to boolean', ({ value, buffer }) => {
+  it.each(deserializationCases)('should correctly deserialize bytes to boolean', async ({ value, buffer }) => {
     const data = new ReadBuffer(buffer);
-    expect(Boolean.deserialize(data).value).toBe(value);
+    const boolean = await Boolean.deserialize(data);
+    expect(boolean.value).toBe(value);
   });
 
   it.each(serializationCases)('should correctly serialize boolean values to bytes', async ({ value, buffer }) => {

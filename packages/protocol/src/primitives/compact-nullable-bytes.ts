@@ -15,8 +15,8 @@ export class CompactNullableBytes implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): CompactNullableBytes {
-    const length = UVarInt.deserialize(buffer);
+  public static async deserialize(buffer: ReadBuffer): Promise<CompactNullableBytes> {
+    const length = await UVarInt.deserialize(buffer);
     if (length.value === 0) {
       return new CompactNullableBytes(null);
     }

@@ -17,9 +17,9 @@ describe('Int8', () => {
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
-  it.each(cases)('Byte array should be correctly deserialized to Int8', ({ value, buffer }) => {
+  it.each(cases)('Byte array should be correctly deserialized to Int8', async ({ value, buffer }) => {
     const readBuffer = new ReadBuffer(buffer);
-    const int8 = Int8.deserialize(readBuffer);
+    const int8 = await Int8.deserialize(readBuffer);
     expect(int8.value).toEqual(value);
   });
 
@@ -31,7 +31,7 @@ describe('Int8', () => {
     await int8.serialize(writeBuffer);
 
     const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-    const deserializedInt8 = Int8.deserialize(readBuffer);
+    const deserializedInt8 = await Int8.deserialize(readBuffer);
     expect(deserializedInt8.value).toEqual(value);
   });
 

@@ -16,7 +16,7 @@ export class CompressedRecords {
   }
 
   public static async deserialize(buffer: ReadBuffer, compressor: Compressor): Promise<CompressedRecords> {
-    const { value: numberOfRecords } = Int32.deserialize(buffer);
+    const { value: numberOfRecords } = await Int32.deserialize(buffer);
     if (numberOfRecords < 0) {
       throw new InvalidRecordBatchError('Length of records cannot be negative');
     }
@@ -25,7 +25,7 @@ export class CompressedRecords {
     const decompressed = new ReadBuffer(await compressor.decompress(compressed));
 
     return new CompressedRecords(
-      NonNullableArray.deserializeEntries(decompressed, numberOfRecords, Record.deserialize),
+      await NonNullableArray.deserializeEntries(decompressed, numberOfRecords, Record.deserialize),
       compressor
     );
   }

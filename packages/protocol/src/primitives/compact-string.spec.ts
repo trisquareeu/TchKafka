@@ -18,13 +18,13 @@ describe('CompactString', () => {
 
     const buffer = writeBuffer.toBuffer();
     const readBuffer = new ReadBuffer(buffer);
-    const deserializedString = CompactString.deserialize(readBuffer);
+    const deserializedString = await CompactString.deserialize(readBuffer);
 
     expect(deserializedString.value).toEqual(value);
   });
 
-  it('should throw when deserializing null', () => {
+  it('should throw when deserializing null', async () => {
     const buffer = new ReadBuffer(Buffer.from([0x00]));
-    expect(() => CompactString.deserialize(buffer)).toThrowError();
+    await expect(CompactString.deserialize(buffer)).rejects.toThrow();
   });
 });

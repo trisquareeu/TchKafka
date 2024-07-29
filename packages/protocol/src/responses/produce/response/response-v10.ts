@@ -10,11 +10,11 @@ export class ResponseV10 {
     public readonly tags: TagSection
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): ResponseV10 {
+  public static async deserialize(buffer: ReadBuffer): Promise<ResponseV10> {
     return new ResponseV10(
-      CompactString.deserialize(buffer),
-      CompactArray.deserialize(buffer, PartitionResponseV10.deserialize),
-      TagSection.deserialize(buffer)
+      await CompactString.deserialize(buffer),
+      await CompactArray.deserialize(buffer, PartitionResponseV10.deserialize),
+      await TagSection.deserialize(buffer)
     );
   }
 }

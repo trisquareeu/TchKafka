@@ -15,9 +15,9 @@ describe('UInt32', () => {
     expect(writeBuffer.toBuffer()).toEqual(buffer);
   });
 
-  it.each(cases)('byte array should be correctly deserialized to UInt32', ({ value, buffer }) => {
+  it.each(cases)('byte array should be correctly deserialized to UInt32', async ({ value, buffer }) => {
     const readBuffer = new ReadBuffer(buffer);
-    const uint32 = UInt32.deserialize(readBuffer);
+    const uint32 = await UInt32.deserialize(readBuffer);
     expect(uint32.value).toEqual(value);
   });
 
@@ -31,7 +31,7 @@ describe('UInt32', () => {
       await uint32.serialize(writeBuffer);
 
       const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-      const deserializedUInt32 = UInt32.deserialize(readBuffer);
+      const deserializedUInt32 = await UInt32.deserialize(readBuffer);
       expect(deserializedUInt32.value).toEqual(value);
     }
   );

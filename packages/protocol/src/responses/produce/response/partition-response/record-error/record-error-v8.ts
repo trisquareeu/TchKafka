@@ -7,7 +7,7 @@ export class RecordErrorV8 {
     public readonly batchIndexErrorMessage: NullableString
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): RecordErrorV8 {
-    return new RecordErrorV8(Int32.deserialize(buffer), NullableString.deserialize(buffer));
+  public static async deserialize(buffer: ReadBuffer): Promise<RecordErrorV8> {
+    return new RecordErrorV8(await Int32.deserialize(buffer), await NullableString.deserialize(buffer));
   }
 }

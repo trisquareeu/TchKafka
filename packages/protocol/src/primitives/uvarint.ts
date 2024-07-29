@@ -23,7 +23,7 @@ export class UVarInt implements Serializable {
     return this._value;
   }
 
-  public static deserialize(buffer: ReadBuffer): UVarInt {
+  public static async deserialize(buffer: ReadBuffer): Promise<UVarInt> {
     let decodedValue = 0;
     for (let currentByteNumber = 0; currentByteNumber < this.MAX_BYTES_TO_DECODE; currentByteNumber++) {
       const currentByte = buffer.readUInt8();

@@ -11,8 +11,8 @@ import type { ResponseHeader } from './response-header';
 export class ResponseHeaderV0 implements ResponseHeader {
   constructor(public readonly correlationId: Int32) {}
 
-  public static deserialize(buffer: ReadBuffer): ResponseHeaderV0 {
-    const correlationId = Int32.deserialize(buffer);
+  public static async deserialize(buffer: ReadBuffer): Promise<ResponseHeaderV0> {
+    const correlationId = await Int32.deserialize(buffer);
 
     return new ResponseHeaderV0(correlationId);
   }

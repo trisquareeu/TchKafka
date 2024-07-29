@@ -14,14 +14,14 @@ export class MetadataResponseV12Data {
     public readonly tags: TagSection
   ) {}
 
-  public static deserialize(buffer: ReadBuffer): MetadataResponseV12Data {
+  public static async deserialize(buffer: ReadBuffer): Promise<MetadataResponseV12Data> {
     return new MetadataResponseV12Data(
-      Int32.deserialize(buffer),
-      CompactArray.deserialize(buffer, BrokerV12.deserialize),
-      CompactNullableString.deserialize(buffer),
-      Int32.deserialize(buffer),
-      CompactArray.deserialize(buffer, TopicV12.deserialize),
-      TagSection.deserialize(buffer)
+      await Int32.deserialize(buffer),
+      await CompactArray.deserialize(buffer, BrokerV12.deserialize),
+      await CompactNullableString.deserialize(buffer),
+      await Int32.deserialize(buffer),
+      await CompactArray.deserialize(buffer, TopicV12.deserialize),
+      await TagSection.deserialize(buffer)
     );
   }
 }

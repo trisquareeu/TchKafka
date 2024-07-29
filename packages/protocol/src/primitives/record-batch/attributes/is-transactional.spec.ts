@@ -17,7 +17,7 @@ describe('IsTransactional', () => {
     { buffer: Buffer.from([0b01111111, 0b11111111]), expected: IsTransactional.Yes }
   ];
 
-  it.each(cases)('should return proper transactional value from Int16', ({ buffer, expected }) => {
-    expect(IsTransactional.fromInt16(Int16.deserialize(new ReadBuffer(buffer)))).toEqual(expected);
+  it.each(cases)('should return proper transactional value from Int16', async ({ buffer, expected }) => {
+    expect(IsTransactional.fromInt16(await Int16.deserialize(new ReadBuffer(buffer)))).toEqual(expected);
   });
 });

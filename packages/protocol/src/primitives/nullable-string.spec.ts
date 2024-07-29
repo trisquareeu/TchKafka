@@ -20,7 +20,7 @@ describe('NullableString', () => {
 
     const buffer = writeBuffer.toBuffer();
     const readBuffer = new ReadBuffer(buffer);
-    const deserializedString = NullableString.deserialize(readBuffer);
+    const deserializedString = await NullableString.deserialize(readBuffer);
     expect(deserializedString.value).toEqual(string.value);
   });
 
@@ -32,7 +32,7 @@ describe('NullableString', () => {
 
   it('should correctly serialize and deserialize null values', async () => {
     const nullValue = Buffer.from([0xff, 0xff]);
-    const deserialized = NullableString.deserialize(new ReadBuffer(nullValue));
+    const deserialized = await NullableString.deserialize(new ReadBuffer(nullValue));
     expect(deserialized.value).toBeNull();
 
     const serialized = new WriteBuffer();

@@ -29,7 +29,7 @@ export class VarLong implements Serializable {
     return (value >> BigInt.asUintN(64, 1n)) ^ -(value & 1n);
   }
 
-  public static deserialize(buffer: ReadBuffer): VarLong {
+  public static async deserialize(buffer: ReadBuffer): Promise<VarLong> {
     let value = 0n;
     for (let currentByteNumber = 0; currentByteNumber < this.MAX_BYTES_TO_DECODE; currentByteNumber++) {
       const currentByte = buffer.readUInt8();

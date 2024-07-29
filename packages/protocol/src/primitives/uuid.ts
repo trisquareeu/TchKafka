@@ -26,7 +26,7 @@ export class Uuid implements Serializable {
     return new Uuid(Buffer.from(uuid.replace(/-/g, ''), 'hex'));
   }
 
-  public static deserialize(buffer: ReadBuffer): Uuid {
+  public static async deserialize(buffer: ReadBuffer): Promise<Uuid> {
     return new Uuid(buffer.readBuffer(Uuid.NUMBER_OF_BYTES));
   }
 

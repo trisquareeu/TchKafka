@@ -32,9 +32,9 @@ export class TaggedField implements Serializable {
     return new TaggedField(new UVarInt(tag), writeBuffer.toBuffer());
   }
 
-  public static deserialize(buffer: ReadBuffer): TaggedField {
-    const tag = UVarInt.deserialize(buffer);
-    const length = UVarInt.deserialize(buffer);
+  public static async deserialize(buffer: ReadBuffer): Promise<TaggedField> {
+    const tag = await UVarInt.deserialize(buffer);
+    const length = await UVarInt.deserialize(buffer);
     const data = buffer.readBuffer(length.value);
 
     return new TaggedField(tag, data);

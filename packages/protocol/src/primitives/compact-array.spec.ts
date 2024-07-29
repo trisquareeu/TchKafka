@@ -118,7 +118,7 @@ describe('CompactArray', () => {
       await array.serialize(writeBuffer);
 
       const readBuffer = new ReadBuffer(writeBuffer.toBuffer());
-      const deserialized = CompactArray.deserialize(readBuffer, deserializer);
+      const deserialized = await CompactArray.deserialize(readBuffer, deserializer);
 
       expect(deserialized.value).toEqual(array.value);
     }
