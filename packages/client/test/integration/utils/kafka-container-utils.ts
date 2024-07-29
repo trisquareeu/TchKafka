@@ -26,6 +26,20 @@ export class KafkaContainerUtils {
     return result.output;
   }
 
+  public async generateMessage(topic: string): Promise<string> {
+    const result = await this.kafkaContainer.exec([
+      '/bin/sh',
+      '-c',
+      `echo 'asdf:{"foo":"bar"}' | kafka-console-producer --bootstrap-server localhost:9092 --topic ${topic} --property parse.key=true --property key.separator=:`
+    ]);
+
+    if (result.exitCode !== 0) {
+      throw new Error(`Failed to generate messages: ${result.output}`);
+    }
+
+    return result.output;
+  }
+
   public async getConnectedSocket(port: number = 9092): Promise<Socket> {
     const socket = createConnection(this.kafkaContainer.getMappedPort(port), this.kafkaContainer.getHost());
 

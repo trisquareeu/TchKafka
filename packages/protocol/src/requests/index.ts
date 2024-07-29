@@ -1,4 +1,5 @@
 export * from './api-versions';
+export * from './fetch/';
 export * from './headers';
 export * from './metadata';
 export * from './produce';
