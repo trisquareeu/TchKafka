@@ -48,7 +48,7 @@
     "prettier": "3.3.3",
     "prettier-eslint": "16.3.0",
     "rimraf": "6.0.1",
-    "testcontainers": "10.10.0",
+    "testcontainers": "10.11.0",
     "ts-jest": "29.2.4",
     "ts-node": "10.9.2",
     "ts-node-dev": "2.0.0",
