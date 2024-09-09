@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "19.4.1",
-    "@commitlint/config-conventional": "19.2.2",
+    "@commitlint/config-conventional": "19.4.1",
     "@golevelup/ts-jest": "^0.5.0",
     "@testcontainers/kafka": "10.13.0",
     "@tsconfig/node22": "22.0.0",
