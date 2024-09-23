@@ -55,7 +55,7 @@
     "typescript": "5.5.4"
   },
   "dependencies": {
-    "@mongodb-js/zstd": "1.2.1",
+    "@mongodb-js/zstd": "1.2.2",
     "crc-32": "1.2.2",
     "lz4": "0.6.5",
     "snappy": "7.2.2",
