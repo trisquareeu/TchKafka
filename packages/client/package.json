@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@tchkafka/protocol": "^0.1.0",
-    "isutf8": "4.0.0",
+    "isutf8": "4.0.1",
     "tslib": "2.7.0"
   }
 }
