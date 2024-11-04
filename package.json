@@ -6,7 +6,7 @@
   ],
   "devDependencies": {
     "husky": "9.1.6",
-    "lerna": "8.1.8"
+    "lerna": "8.1.9"
   },
   "scripts": {
     "prepare": "husky",
