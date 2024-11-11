@@ -32,7 +32,7 @@
     "@commitlint/cli": "19.5.0",
     "@commitlint/config-conventional": "19.5.0",
     "@golevelup/ts-jest": "^0.6.0",
-    "@testcontainers/kafka": "10.13.2",
+    "@testcontainers/kafka": "10.14.0",
     "@tsconfig/node22": "22.0.0",
     "@types/jest": "29.5.14",
     "@types/lz4": "0.6.4",
