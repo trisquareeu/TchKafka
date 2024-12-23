@@ -28,7 +28,7 @@
     "lint:fix": "prettier --check \"{src,tests}/**/*.{ts,json}\" --write && eslint \"{src,tests}/**/*.{ts,json}\" --fix"
   },
   "devDependencies": {
-    "@commitlint/cli": "19.6.0",
+    "@commitlint/cli": "19.6.1",
     "@commitlint/config-conventional": "19.6.0",
     "@golevelup/ts-jest": "^0.6.0",
     "@testcontainers/kafka": "10.14.0",
