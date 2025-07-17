@@ -1,6 +1,8 @@
 export type Partition = {
   partition: number;
+  currentLeaderEpoch?: number;
   fetchOffset: bigint;
+  lastFetchedEpoch?: number;
   logStartOffset: bigint;
   partitionMaxBytes: number;
 };

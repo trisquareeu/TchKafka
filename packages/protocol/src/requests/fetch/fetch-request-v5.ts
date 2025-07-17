@@ -4,7 +4,6 @@ import { FetchResponseV7Data } from '../../responses/fetch/fetch-response-v7';
 import { type WriteBuffer } from '../../serialization';
 import { type RequestHeaderV1 } from '../headers';
 import { type Request } from '../request';
-import { ForgottenTopicsDataV7 } from './forgotten-topics-data';
 import { type TopicV7 } from './topic';
 
 export class FetchRequestV7 implements Request<FetchResponseV7Data> {
@@ -21,7 +20,7 @@ export class FetchRequestV7 implements Request<FetchResponseV7Data> {
     public readonly sessionId: Int32,
     public readonly sessionEpoch: Int32,
     public readonly topics: Array<TopicV7>,
-    public readonly forgottenTopicsData: ForgottenTopicsDataV7
+    public readonly forgottenTopicsData: Array<any>
   ) {}
 
   public async serialize(buffer: WriteBuffer): Promise<void> {
