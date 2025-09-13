@@ -7,3 +7,6 @@ export * from './request';
 export * from './request';
 export * from './sasl-authenticate';
 export * from './sasl-handshake';
+export * from './consumer-group-heartbeat';
+export * from './find-coordinator';
+export * from './share-group-heartbeat';

@@ -4,3 +4,6 @@ export * from './sasl-handshake';
 export * from './sasl-authenticate';
 export * from './metadata';
 export * from './produce';
+export * from './consumer-group-heartbeat';
+export * from './find-coordinator';
+export * from './share-group-heartbeat';
