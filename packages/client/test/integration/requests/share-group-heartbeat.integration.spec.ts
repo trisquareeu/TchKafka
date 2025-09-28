@@ -2,7 +2,7 @@ import {
   ShareGroupHeartbeatRequestBuilder,
   ShareGroupHeartbeatRequestV1,
   FindCoordinatorRequestBuilder
-} from '@tchkafka/protocol';
+} from '../../../src/protocol';
 import { KafkaContainer, type StartedKafkaContainer } from '@testcontainers/kafka';
 import { type Socket } from 'net';
 import { Connection } from '../../../src/session';

@@ -1,5 +1,5 @@
 import { createMock, type DeepMocked } from '@golevelup/ts-jest';
-import { type RequestBuilderTemplate } from '@tchkafka/protocol';
+import { type RequestBuilderTemplate } from '../protocol';
 import { type Connection } from './connection';
 import { Session } from './session';
 import { type SupportedApiVersions } from './supported-api-versions';

@@ -1,4 +1,4 @@
-import { type RequestResponseType, type SaslAuthenticateRequest } from '@tchkafka/protocol';
+import { type RequestResponseType, type SaslAuthenticateRequest } from '../../../../protocol';
 
 export type AuthMessageSender = (message: Buffer) => Promise<RequestResponseType<SaslAuthenticateRequest>>;
 

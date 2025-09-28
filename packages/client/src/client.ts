@@ -1,4 +1,4 @@
-import { type Request, type RequestBuilderResponseType, type RequestBuilderTemplate } from '@tchkafka/protocol';
+import { type Request, type RequestBuilderResponseType, type RequestBuilderTemplate } from './protocol';
 import { type Session, type SessionBuilder } from './session';
 
 export class Client {

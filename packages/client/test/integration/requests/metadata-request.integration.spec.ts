@@ -20,7 +20,7 @@ import {
   MetadataRequestV11,
   MetadataRequestV12,
   type MetadataResponseV12Data
-} from '@tchkafka/protocol';
+} from '../../../src/protocol';
 import { Connection } from '../../../src/session';
 
 jest.setTimeout(120_000);

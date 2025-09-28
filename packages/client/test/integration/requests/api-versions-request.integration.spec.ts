@@ -8,7 +8,7 @@ import {
   ApiVersionsRequestV1,
   ApiVersionsRequestV2,
   ApiVersionsRequestV3
-} from '@tchkafka/protocol';
+} from '../../../src/protocol';
 import { Connection } from '../../../src/session';
 
 jest.setTimeout(120_000);

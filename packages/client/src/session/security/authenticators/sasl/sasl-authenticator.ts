@@ -3,7 +3,7 @@ import {
   ApiVersionsRequestBuilder,
   SaslAuthenticateRequestBuilder,
   SaslHandshakeRequestBuilder
-} from '@tchkafka/protocol';
+} from '../../../../protocol';
 import { type Connection } from '../../../connection';
 import { type Authenticator } from '../authenticator';
 import { type SaslMechanism } from './sasl-mechanism';
