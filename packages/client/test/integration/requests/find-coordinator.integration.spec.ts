@@ -1,4 +1,4 @@
-import { FindCoordinatorRequestBuilder, FindCoordinatorRequestV6 } from '@tchkafka/protocol';
+import { FindCoordinatorRequestBuilder, FindCoordinatorRequestV6 } from '../../../src/protocol';
 import { KafkaContainer, type StartedKafkaContainer } from '@testcontainers/kafka';
 import { type Socket } from 'net';
 import { Connection } from '../../../src/session';

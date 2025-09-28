@@ -2,3 +2,5 @@
 **/*/dist
 **/*/coverage
 **/package-lock.json
+/.nx/cache
+/.nx/workspace-data

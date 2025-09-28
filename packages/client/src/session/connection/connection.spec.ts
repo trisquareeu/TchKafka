@@ -1,5 +1,5 @@
 import { createMock, type DeepMocked } from '@golevelup/ts-jest';
-import { Int32, ReadBuffer, type Request, type RequestHeader } from '@tchkafka/protocol';
+import { Int32, ReadBuffer, type Request, type RequestHeader } from '../../protocol';
 import { Buffer } from 'buffer';
 import { Socket } from 'net';
 import { Connection } from './connection';

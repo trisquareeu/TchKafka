@@ -1,5 +1,4 @@
-import { type Request } from '@tchkafka/protocol';
-import { type RequestBuilderResponseType, type RequestBuilderTemplate } from '@tchkafka/protocol';
+import { type Request, type RequestBuilderResponseType, type RequestBuilderTemplate } from '../protocol';
 import { type Connection } from './connection';
 import { type SupportedApiVersions } from './supported-api-versions';
 

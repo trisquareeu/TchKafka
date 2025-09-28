@@ -1,4 +1,4 @@
-import { ApiVersionsRequestBuilder } from '@tchkafka/protocol';
+import { ApiVersionsRequestBuilder } from '../protocol';
 import { Connection, type SocketFactory } from './connection';
 import { type Authenticator } from './security';
 import { Session } from './session';

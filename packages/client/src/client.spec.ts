@@ -1,7 +1,7 @@
 import { type DeepMocked, createMock } from '@golevelup/ts-jest';
 import { type SessionBuilder, type Session } from './session';
 import { Client } from './client';
-import { type RequestBuilderTemplate } from '@tchkafka/protocol';
+import { type RequestBuilderTemplate } from './protocol';
 
 describe('Client', () => {
   let sessionBuilder: DeepMocked<SessionBuilder>;

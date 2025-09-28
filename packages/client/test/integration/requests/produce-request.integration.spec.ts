@@ -10,7 +10,7 @@ import {
   ProduceRequestV9,
   WriteBuffer,
   type SimpleTopic
-} from '@tchkafka/protocol';
+} from '../../../src/protocol';
 import { KafkaContainer, type StartedKafkaContainer } from '@testcontainers/kafka';
 import { randomUUID } from 'crypto';
 import { type Socket } from 'net';

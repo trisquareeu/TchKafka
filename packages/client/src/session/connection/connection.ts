@@ -4,7 +4,7 @@ import {
   WriteBuffer,
   type Request,
   type RequestResponseType
-} from '@tchkafka/protocol';
+} from '../../protocol';
 import { type Socket } from 'net';
 import { ResponseReader } from './response-reader';
 

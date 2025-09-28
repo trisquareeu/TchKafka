@@ -45,6 +45,7 @@
     "eslint-plugin-prettier": "5.2.3",
     "jest": "29.7.0",
     "jest-junit": "16.0.0",
+    "lerna": "8.2.3",
     "prettier": "3.4.2",
     "prettier-eslint": "16.3.0",
     "rimraf": "6.0.1",
@@ -55,9 +56,11 @@
     "typescript": "5.7.3"
   },
   "dependencies": {
-    "@tchkafka/protocol": "0.1.0",
+    "@mongodb-js/zstd": "2.0.1",
+    "crc-32": "1.2.2",
     "isutf8": "4.0.1",
-    "lerna": "8.2.3",
+    "lz4": "0.6.5",
+    "snappy": "7.3.3",
     "tslib": "2.8.1"
   }
 }
