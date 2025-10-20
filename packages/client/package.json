@@ -50,7 +50,7 @@
     "prettier-eslint": "16.3.0",
     "rimraf": "6.0.1",
     "testcontainers": "11.5.1",
-    "ts-jest": "29.4.4",
+    "ts-jest": "29.4.5",
     "ts-node": "10.9.2",
     "ts-node-dev": "2.0.0",
     "typescript": "5.7.3"
